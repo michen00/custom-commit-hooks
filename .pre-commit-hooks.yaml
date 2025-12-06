@@ -2,12 +2,12 @@
   name: enhance-scope
   description: adds filename to conventional commit scope for single-file commits
   entry: enhance-scope
-  language: unsupported_script
+  language: script
   stages: [commit-msg]
 
 - id: conventional-merge-commit
   name: conventional-merge-commit
   description: "use 'chore: merge ...' for merge commits"
   entry: conventional-merge-commit
-  language: unsupported_script
+  language: script
   stages: [prepare-commit-msg]
