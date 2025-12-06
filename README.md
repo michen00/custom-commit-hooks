@@ -11,8 +11,8 @@ repos:
   - repo: https://github.com/michen00/custom-commit-hooks
     rev: v0.0.0  # Use the latest version
     hooks:
-      - id: custom-commit-msg
-      - id: custom-prepare-commit-msg
+      - id: enhance-scope
+      - id: conventional-merge-commit
 ```
 
 ## Hooks
