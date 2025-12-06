@@ -1,0 +1,13 @@
+- id: custom-commit-msg
+  name: custom-commit-msg
+  description: Custom commit-msg hook
+  entry: custom-commit-msg
+  language: script
+  stages: [commit-msg]
+
+- id: custom-prepare-commit-msg
+  name: custom-prepare-commit-msg
+  description: Custom prepare-commit-msg hook that modifies merge commit messages
+  entry: custom-prepare-commit-msg
+  language: script
+  stages: [prepare-commit-msg]

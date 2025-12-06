@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+commit_msg_file="$1"
+commit_source="$2"
+
+# Check if this is a merge commit
+if [[ $commit_source == "merge" ]]; then
+  commit_msg=$(cat "$commit_msg_file")
+  modified_msg="${commit_msg/M/chore: m}"
+  echo "$modified_msg" > "$commit_msg_file"
+fi
