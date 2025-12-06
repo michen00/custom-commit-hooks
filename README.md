@@ -24,4 +24,4 @@ A custom commit-msg hook.
 
 ### custom-prepare-commit-msg
 
-A custom prepare-commit-msg hook that modifies merge commit messages by replacing `M` with `chore: m` in the commit message.
+A custom prepare-commit-msg hook that modifies merge commit messages by replacing the first `M` with `chore: m`, effectively transforming `Merge` to `chore: merge`.
