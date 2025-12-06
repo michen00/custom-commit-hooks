@@ -8,7 +8,7 @@ read -r COMMIT_SUMMARY <"$COMMIT_MSG_FILE"
 COMMIT_BODY=$(tail -n +2 "$COMMIT_MSG_FILE" 2>/dev/null)
 
 # Regex pattern to match commit message format
-PATTERN="^(build|chore|ci|docs|feat|fix|perf|refactor|style|test): .+"
+PATTERN="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test): .+"
 
 # Get the list of files touched in the commit
 FILES_TOUCHED=$(git diff --cached --name-only)
