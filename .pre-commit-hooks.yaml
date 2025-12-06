@@ -1,13 +1,13 @@
-- id: custom-commit-msg
-  name: custom-commit-msg
-  description: Custom commit-msg hook
-  entry: custom-commit-msg
-  language: script
+- id: enhance-scope
+  name: enhance-scope
+  description: adds filename to conventional commit scope for single-file commits
+  entry: enhance-scope
+  language: unsupported_script
   stages: [commit-msg]
 
-- id: custom-prepare-commit-msg
-  name: custom-prepare-commit-msg
-  description: Custom prepare-commit-msg hook that modifies merge commit messages
-  entry: custom-prepare-commit-msg
-  language: script
+- id: conventional-merge-commit
+  name: conventional-merge-commit
+  description: "use 'chore: merge ...' for merge commits"
+  entry: conventional-merge-commit
+  language: unsupported_script
   stages: [prepare-commit-msg]
