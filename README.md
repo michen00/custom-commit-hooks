@@ -19,7 +19,7 @@ repos:
 
 ### [enhance-scope](enhance-scope)
 
-Some commits only touch a single file. This hook will add the filename to the conventional commit message scope, which can improve the readability of a branch's commit history.
+Some commits only touch a single file. This hook will add the filename as the scope to conventional commit messages that don't already have a scope, which can improve the readability of a branch's commit history.
 
 Trigger conditions:
 
