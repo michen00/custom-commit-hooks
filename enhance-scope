@@ -17,7 +17,11 @@ PATTERN="^($ALLOWED_TYPES): .+"
 FILES_TOUCHED=$(git diff --cached --name-only)
 
 # Count the number of files
-FILE_COUNT=$(echo "$FILES_TOUCHED" | wc -l)
+if [ -z "$FILES_TOUCHED" ]; then
+	FILE_COUNT=0
+else
+	FILE_COUNT=$(printf '%s\n' "$FILES_TOUCHED" | grep -c .)
+fi
 
 # If the commit doesn't touch exactly one file, exit without modification
 if [ "$FILE_COUNT" -ne 1 ]; then
