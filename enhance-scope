@@ -47,6 +47,6 @@ if [[ $COMMIT_SUMMARY =~ $PATTERN ]]; then
 			echo "$MODIFIED_SUMMARY"
 			[ -n "$COMMIT_BODY" ] && echo "$COMMIT_BODY"
 		} >"$COMMIT_MSG_FILE"
-		echo "Modified commit message summary: $MODIFIED_SUMMARY"
+		echo "Modified commit message summary: $MODIFIED_SUMMARY" >&2
 	fi
 fi
