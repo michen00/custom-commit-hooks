@@ -3,8 +3,8 @@
 commit_msg_file="$1"
 commit_source="$2"
 
-if [[ $commit_source == "merge" ]]; then
+if [[ $commit_source == "merge" ]] && read -r first_line <"$commit_msg_file" && [[ $first_line == Merge\ * ]]; then
 	mapfile -t lines <"$commit_msg_file"
-	lines[0]="chore: merge ${lines[0]#Merge }"
+	lines[0]="chore: merge ${first_line#Merge }"
 	printf '%s\n' "${lines[@]}" >"$commit_msg_file"
 fi
