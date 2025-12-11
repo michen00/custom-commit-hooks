@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
-commit_msg_file="$1"
-commit_source="$2"
+commit_source=${2-}
+[[ $commit_source == merge ]] || exit 0
 
-if [[ $commit_source == "merge" ]] && read -r first_line <"$commit_msg_file" && [[ $first_line == Merge\ * ]]; then
-	mapfile -t lines <"$commit_msg_file"
-	lines[0]="chore: merge ${first_line#Merge }"
-	printf '%s\n' "${lines[@]}" >"$commit_msg_file"
-fi
+commit_msg_file=$1
+mapfile -t lines <"$commit_msg_file" || exit 0
+
+first_line=${lines[0]-}
+[[ $first_line == Merge\ * ]] || exit 0
+
+lines[0]="chore: merge ${first_line#Merge }"
+printf '%s\n' "${lines[@]}" >"$commit_msg_file"
