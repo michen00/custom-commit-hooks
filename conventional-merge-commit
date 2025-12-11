@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# prepare-commit-msg:
+# rewrite auto-generated merge messages to conventional commit format
 
 commit_source=${2-}
 [[ $commit_source == merge ]] || exit 0

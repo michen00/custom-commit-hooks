@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# commit-msg:
+# enhance commit messages touching a single file to include the filename in the summary
 
 # File containing the commit message
 COMMIT_MSG_FILE=$1
