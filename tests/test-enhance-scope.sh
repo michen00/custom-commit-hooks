@@ -133,11 +133,10 @@ This is the body
 with multiple lines"
 
 # Verify body is preserved
-temp_dir=$(mktemp -d)
-trap 'rm -rf "$temp_dir"' EXIT
-
-# Run test in subshell to isolate directory changes
+# Run test in subshell to isolate directory changes and trap cleanup locally
 if (
+	temp_dir=$(mktemp -d) || exit 1
+	trap 'rm -rf "$temp_dir"' EXIT
 	cd "$temp_dir" || exit 1
 	git init -q || exit 1
 	git config user.name "Test User" || exit 1
