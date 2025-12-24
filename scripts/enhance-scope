@@ -2,38 +2,36 @@
 # commit-msg:
 # enhance commit messages touching a single file to include the filename in the summary
 
-# File containing the commit message
+# shellcheck source=lib/commit-msg.sh disable=SC1091
+. "$(dirname "$0")/lib/commit-msg.sh"
+
 COMMIT_MSG_FILE=$1
 
-COMMIT_CONTENT=$(cat "$COMMIT_MSG_FILE")
-# Extract first line and rest using POSIX-compliant parameter expansion
-NL='
-'
-COMMIT_SUMMARY="${COMMIT_CONTENT%%"${NL}"*}"
-COMMIT_BODY="${COMMIT_CONTENT#*"${NL}"}"
-# If no newline, body is empty
-[ "$COMMIT_BODY" = "$COMMIT_CONTENT" ] && COMMIT_BODY=""
+# Read and parse commit message
+read_commit_msg "$COMMIT_MSG_FILE"
+COMMIT_SUMMARY="$COMMIT_FIRST_LINE"
+COMMIT_BODY="$COMMIT_REST"
 
 # Get the list of files touched in the commit
 FILES_TOUCHED=$(git diff --cached --name-only)
 
-# Count files by counting non-empty lines (matching original logic)
+# Exit if no files staged
 if [ -z "$FILES_TOUCHED" ]; then
 	exit 0
 fi
 
-# Count files by counting lines (handles filenames with spaces correctly)
+# Count files (handles filenames with spaces correctly)
 FILE_COUNT=$(printf '%s\n' "$FILES_TOUCHED" | grep -c .)
 
-# If the commit doesn't touch exactly one file, exit without modification
+# Exit if not exactly one file
 if [ "$FILE_COUNT" -ne 1 ]; then
 	exit 0
 fi
 
 FILENAME="${FILES_TOUCHED%%"${NL}"*}"
-# Remove any trailing newline (git output should be clean, but be safe)
 FILENAME="${FILENAME%"${NL}"}"
 
+# Check if commit matches conventional format without scope
 ORIGINAL_TYPE=""
 case "$COMMIT_SUMMARY" in
 build:\ ?* | chore:\ ?* | ci:\ ?* | docs:\ ?* | feat:\ ?* | fix:\ ?* | perf:\ ?* | refactor:\ ?* | revert:\ ?* | style:\ ?* | test:\ ?*)
@@ -41,12 +39,12 @@ build:\ ?* | chore:\ ?* | ci:\ ?* | docs:\ ?* | feat:\ ?* | fix:\ ?* | perf:\ ?*
 	;;
 esac
 
-# If pattern doesn't match or type extraction failed, exit
+# Exit if not a conventional commit
 if [ -z "$ORIGINAL_TYPE" ]; then
 	exit 0
 fi
 
-# Check if the filename already appears in the summary
+# Exit if filename already in summary
 case "$COMMIT_SUMMARY" in
 *"$FILENAME"*) exit 0 ;;
 esac
@@ -55,11 +53,8 @@ PREFIX="$ORIGINAL_TYPE: "
 SUFFIX="${COMMIT_SUMMARY#"$PREFIX"}"
 MODIFIED_SUMMARY="$ORIGINAL_TYPE($FILENAME): $SUFFIX"
 
-if [ ${#MODIFIED_SUMMARY} -lt 51 ]; then
-	# Write the modified summary and original body back to the commit message file
-	{
-		echo "$MODIFIED_SUMMARY"
-		[ -n "$COMMIT_BODY" ] && echo "$COMMIT_BODY"
-	} >"$COMMIT_MSG_FILE"
+# Only modify if new summary is under 51 chars
+if [ "${#MODIFIED_SUMMARY}" -lt 51 ]; then
+	write_commit_msg "$COMMIT_MSG_FILE" "$MODIFIED_SUMMARY" "$COMMIT_BODY"
 	echo "Modified commit message summary: $MODIFIED_SUMMARY" >&2
 fi
