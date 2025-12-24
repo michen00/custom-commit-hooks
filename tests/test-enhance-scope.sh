@@ -7,11 +7,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 HOOK="$REPO_ROOT/scripts/enhance-scope"
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+# Load shared color definitions
+# shellcheck source=tests/colors.sh
+. "$SCRIPT_DIR/colors.sh"
 
 PASSED=0
 FAILED=0
