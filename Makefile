@@ -64,14 +64,14 @@ develop: ## Set up the project for development (WITH_HOOKS={true|false}, default
                 echo "$(YELLOW)Could not return to $$current_branch. You are on $$(git branch --show-current).$(_COLOR)"; \
             fi; \
         fi; \
-        if [ $$stash_was_needed -eq 1 ] && git stash list | head -1 | grep -q "Auto stash before switching to main"; then \
+        if [ $$stash_was_needed -eq 1 ] && git stash list | head -1 | grep -q "Auto stash by make develop"; then \
             echo "$(YELLOW)Note: Your stashed changes are still available. Run 'git stash pop' to restore them.$(_COLOR)"; \
         fi; \
         exit $$exit_code; \
     }; \
     trap cleanup EXIT; \
     if ! git diff --quiet || ! git diff --cached --quiet; then \
-        git stash push -m "Auto stash before switching to main"; \
+        git stash push -m "Auto stash by make develop"; \
         stash_was_needed=1; \
     fi; \
     git switch main && git pull; \
