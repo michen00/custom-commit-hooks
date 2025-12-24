@@ -69,7 +69,7 @@ release:
 
 ### Security
 
-- Pin action versions: `actions/checkout@v4`, not `@main`
+- Pin action versions: `actions/checkout@v6`, not `@main`
 - Use GitHub secrets for any tokens (if needed)
 - Limit repository token permissions with `permissions:`
 
