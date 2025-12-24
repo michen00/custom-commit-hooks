@@ -35,7 +35,7 @@ jobs:
       - name: Install pre-commit hooks
         if: steps.cache-pre-commit-hooks.outputs.cache-hit != 'true'
         run: |
-          pre-commit install
+          pre-commit install-hooks
       - name: Run pre-commit hooks
         run: |
           pre-commit run --all-files
