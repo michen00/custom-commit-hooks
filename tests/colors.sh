@@ -4,8 +4,8 @@
 
 # ANSI color codes (using 0; prefix for explicit reset)
 # shellcheck disable=SC2034 # Variables are exported for use in sourcing scripts
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
 CYAN='\033[0;36m'
-NC='\033[0m' # No Color (reset)
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+NC='\033[0m'
