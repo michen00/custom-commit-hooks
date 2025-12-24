@@ -29,7 +29,6 @@ if [ "$FILE_COUNT" -ne 1 ]; then
 fi
 
 FILENAME="${FILES_TOUCHED%%"${NL}"*}"
-FILENAME="${FILENAME%"${NL}"}"
 
 # Check if commit matches conventional format without scope
 ORIGINAL_TYPE=""
