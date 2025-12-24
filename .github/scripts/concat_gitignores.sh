@@ -31,16 +31,13 @@ EOF
 
 # Hardcoded URLs (used if no input is provided)
 DEFAULT_URLS=(
-	# Language / runtime / ecosystem
-	#   "https://github.com/github/gitignore/blob/main/community/Python/JupyterNotebooks.gitignore"
-	#   "https://github.com/github/gitignore/blob/main/Node.gitignore"
-	#   "https://github.com/github/gitignore/blob/main/Python.gitignore"
-
 	# IDEs / editors
 	"https://github.com/github/gitignore/blob/main/Global/Cursor.gitignore"
 	"https://github.com/github/gitignore/blob/main/Global/Eclipse.gitignore"
+	"https://github.com/github/gitignore/blob/main/Global/Emacs.gitignore"
 	"https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore"
 	"https://github.com/github/gitignore/blob/main/Global/SublimeText.gitignore"
+	"https://github.com/github/gitignore/blob/main/Global/Vim.gitignore"
 	"https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore"
 	"https://github.com/github/gitignore/blob/main/VisualStudio.gitignore"
 
@@ -176,6 +173,5 @@ else
 	echo "Unknown OS: unable to ensure single trailing newline"
 fi
 
-# Directory for temporary files marked for deletion; safe to ignore in all generated projects
 echo -e "!.gitkeep" >>"$OUTPUT_FILE"
 echo "Combined .gitignore created as $OUTPUT_FILE"
