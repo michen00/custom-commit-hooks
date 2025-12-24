@@ -1,5 +1,4 @@
 .ONESHELL:
-.WAIT:
 
 DEBUG    ?= false
 VERBOSE  ?= false
