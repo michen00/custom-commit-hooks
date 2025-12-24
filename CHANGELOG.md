@@ -28,8 +28,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com) and this p
 ### ⚡ Performance
 
 - **(conventional-merge-commit)** optimize - ([6766003](https://github.com/michen00/custom-commit-hooks/commit/6766003a4d833cbedcaa82830d67531a1b4f97c7)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- remove date from cache key - ([64fb14f](https://github.com/michen00/custom-commit-hooks/commit/64fb14fc19930405f98e300badfc23ff80af0bf7)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- don't cache pip since we don't use it - ([01f52d6](https://github.com/michen00/custom-commit-hooks/commit/01f52d607fb541a3eb98e2f242f562a58b30bd1a)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- remove date from cache key - ([9151031](https://github.com/michen00/custom-commit-hooks/commit/9151031e18b25020f8859bb94f33ea8fe5825e2c)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- don't cache pip since we don't use it - ([e0d84ff](https://github.com/michen00/custom-commit-hooks/commit/e0d84ffed4aea29d23532337f3ea3f5ed697addb)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - improve pattern matching - ([85a7383](https://github.com/michen00/custom-commit-hooks/commit/85a73831092b7f3131a4004dec41386caf4e0384)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - get consistent on POSIX compliance - ([d3b8930](https://github.com/michen00/custom-commit-hooks/commit/d3b8930edb99a463e085dc32da930ad54bf64f85)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 
@@ -62,9 +62,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com) and this p
 ### 📝 Documentation
 
 - **(AGENTS.md)** update commands - ([8711bf6](https://github.com/michen00/custom-commit-hooks/commit/8711bf68642634d1687d79df2f8d8949201be2ce)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- **(CHANGELOG.md)** draft the changelog - ([5804487](https://github.com/michen00/custom-commit-hooks/commit/580448727faf1eb2b89477cb4c2bd59baa8c900f)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(CLAUDE.md)** update directory notes - ([22fca09](https://github.com/michen00/custom-commit-hooks/commit/22fca09996c57d1cfe072b77c1d791bb3600e61f)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(CONTRIBUTING.md)** update git cliff command - ([f40180a](https://github.com/michen00/custom-commit-hooks/commit/f40180a65e81fc7b9f4dc47849e942322ac00d09)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(CONTRIBUTING.md)** improve release guidance - ([5e5c1a2](https://github.com/michen00/custom-commit-hooks/commit/5e5c1a27074f2401990780218f6f696382c5fcd3)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- **(CONTRIBUTING.md)** update git cliff command - ([190879a](https://github.com/michen00/custom-commit-hooks/commit/190879ae0aa5ec61cd6e214c3ef98445bc5fed9b)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- **(CONTRIBUTING.md)** improve release guidance - ([b663acd](https://github.com/michen00/custom-commit-hooks/commit/b663acd11ac924136e29e397db38ae45c279771b)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(README.md)** revise README - ([9724c2f](https://github.com/michen00/custom-commit-hooks/commit/9724c2f97f7e98a5413dbf43be38159d2e1aeb85)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(cliff.toml)** configure changelog - ([f5b5faa](https://github.com/michen00/custom-commit-hooks/commit/f5b5faac2e4a8fdab2981ae1aa6fa36385be77c1)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - update project structure - ([2ae227e](https://github.com/michen00/custom-commit-hooks/commit/2ae227e3427dc4ffcfaecd699b0c57a13cdb851d)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
@@ -89,11 +90,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com) and this p
 
 ### ⚙️ Miscellaneous Tasks
 
-- **(CI)** un-bump CACHE_NUMBER - ([e0e66db](https://github.com/michen00/custom-commit-hooks/commit/e0e66db8974f3f7aa81b142994726c11938c52d2)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- **(CI)** un-bump CACHE_NUMBER - ([e846108](https://github.com/michen00/custom-commit-hooks/commit/e846108cd2a18cf52f3f02eda3da2c09b74fab46)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(Makefile)** match to updated boilerplate - ([13670a1](https://github.com/michen00/custom-commit-hooks/commit/13670a194e140a358bc7bfea15ce9cedea484bbe)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(Makefile)** remove unused - ([abfd320](https://github.com/michen00/custom-commit-hooks/commit/abfd320849551748bb12e8c97258da08229fbedd)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(Makefile)** remove obsolete boilerplate - ([672208d](https://github.com/michen00/custom-commit-hooks/commit/672208ddc0caa8e84c36642e20628b20e4104166)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(pre-commit)** update check-jsonschema version - ([411d42f](https://github.com/michen00/custom-commit-hooks/commit/411d42f35636852f1d816bfb23a1ce8c16cba838)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- **(pre-commit)** update check-jsonschema version - ([a5a3b87](https://github.com/michen00/custom-commit-hooks/commit/a5a3b87dc2be9e7a9342017fac2496f21f8bfff4)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - improve portability of color codes - ([a91f3c2](https://github.com/michen00/custom-commit-hooks/commit/a91f3c2cae483de3e577c2ce031da838ebd9951e)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - autofix via pre-commit hooks - ([6eec40e](https://github.com/michen00/custom-commit-hooks/commit/6eec40e19d659f74bab6c2c41c2cb41368ef1211)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
 - clarify instructions - ([61517eb](https://github.com/michen00/custom-commit-hooks/commit/61517eb7ed02eaaed2dee430dd619441d730e1c8)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
@@ -108,5 +109,55 @@ The format is based on [Keep a Changelog](https://keepachangelog.com) and this p
 - remove an invalid setting - ([e6acf1a](https://github.com/michen00/custom-commit-hooks/commit/e6acf1a53f0b6c183140898c1d2ad1563db99fae)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - remove an unused hook - ([0fb6909](https://github.com/michen00/custom-commit-hooks/commit/0fb6909bec3fd9d0e7479c7021a81befb1d905f2)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - autoupdate pre-commit hooks - ([09d2b5f](https://github.com/michen00/custom-commit-hooks/commit/09d2b5f5167a306aa70a58c29e0d903aa3edd4df)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+
+## [0.0.0](https://github.com/michen00/custom-commit-hooks/commits/v0.0.0) - 2025-12-06
+
+### ✨ Features
+
+- include revert commits - ([ba146a0](https://github.com/michen00/custom-commit-hooks/commit/ba146a0b8127ca581f721e7ceaddfa453f15a27a)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- draft conventional-merge-commit - ([4e9287f](https://github.com/michen00/custom-commit-hooks/commit/4e9287fa0ce36b39296a6dd540c0c5a836332563)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- draft enhance-scope - ([b36ab9d](https://github.com/michen00/custom-commit-hooks/commit/b36ab9db8cb54049d825189365db7403d22a07e6)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- draft custom-prepare-commit-msg - ([9dd6261](https://github.com/michen00/custom-commit-hooks/commit/9dd62612a7b74ef0ba98b864fb55046ac94f5e8a)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- draft custom-commit-msg - ([86e24cc](https://github.com/michen00/custom-commit-hooks/commit/86e24cc7e87b8c5d186a71a3563e7741f7e62895)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+
+### 🐛 Fixes
+
+- **(enhance-scope)** redirect to stderr - ([e329875](https://github.com/michen00/custom-commit-hooks/commit/e329875fea62656984a72de27ad42750b1af7f0e)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- **(enhance-scope)** correct summary modification logic - ([e07be51](https://github.com/michen00/custom-commit-hooks/commit/e07be51ceb12b6ce4a71ed3aebaa949ce65095e5)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- handle empty string - ([3e8ea86](https://github.com/michen00/custom-commit-hooks/commit/3e8ea86e919fd5bce6b95b9ff59caabeff10f20f)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- fix placeholder script names - ([828ec9d](https://github.com/michen00/custom-commit-hooks/commit/828ec9d00d79c17db6b1e8f6dfbff82e3acf5058)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- update hooks - ([ec171e7](https://github.com/michen00/custom-commit-hooks/commit/ec171e7f84704abefcf78d967556b0adca7b5659)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+
+### ⚡ Performance
+
+- **(enhance-scope)** optimize - ([0615740](https://github.com/michen00/custom-commit-hooks/commit/0615740ff3498cc0763a77a0db9e3927df65fc53)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- optimize a hook - ([154a1cb](https://github.com/michen00/custom-commit-hooks/commit/154a1cb2dd0b768625aa7c2af64bc3427699a425)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+
+### 👷 Build
+
+- use pre-commit - ([5257a2c](https://github.com/michen00/custom-commit-hooks/commit/5257a2c5423fe61d8ab25203dde1f6a7b2bef719)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+
+### 📝 Documentation
+
+- **(README.md)** catch up to recent changes - ([1778ebb](https://github.com/michen00/custom-commit-hooks/commit/1778ebbddf1dcacf8a08cb27867c9959bde8c860)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- clarify README.md - ([827643d](https://github.com/michen00/custom-commit-hooks/commit/827643db7baef66c4aecaafc7c8da17769b0640a)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+
+### 🎨 Styling
+
+- add config for gitlint - ([35adf62](https://github.com/michen00/custom-commit-hooks/commit/35adf628a4c1b350d3c264ee59ca96c95d3aea93)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+
+### ⚙️ Miscellaneous Tasks
+
+- use script instead of unsupported_script - ([2b31136](https://github.com/michen00/custom-commit-hooks/commit/2b3113655dba30685fb887c913be74516cf4a762)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+
+### 💼 Other
+
+- Improve README description for custom-prepare-commit-msg
+
+Co-authored-by: michen00 <29467952+michen00@users.noreply.github.com> - ([dbd5556](https://github.com/michen00/custom-commit-hooks/commit/dbd5556309eaa9484a81b9e961b972837fc32e06)) - [copilot-swe-agent[bot]](mailto:198982749+Copilot@users.noreply.github.com)
+
+- Add custom commit hooks for pre-commit
+
+Co-authored-by: michen00 <29467952+michen00@users.noreply.github.com> - ([7416795](https://github.com/michen00/custom-commit-hooks/commit/74167953fa164d56b0c90b68337529c2e7d5cd6f)) - [copilot-swe-agent[bot]](mailto:198982749+Copilot@users.noreply.github.com)
 
 <!-- generated by git-cliff -->
