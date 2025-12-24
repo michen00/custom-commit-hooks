@@ -8,7 +8,7 @@ commit_source=${2-}
 # shellcheck source=lib/commit-msg.sh disable=SC1091
 . "$(dirname "$0")/lib/commit-msg.sh"
 
-commit_msg_file=$1
+commit_msg_file="$1"
 
 # Read and parse commit message
 read_commit_msg "$commit_msg_file"
