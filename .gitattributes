@@ -27,6 +27,7 @@
 *.yml           text
 CODEOWNERS      text
 Dockerfile      text
+scripts/*       text
 
 *.gif  filter=lfs diff=lfs merge=lfs -text
 *.jpeg filter=lfs diff=lfs merge=lfs -text
