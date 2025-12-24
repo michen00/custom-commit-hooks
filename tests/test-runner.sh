@@ -6,7 +6,7 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Load shared color definitions
-# shellcheck source=tests/colors.sh
+# shellcheck disable=SC1091 # Dynamic path via $SCRIPT_DIR
 . "$SCRIPT_DIR/colors.sh"
 
 TOTAL_PASSED=0
