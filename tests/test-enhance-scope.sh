@@ -5,7 +5,7 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-HOOK="$(cd "$REPO_ROOT" && pwd)/enhance-scope"
+HOOK="$REPO_ROOT/scripts/enhance-scope"
 
 # Colors for output
 RED='\033[0;31m'
@@ -118,7 +118,7 @@ test_message \
 	"feat: this is a very long commit message that exceeds"
 
 # Test 8: Different commit types
-for type in build chore ci docs feat fix perf refactor style test; do
+for type in build chore ci docs feat fix perf refactor revert style test; do
 	test_message \
 		"$type commit type adds scope" \
 		"$type(test.txt): message" \
@@ -139,23 +139,27 @@ with multiple lines"
 # Verify body is preserved
 temp_dir=$(mktemp -d)
 trap 'rm -rf "$temp_dir"' EXIT
-cd "$temp_dir" || exit
-git init -q
-git config user.name "Test User"
-git config user.email "test@example.com"
-echo 'content' >test.txt
-git add test.txt
-msg_file="$temp_dir/COMMIT_EDITMSG"
-printf "feat: add feature\n\nThis is the body\nwith multiple lines\n" >"$msg_file"
-"$HOOK" "$msg_file" >/dev/null 2>&1 || true
-if [ "$(head -n 1 "$msg_file")" = "feat(test.txt): add feature" ] && [ "$(tail -n +3 "$msg_file" | head -n 1)" = "This is the body" ]; then
+
+# Run test in subshell to isolate directory changes
+if (
+	cd "$temp_dir" || exit 1
+	git init -q || exit 1
+	git config user.name "Test User" || exit 1
+	git config user.email "test@example.com" || exit 1
+	echo 'content' >test.txt || exit 1
+	git add test.txt || exit 1
+	msg_file="$temp_dir/COMMIT_EDITMSG"
+	printf "feat: add feature\n\nThis is the body\nwith multiple lines\n" >"$msg_file" || exit 1
+	"$HOOK" "$msg_file" >/dev/null 2>&1 || true
+	[ "$(head -n 1 "$msg_file")" = "feat(test.txt): add feature" ] && [ "$(tail -n +3 "$msg_file" | head -n 1)" = "This is the body" ]
+); then
 	echo -e "${GREEN}✓${NC} Commit body preserved correctly"
 	((PASSED++))
 else
 	echo -e "${RED}✗${NC} Commit body not preserved correctly"
 	((FAILED++))
 fi
-cd - >/dev/null 2>&1 || true
+
 rm -rf "$temp_dir" 2>/dev/null || true
 trap - EXIT
 

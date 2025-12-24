@@ -1,0 +1,35 @@
+#!/bin/sh
+# prepare-commit-msg:
+# rewrite auto-generated merge messages to conventional commit format
+
+commit_source=${2-}
+[ "$commit_source" = "merge" ] || exit 0
+
+commit_msg_file=$1
+
+COMMIT_CONTENT=$(cat "$commit_msg_file")
+# Extract first line and rest using POSIX-compliant parameter expansion
+NL='
+'
+first_line="${COMMIT_CONTENT%%"${NL}"*}"
+rest_of_file="${COMMIT_CONTENT#*"${NL}"}"
+# If no newline, rest_of_file equals content (no body)
+[ "$rest_of_file" = "$COMMIT_CONTENT" ] && rest_of_file=""
+
+# Check if first line matches "Merge *" pattern
+case "$first_line" in
+Merge\ *)
+	# Extract the rest after "Merge "
+	rest="${first_line#Merge }"
+	new_first_line="chore: merge $rest"
+
+	if [ -n "$rest_of_file" ]; then
+		printf '%s\n%s' "$new_first_line" "$rest_of_file" >"$commit_msg_file"
+	else
+		printf '%s\n' "$new_first_line" >"$commit_msg_file"
+	fi
+	;;
+*)
+	exit 0
+	;;
+esac

@@ -16,7 +16,7 @@ pre-commit install --hook-type commit-msg --hook-type prepare-commit-msg
 git commit -m "test: sample commit"
 
 # Run shellcheck
-shellcheck enhance-scope conventional-merge-commit
+shellcheck scripts/** --shell=sh
 
 # Generate changelog
 git cliff --tag v1.0.0 --output CHANGELOG.md
@@ -33,17 +33,18 @@ git cliff --tag v1.0.0 --output CHANGELOG.md
 ## Project Structure
 
 ```tree
-enhance-scope                   # Hook: adds filename scope to single-file commits
-conventional-merge-commit       # Hook: transforms merge commits
-.pre-commit-hooks.yaml          # Hook definitions
-cliff.toml                      # Changelog generation config
-README.md                       # User documentation
-tests/                          # Test files
+scripts/
+  enhance-scope                   # Hook: adds filename scope to single-file commits
+  conventional-merge-commit       # Hook: transforms merge commits
+.pre-commit-hooks.yaml            # Hook definitions
+cliff.toml                        # Changelog generation config
+README.md                         # User documentation
+tests/                            # Test files
 ```
 
 ## Code Style
 
-- POSIX shell scripts - avoid bash-isms like `[[` or `$(...)`
+- POSIX shell scripts - use `#!/bin/sh` and avoid bash-isms like `[[`, `=~`, `BASH_REMATCH`, and `mapfile`
 - Exit 0 for success, non-zero for errors
 - Keep commit summaries under 50 chars
 - Follow <https://www.conventionalcommits.org/>

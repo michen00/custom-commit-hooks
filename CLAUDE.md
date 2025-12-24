@@ -6,7 +6,7 @@ Custom commit hooks for use with [pre-commit](https://pre-commit.com/) that enha
 
 - Install pre-commit hooks: `pre-commit install --hook-type commit-msg --hook-type prepare-commit-msg`
 - Run tests: `tests/test-runner.sh` or `make test`
-- Lint shell scripts: `shellcheck enhance-scope conventional-merge-commit`
+- Lint shell scripts: `shellcheck scripts/** --shell=sh`
 - Format YAML: Check YAML syntax with your editor or `yamllint .pre-commit-config.yaml`
 - Generate changelog: `git cliff --tag <version> --output CHANGELOG.md`
 
@@ -14,15 +14,15 @@ See @README.md for project overview and features.
 
 ## Project Structure
 
-- `enhance-scope` - Shell script hook that adds filename as scope for single-file commits
-- `conventional-merge-commit` - Shell script hook that transforms merge commits to conventional format
+- `scripts/enhance-scope` - Shell script hook that adds filename as scope for single-file commits
+- `scripts/conventional-merge-commit` - Shell script hook that transforms merge commits to conventional format
 - `.pre-commit-hooks.yaml` - Hook definitions for pre-commit framework
 - `cliff.toml` - Configuration for git-cliff changelog generation
 - `tests/` - Test files (if present)
 
 ## Code Style
 
-- **Shell scripts**: Use POSIX-compliant shell scripting when possible
+- **Shell scripts**: Use POSIX-compliant shell scripting (scripts use `#!/bin/sh` and avoid bash-specific features)
 - **Error handling**: Include proper exit codes (0 for success, non-zero for errors)
 - **Length limits**: Keep commit summaries under 50 characters
 - **Conventional commits**: Follow [Conventional Commits](https://www.conventionalcommits.org/) format
