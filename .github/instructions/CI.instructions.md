@@ -6,9 +6,9 @@ description: CI/CD workflow instructions for GitHub Actions
 
 ## Workflows
 
-### Test Workflow (.github/workflows/CI.yml)
+### CI Workflow (.github/workflows/CI.yml)
 
-**Purpose**: Run tests and validation on every push and PR
+**Purpose**: Run code quality checks and tests on every push and PR
 
 **Triggers:**
 
@@ -19,13 +19,16 @@ description: CI/CD workflow instructions for GitHub Actions
 **Jobs:**
 
 ```yaml
+ci:
+  - Checkout repository
+  - Set up Python environment
+  - Install and cache pre-commit hooks
+  - Run pre-commit hooks (includes shellcheck, yamllint, actionlint, etc.)
+
 test:
   - Checkout repository
-  - Set up test environment (if applicable)
-  - Run shellcheck on hook scripts
-  - Validate YAML/TOML configuration files
-  - Run test suite (pytest or bats)
-  - Report test results
+  - Set up Git configuration
+  - Run test suite (bash test scripts)
 ```
 
 ### Release Workflow (future)
