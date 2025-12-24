@@ -36,6 +36,8 @@ git cliff --tag v1.0.0 --output CHANGELOG.md
 scripts/
   enhance-scope                   # Hook: adds filename scope to single-file commits
   conventional-merge-commit       # Hook: transforms merge commits
+  lib/
+    commit-msg.sh                 # Shared library for commit message parsing/writing
 .pre-commit-hooks.yaml            # Hook definitions
 cliff.toml                        # Changelog generation config
 README.md                         # User documentation
