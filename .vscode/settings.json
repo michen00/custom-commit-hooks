@@ -5,7 +5,6 @@
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "chat.agent.enabled": true,
   "diffEditor.ignoreTrimWhitespace": false,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
