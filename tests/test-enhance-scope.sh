@@ -23,7 +23,7 @@ test_message() {
 
 	local temp_dir
 	temp_dir=$(mktemp -d)
-	trap 'rm -rf "$temp_dir"' EXIT
+	trap 'rm -rf "$temp_dir"' RETURN
 
 	# Run test and capture result
 	local actual_msg=""
@@ -59,9 +59,6 @@ test_message() {
 		echo -e "  Got:      ${YELLOW}$actual_msg${NC}"
 		((FAILED++))
 	fi
-
-	rm -rf "$temp_dir"
-	trap - EXIT
 }
 
 echo "Testing enhance-scope hook..."
