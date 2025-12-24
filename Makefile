@@ -48,7 +48,7 @@ help: ## Show this help message
 WITH_HOOKS ?= true
 develop: ## Set up the project for development (WITH_HOOKS={true|false}, default=true)
 	@git config blame.ignoreRevsFile .git-blame-ignore-revs
-	@git lfs install --local; \
+	@command -v git-lfs >/dev/null 2>&1 && git lfs install --local || true; \
        current_branch=$$(git branch --show-current) && \
        if ! git diff --quiet || ! git diff --cached --quiet; then \
            git stash push -m "Auto stash before switching to main"; \
@@ -57,7 +57,7 @@ develop: ## Set up the project for development (WITH_HOOKS={true|false}, default
            stash_was_needed=0; \
        fi; \
        git switch main && git pull && \
-       git lfs pull && git switch "$$current_branch"; \
+       (command -v git-lfs >/dev/null 2>&1 && git lfs pull || true) && git switch "$$current_branch"; \
        if [ $$stash_was_needed -eq 1 ]; then \
            git stash pop; \
        fi
