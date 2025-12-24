@@ -6,7 +6,7 @@ description: CI/CD workflow instructions for GitHub Actions
 
 ## Workflows
 
-### Test Workflow (.github/workflows/test.yml)
+### Test Workflow (.github/workflows/CI.yml)
 
 **Purpose**: Run tests and validation on every push and PR
 
