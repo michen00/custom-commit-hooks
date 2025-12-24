@@ -6,7 +6,7 @@ All notable changes will be documented in this file. See [conventional commits](
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## [v0.0.1](https://github.com/michen00/custom-commit-hooks/compare/v0.0.0..v0.0.1) - 2025-12-24
 
 ### ✨ Features
 
