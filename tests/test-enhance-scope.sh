@@ -33,8 +33,8 @@ test_message() {
 		git config user.name "Test User" || exit 1
 		git config user.email "test@example.com" || exit 1
 
-		# Setup files first (setup_cmd must be trusted - all test inputs are hardcoded)
-		bash -c "$setup_cmd" || exit 1
+		# Setup files (POSIX-compatible commands only)
+		sh -c "$setup_cmd" || exit 1
 
 		# Stage files (before creating commit message file to avoid staging it)
 		git add -A || true
