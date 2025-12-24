@@ -104,4 +104,4 @@ run-pre-commit: ## Run the pre-commit checks
 
 .PHONY: enable-pre-commit
 enable-pre-commit: ## Enable pre-commit hooks (along with commit-msg and pre-push hooks)
-	@pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push
+	@pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push --hook-type prepare-commit-msg
