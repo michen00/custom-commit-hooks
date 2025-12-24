@@ -8,7 +8,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 HOOK="$REPO_ROOT/scripts/enhance-scope"
 
 # Load shared color definitions
-# shellcheck source=tests/colors.sh
+# shellcheck disable=SC1091 # Dynamic path via $SCRIPT_DIR
 . "$SCRIPT_DIR/colors.sh"
 
 PASSED=0
