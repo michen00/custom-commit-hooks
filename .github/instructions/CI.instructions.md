@@ -53,7 +53,7 @@ release:
 
 - All shellcheck linting passes
 - YAML/TOML validation succeeds
-- Test suite passes (if exists)
+- Test suite passes
 - Commit messages follow conventional format
 
 **Branch protection:**
