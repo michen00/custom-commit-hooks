@@ -28,7 +28,7 @@ jobs:
         id: cache-pre-commit-hooks
         uses: actions/cache@v5
         env:
-          CACHE_NUMBER: 1
+          CACHE_NUMBER: 0
         with:
           path: ~/.cache/pre-commit
           key: ${{ runner.os }}-precommit-${{ hashFiles('.pre-commit-config.yaml') }}-${{ env.DATE }}-${{ env.CACHE_NUMBER }} # yamllint disable-line rule:line-length
