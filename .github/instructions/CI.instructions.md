@@ -83,7 +83,7 @@ release:
 
 ```bash
 # Validate shell scripts
-shellcheck -e SC2086,SC2181 enhance-scope conventional-merge-commit
+shellcheck -e SC2086,SC2181 scripts/** --shell=sh
 
 # Validate YAML
 yamllint .pre-commit-config.yaml .github/workflows/*.yml
@@ -92,9 +92,7 @@ yamllint .pre-commit-config.yaml .github/workflows/*.yml
 # Use toml-sort or python -c "import tomli; tomli.load(open('cliff.toml', 'rb'))"
 
 # Run tests (if test framework present)
-pytest tests/
-# OR
-bats tests/
+tests/test-runner.sh
 
 # Generate changelog for release
 git cliff --tag v1.0.0 --output CHANGELOG.md

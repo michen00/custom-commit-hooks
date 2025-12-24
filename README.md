@@ -37,7 +37,7 @@ pre-commit install --hook-type commit-msg --hook-type prepare-commit-msg
 
 ## Hooks
 
-### [enhance-scope](enhance-scope)
+### [enhance-scope](scripts/enhance-scope)
 
 Automatically adds the filename as the scope to conventional commit messages for single-file commits, improving commit history readability.
 
@@ -65,7 +65,7 @@ build: add a dependency
 build(pyproject.toml): add a dependency
 ```
 
-### [conventional-merge-commit](conventional-merge-commit)
+### [conventional-merge-commit](scripts/conventional-merge-commit)
 
 Transforms Git's default merge commit messages to follow conventional commit format.
 

@@ -6,7 +6,7 @@ Custom commit hooks for pre-commit that enhance conventional commit messages wit
 
 ## Tech Stack
 
-- **Shell scripts**: POSIX-compliant bash for hook implementation
+- **Shell scripts**: POSIX-compliant shell (`#!/bin/sh`) for hook implementation
 - **Pre-commit framework**: Hook management and execution
 - **Git hooks**: `commit-msg` and `prepare-commit-msg` stages
 - **Git-cliff**: Changelog generation (configured in cliff.toml)
@@ -14,7 +14,7 @@ Custom commit hooks for pre-commit that enhance conventional commit messages wit
 
 ## Coding Guidelines
 
-### Shell Scripts (enhance-scope, conventional-merge-commit)
+### Shell Scripts (scripts/enhance-scope, scripts/conventional-merge-commit)
 
 - Use POSIX-compliant shell scripting - avoid bash-isms
 - Include proper error handling with exit codes (0 = success, non-zero = error)
@@ -37,8 +37,8 @@ Custom commit hooks for pre-commit that enhance conventional commit messages wit
 
 ## Project Structure
 
-- `enhance-scope` - Adds filename as scope for single-file commits
-- `conventional-merge-commit` - Transforms merge commits to conventional format
+- `scripts/enhance-scope` - Adds filename as scope for single-file commits
+- `scripts/conventional-merge-commit` - Transforms merge commits to conventional format
 - `.pre-commit-hooks.yaml` - Hook definitions
 - `cliff.toml` - Changelog generation config
 - `tests/` - Test files

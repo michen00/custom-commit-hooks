@@ -5,7 +5,7 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-HOOK="$REPO_ROOT/conventional-merge-commit"
+HOOK="$REPO_ROOT/scripts/conventional-merge-commit"
 
 # Colors for output
 
