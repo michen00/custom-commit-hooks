@@ -19,7 +19,7 @@ See @README.md for project overview and features.
 - `scripts/lib/commit-msg.sh` - Shared library for commit message parsing and writing
 - `.pre-commit-hooks.yaml` - Hook definitions for pre-commit framework
 - `cliff.toml` - Configuration for git-cliff changelog generation
-- `tests/` - Test files
+- `tests/` - Hook tests and test utilities (including `tests/test-runner.sh`)
 
 ## Code Style
 
