@@ -37,6 +37,7 @@ echo "=========================================="
 echo ""
 
 # Run all tests
+run_test "$SCRIPT_DIR/test-lib-commit-msg.sh" "lib/commit-msg.sh tests"
 run_test "$SCRIPT_DIR/test-enhance-scope.sh" "enhance-scope tests"
 run_test "$SCRIPT_DIR/test-conventional-merge-commit.sh" "conventional-merge-commit tests"
 
