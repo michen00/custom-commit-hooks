@@ -43,7 +43,7 @@ test_message() {
 		echo "$4" >"$msg_file" || exit 1
 
 		# Run hook (must be in git repo directory for git commands to work)
-		bash "$HOOK" "$msg_file" >/dev/null 2>&1 || true
+		"$HOOK" "$msg_file" >/dev/null 2>&1 || true
 
 		# Output result for parent to capture
 		head -n 1 "$msg_file" || echo ""
