@@ -68,7 +68,7 @@ develop: ## Set up the project for development (WITH_HOOKS={true|false}, default
 
 .PHONY: test
 test: ## Run all tests
-	@tests/test-runner.sh
+	@bash tests/test-runner.sh
 
 .PHONY: check
 check: run-pre-commit test ## Run all code quality checks and tests
