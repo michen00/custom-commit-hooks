@@ -7,12 +7,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 HOOK="$REPO_ROOT/scripts/conventional-merge-commit"
 
-# Colors for output
-
-GREEN='\033[32m'
-RED='\033[31m'
-YELLOW='\033[33m'
-NC='\033[0m' # No Color
+# Load shared color definitions
+# shellcheck source=tests/colors.sh
+. "$SCRIPT_DIR/colors.sh"
 
 PASSED=0
 FAILED=0

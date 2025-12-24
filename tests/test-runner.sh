@@ -5,11 +5,9 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;36m'
-NC='\033[0m' # No Color
+# Load shared color definitions
+# shellcheck source=tests/colors.sh
+. "$SCRIPT_DIR/colors.sh"
 
 TOTAL_PASSED=0
 TOTAL_FAILED=0
@@ -19,7 +17,7 @@ run_test() {
 	local test_script="$1"
 	local test_name="$2"
 
-	echo -e "${BLUE}Running $test_name...${NC}"
+	echo -e "${CYAN}Running $test_name...${NC}"
 	echo ""
 
 	if bash "$test_script"; then
