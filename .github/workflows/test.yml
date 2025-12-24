@@ -1,0 +1,25 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "Test User"
+          git config --global user.email "test@example.com"
+
+      - name: Run tests
+        run: |
+          tests/test-runner.sh
