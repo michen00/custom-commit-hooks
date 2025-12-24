@@ -66,10 +66,22 @@ exit 0
 ### Testing Hooks
 
 ```bash
-# Install and test locally
+# Run automated test suite
+make test
+# or
+tests/test-runner.sh
+
+# Manual testing: Install hooks and test with actual commits
 pre-commit install --hook-type commit-msg --hook-type prepare-commit-msg
-git add file.py
-git commit -m "feat: add feature"
+
+# Test enhance-scope: single-file commit gets scope added
+git add scripts/enhance-scope
+git commit -m "feat: improve hook"
+# Result: "feat(scripts/enhance-scope): improve hook"
+
+# Test conventional-merge-commit: merge commit gets transformed
+git merge --no-ff feature-branch
+# Result: "chore: merge branch 'feature-branch' into main"
 ```
 
 ## Boundaries
