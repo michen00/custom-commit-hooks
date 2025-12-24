@@ -19,6 +19,7 @@ test_message() {
 	local test_name="$1"
 	local expected_msg="$2"
 	local setup_cmd="$3"
+	local input_msg="$4"
 
 	local temp_dir
 	temp_dir=$(mktemp -d)
@@ -40,7 +41,7 @@ test_message() {
 
 		# Create commit message file
 		local msg_file="COMMIT_EDITMSG"
-		echo "$4" >"$msg_file" || exit 1
+		echo "$input_msg" >"$msg_file" || exit 1
 
 		# Run hook (must be in git repo directory for git commands to work)
 		"$HOOK" "$msg_file" >/dev/null 2>&1 || true
