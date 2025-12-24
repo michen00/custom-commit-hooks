@@ -39,6 +39,7 @@ write_commit_msg() {
 	_wcm_file="$1"
 	_wcm_first_line="$2"
 	_wcm_rest="$3"
+	_wcm_rest_stripped=""
 
 	if [ -n "$_wcm_rest" ]; then
 		# Strip trailing newline to avoid double newline when we add it back
