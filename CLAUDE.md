@@ -18,7 +18,7 @@ See @README.md for project overview and features.
 - `scripts/conventional-merge-commit` - Shell script hook that transforms merge commits to conventional format
 - `.pre-commit-hooks.yaml` - Hook definitions for pre-commit framework
 - `cliff.toml` - Configuration for git-cliff changelog generation
-- `tests/` - Test files (if present)
+- `tests/` - Test files
 
 ## Code Style
 
