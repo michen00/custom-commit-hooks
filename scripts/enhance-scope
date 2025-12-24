@@ -14,8 +14,6 @@ COMMIT_BODY="${COMMIT_CONTENT#*"${NL}"}"
 # If no newline, body is empty
 [ "$COMMIT_BODY" = "$COMMIT_CONTENT" ] && COMMIT_BODY=""
 
-CONVENTIONAL_COMMIT="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test): .+"
-
 # Get the list of files touched in the commit
 FILES_TOUCHED=$(git diff --cached --name-only)
 
@@ -36,8 +34,12 @@ FILENAME="${FILES_TOUCHED%%"${NL}"*}"
 # Remove any trailing newline (git output should be clean, but be safe)
 FILENAME="${FILENAME%"${NL}"}"
 
-# Extract type and match pattern
-ORIGINAL_TYPE=$(echo "$COMMIT_SUMMARY" | sed -nE "s/$CONVENTIONAL_COMMIT/\1/p")
+ORIGINAL_TYPE=""
+case "$COMMIT_SUMMARY" in
+build:\ ?* | chore:\ ?* | ci:\ ?* | docs:\ ?* | feat:\ ?* | fix:\ ?* | perf:\ ?* | refactor:\ ?* | revert:\ ?* | style:\ ?* | test:\ ?*)
+	ORIGINAL_TYPE="${COMMIT_SUMMARY%%:*}"
+	;;
+esac
 
 # If pattern doesn't match or type extraction failed, exit
 if [ -z "$ORIGINAL_TYPE" ]; then
