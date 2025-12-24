@@ -57,12 +57,15 @@ test_message \
 	"Merge branch 'feature/new-api' into main"
 
 # Test 2: Merge commit with body -> should preserve body
-temp_dir=$(mktemp -d)
-trap 'rm -rf "$temp_dir"' EXIT
-msg_file="$temp_dir/COMMIT_EDITMSG"
-printf "Merge branch 'feature/new-api' into main\n\nMerge details\n" >"$msg_file"
-"$HOOK" "$msg_file" "merge" >/dev/null 2>&1 || true
-if [ "$(head -n 1 "$msg_file")" = "chore: merge branch 'feature/new-api' into main" ] && [ "$(tail -n +3 "$msg_file" | head -n 1)" = "Merge details" ]; then
+# Run test in subshell to isolate trap cleanup locally
+if (
+	temp_dir=$(mktemp -d) || exit 1
+	trap 'rm -rf "$temp_dir"' EXIT
+	msg_file="$temp_dir/COMMIT_EDITMSG"
+	printf "Merge branch 'feature/new-api' into main\n\nMerge details\n" >"$msg_file" || exit 1
+	"$HOOK" "$msg_file" "merge" >/dev/null 2>&1 || true
+	[ "$(head -n 1 "$msg_file")" = "chore: merge branch 'feature/new-api' into main" ] && [ "$(tail -n +3 "$msg_file" | head -n 1)" = "Merge details" ]
+); then
 	echo -e "${GREEN}✓${NC} Merge commit body preserved"
 	((PASSED++))
 else
