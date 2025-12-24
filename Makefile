@@ -58,7 +58,7 @@ develop: ## Set up the project for development (WITH_HOOKS={true|false}, default
            stash_was_needed=0; \
        fi; \
        git switch main && git pull && \
-       git lfs pull && git switch $$current_branch; \
+       git lfs pull && git switch "$$current_branch"; \
        if [ $$stash_was_needed -eq 1 ]; then \
            git stash pop; \
        fi
