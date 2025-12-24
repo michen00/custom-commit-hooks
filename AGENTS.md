@@ -16,7 +16,7 @@ pre-commit install --hook-type commit-msg --hook-type prepare-commit-msg
 git commit -m "test: sample commit"
 
 # Run shellcheck
-shellcheck scripts/** --shell=sh
+find scripts -type f -exec shellcheck --shell=sh {} +
 
 # Generate changelog
 git cliff --tag v1.0.0 --output CHANGELOG.md

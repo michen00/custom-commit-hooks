@@ -6,7 +6,7 @@ Custom commit hooks for use with [pre-commit](https://pre-commit.com/) that enha
 
 - Install pre-commit hooks: `pre-commit install --hook-type commit-msg --hook-type prepare-commit-msg`
 - Run tests: `tests/test-runner.sh` or `make test`
-- Lint shell scripts: `shellcheck scripts/** --shell=sh`
+- Lint shell scripts: `find scripts -type f -exec shellcheck --shell=sh {} +`
 - Format YAML: Check YAML syntax with your editor or `yamllint .pre-commit-config.yaml`
 - Generate changelog: `git cliff --tag <version> --output CHANGELOG.md`
 
