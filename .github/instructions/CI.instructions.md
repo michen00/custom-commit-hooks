@@ -81,9 +81,9 @@ release:
 
 ## Commands Reference
 
-```bash
+```sh
 # Validate shell scripts
-shellcheck -e SC2086,SC2181 scripts/** --shell=sh
+find scripts -type f -exec shellcheck -e SC2086,SC2181 --shell=sh {} +
 
 # Validate YAML
 yamllint .pre-commit-config.yaml .github/workflows/*.yml
