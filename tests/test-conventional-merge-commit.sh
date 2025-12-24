@@ -23,7 +23,7 @@ test_message() {
 
 	local temp_dir
 	temp_dir=$(mktemp -d)
-	trap 'rm -rf "$temp_dir"' EXIT
+	trap 'rm -rf "$temp_dir"' RETURN
 
 	local msg_file="$temp_dir/COMMIT_EDITMSG"
 	echo "$input_msg" >"$msg_file"
@@ -44,9 +44,6 @@ test_message() {
 		echo -e "  Got:      ${YELLOW}$actual_msg${NC}"
 		((FAILED++))
 	fi
-
-	rm -rf "$temp_dir" 2>/dev/null || true
-	trap - EXIT
 }
 
 echo "Testing conventional-merge-commit hook..."
@@ -72,8 +69,6 @@ else
 	echo -e "${RED}✗${NC} Merge commit body not preserved"
 	((FAILED++))
 fi
-rm -rf "$temp_dir"
-trap - EXIT
 
 # Test 3: Non-merge commit source -> should not modify
 test_message \

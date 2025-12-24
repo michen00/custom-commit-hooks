@@ -156,9 +156,6 @@ else
 	((FAILED++))
 fi
 
-rm -rf "$temp_dir" 2>/dev/null || true
-trap - EXIT
-
 echo ""
 echo -e "Results: ${GREEN}$PASSED passed${NC}, ${RED}$FAILED failed${NC}"
 
