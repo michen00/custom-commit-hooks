@@ -39,11 +39,11 @@ Custom commit hooks for pre-commit that enhance conventional commit messages wit
 
 - `scripts/enhance-scope` - Adds filename as scope for single-file commits
 - `scripts/conventional-merge-commit` - Transforms merge commits to conventional format
+- `scripts/lib/` - Shared shell libraries for hooks (including `commit-msg.sh` for commit message handling)
 - `.pre-commit-hooks.yaml` - Hook definitions
 - `cliff.toml` - Changelog generation config
 - `tests/` - Test files
 - `README.md` - User documentation
-
 ## Common Patterns
 
 ### Hook Script Pattern
