@@ -48,9 +48,6 @@ help: ## Show this help message
 .PHONY: develop
 WITH_HOOKS ?= true
 develop: ## Set up the project for development (WITH_HOOKS={true|false}, default=true)
-	@if ! git config --local --get-all include.path | grep -q ".gitconfigs/alias"; then \
-        git config --local --add include.path "$(CURDIR)/.gitconfigs/alias"; \
-    fi
 	@git config blame.ignoreRevsFile .git-blame-ignore-revs
 	@git lfs install --local; \
        current_branch=$$(git branch --show-current) && \
