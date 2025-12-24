@@ -44,6 +44,7 @@ Custom commit hooks for pre-commit that enhance conventional commit messages wit
 - `cliff.toml` - Changelog generation config
 - `tests/` - Test files
 - `README.md` - User documentation
+
 ## Common Patterns
 
 ### Hook Script Pattern
