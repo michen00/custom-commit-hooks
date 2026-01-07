@@ -35,7 +35,7 @@ repos:
 
   # git commit policy
   - repo: https://github.com/michen00/custom-commit-hooks
-    rev: v0.0.0
+    rev: v0.0.1
     hooks:
       - id: enhance-scope # commit-msg
       - id: conventional-merge-commit # prepare-commit-msg
@@ -90,7 +90,7 @@ repos:
       - id: yamllint
         args: [--strict]
   - repo: https://github.com/crate-ci/typos
-    rev: typos-dict-v0.13.13
+    rev: v1.41.0
     hooks:
       - id: typos
   - repo: https://github.com/codespell-project/codespell
@@ -110,7 +110,7 @@ repos:
         args: ["--shell=bash"]
         exclude: ^scripts/
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.9
+    rev: v1.7.10
     hooks:
       - id: actionlint
 
