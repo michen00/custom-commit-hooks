@@ -1,721 +1,289 @@
 original,transformed
 Merge,chore: merge
+Merge.,chore: merge.
 Merge ,chore: merge 
-Merge 1,chore: merge 1
-Merge ;2,chore: merge ;2
-Merge(,chore: merge(
-Merge( ,chore: merge( 
-Merge( 1,chore: merge( 1
-Merge( ;2,chore: merge( ;2
-Merge!,chore: merge!
-Merge! ,chore: merge! 
-Merge! 1,chore: merge! 1
-Merge! ;2,chore: merge! ;2
+Merge .,chore: merge .
 Merge:,chore: merge:
-Merge: ,chore: merge: 
-Merge: 1,chore: merge: 1
-Merge: ;2,chore: merge: ;2
-Merge[,chore: merge[
-Merge[ ,chore: merge[ 
-Merge[ 1,chore: merge[ 1
-Merge[ ;2,chore: merge[ ;2
+Merge:.,chore: merge:.
+Merge!,chore: merge!
+Merge!.,chore: merge!.
 merge,chore: merge
+merge.,chore: merge.
 merge ,chore: merge 
-merge 1,chore: merge 1
-merge ;2,chore: merge ;2
-merge(,chore: merge(
-merge( ,chore: merge( 
-merge( 1,chore: merge( 1
-merge( ;2,chore: merge( ;2
-merge!,chore: merge!
-merge! ,chore: merge! 
-merge! 1,chore: merge! 1
-merge! ;2,chore: merge! ;2
+merge .,chore: merge .
 merge:,chore: merge:
-merge: ,chore: merge: 
-merge: 1,chore: merge: 1
-merge: ;2,chore: merge: ;2
-merge[,chore: merge[
-merge[ ,chore: merge[ 
-merge[ 1,chore: merge[ 1
-merge[ ;2,chore: merge[ ;2
+merge:.,chore: merge:.
+merge!,chore: merge!
+merge!.,chore: merge!.
 Merged,chore: merged
+Merged.,chore: merged.
 Merged ,chore: merged 
-Merged 1,chore: merged 1
-Merged ;2,chore: merged ;2
-Merged(,chore: merged(
-Merged( ,chore: merged( 
-Merged( 1,chore: merged( 1
-Merged( ;2,chore: merged( ;2
-Merged!,chore: merged!
-Merged! ,chore: merged! 
-Merged! 1,chore: merged! 1
-Merged! ;2,chore: merged! ;2
+Merged .,chore: merged .
 Merged:,chore: merged:
-Merged: ,chore: merged: 
-Merged: 1,chore: merged: 1
-Merged: ;2,chore: merged: ;2
-Merged[,chore: merged[
-Merged[ ,chore: merged[ 
-Merged[ 1,chore: merged[ 1
-Merged[ ;2,chore: merged[ ;2
+Merged:.,chore: merged:.
+Merged!,chore: merged!
+Merged!.,chore: merged!.
 merged,chore: merged
+merged.,chore: merged.
 merged ,chore: merged 
-merged 1,chore: merged 1
-merged ;2,chore: merged ;2
-merged(,chore: merged(
-merged( ,chore: merged( 
-merged( 1,chore: merged( 1
-merged( ;2,chore: merged( ;2
-merged!,chore: merged!
-merged! ,chore: merged! 
-merged! 1,chore: merged! 1
-merged! ;2,chore: merged! ;2
+merged .,chore: merged .
 merged:,chore: merged:
-merged: ,chore: merged: 
-merged: 1,chore: merged: 1
-merged: ;2,chore: merged: ;2
-merged[,chore: merged[
-merged[ ,chore: merged[ 
-merged[ 1,chore: merged[ 1
-merged[ ;2,chore: merged[ ;2
+merged:.,chore: merged:.
+merged!,chore: merged!
+merged!.,chore: merged!.
 Merges,chore: merges
+Merges.,chore: merges.
 Merges ,chore: merges 
-Merges 1,chore: merges 1
-Merges ;2,chore: merges ;2
-Merges(,chore: merges(
-Merges( ,chore: merges( 
-Merges( 1,chore: merges( 1
-Merges( ;2,chore: merges( ;2
-Merges!,chore: merges!
-Merges! ,chore: merges! 
-Merges! 1,chore: merges! 1
-Merges! ;2,chore: merges! ;2
+Merges .,chore: merges .
 Merges:,chore: merges:
-Merges: ,chore: merges: 
-Merges: 1,chore: merges: 1
-Merges: ;2,chore: merges: ;2
-Merges[,chore: merges[
-Merges[ ,chore: merges[ 
-Merges[ 1,chore: merges[ 1
-Merges[ ;2,chore: merges[ ;2
+Merges:.,chore: merges:.
+Merges!,chore: merges!
+Merges!.,chore: merges!.
 merges,chore: merges
+merges.,chore: merges.
 merges ,chore: merges 
-merges 1,chore: merges 1
-merges ;2,chore: merges ;2
-merges(,chore: merges(
-merges( ,chore: merges( 
-merges( 1,chore: merges( 1
-merges( ;2,chore: merges( ;2
-merges!,chore: merges!
-merges! ,chore: merges! 
-merges! 1,chore: merges! 1
-merges! ;2,chore: merges! ;2
+merges .,chore: merges .
 merges:,chore: merges:
-merges: ,chore: merges: 
-merges: 1,chore: merges: 1
-merges: ;2,chore: merges: ;2
-merges[,chore: merges[
-merges[ ,chore: merges[ 
-merges[ 1,chore: merges[ 1
-merges[ ;2,chore: merges[ ;2
+merges:.,chore: merges:.
+merges!,chore: merges!
+merges!.,chore: merges!.
 Squash,chore: squash
+Squash.,chore: squash.
 Squash ,chore: squash 
-Squash 1,chore: squash 1
-Squash ;2,chore: squash ;2
-Squash(,chore: squash(
-Squash( ,chore: squash( 
-Squash( 1,chore: squash( 1
-Squash( ;2,chore: squash( ;2
-Squash!,chore: squash!
-Squash! ,chore: squash! 
-Squash! 1,chore: squash! 1
-Squash! ;2,chore: squash! ;2
+Squash .,chore: squash .
 Squash:,chore: squash:
-Squash: ,chore: squash: 
-Squash: 1,chore: squash: 1
-Squash: ;2,chore: squash: ;2
-Squash[,chore: squash[
-Squash[ ,chore: squash[ 
-Squash[ 1,chore: squash[ 1
-Squash[ ;2,chore: squash[ ;2
+Squash:.,chore: squash:.
+Squash!,chore: squash!
+Squash!.,chore: squash!.
 squash,chore: squash
+squash.,chore: squash.
 squash ,chore: squash 
-squash 1,chore: squash 1
-squash ;2,chore: squash ;2
-squash(,chore: squash(
-squash( ,chore: squash( 
-squash( 1,chore: squash( 1
-squash( ;2,chore: squash( ;2
-squash!,chore: squash!
-squash! ,chore: squash! 
-squash! 1,chore: squash! 1
-squash! ;2,chore: squash! ;2
+squash .,chore: squash .
 squash:,chore: squash:
-squash: ,chore: squash: 
-squash: 1,chore: squash: 1
-squash: ;2,chore: squash: ;2
-squash[,chore: squash[
-squash[ ,chore: squash[ 
-squash[ 1,chore: squash[ 1
-squash[ ;2,chore: squash[ ;2
+squash:.,chore: squash:.
+squash!,chore: squash!
+squash!.,chore: squash!.
 Squashed,chore: squashed
+Squashed.,chore: squashed.
 Squashed ,chore: squashed 
-Squashed 1,chore: squashed 1
-Squashed ;2,chore: squashed ;2
-Squashed(,chore: squashed(
-Squashed( ,chore: squashed( 
-Squashed( 1,chore: squashed( 1
-Squashed( ;2,chore: squashed( ;2
-Squashed!,chore: squashed!
-Squashed! ,chore: squashed! 
-Squashed! 1,chore: squashed! 1
-Squashed! ;2,chore: squashed! ;2
+Squashed .,chore: squashed .
 Squashed:,chore: squashed:
-Squashed: ,chore: squashed: 
-Squashed: 1,chore: squashed: 1
-Squashed: ;2,chore: squashed: ;2
-Squashed[,chore: squashed[
-Squashed[ ,chore: squashed[ 
-Squashed[ 1,chore: squashed[ 1
-Squashed[ ;2,chore: squashed[ ;2
+Squashed:.,chore: squashed:.
+Squashed!,chore: squashed!
+Squashed!.,chore: squashed!.
 squashed,chore: squashed
+squashed.,chore: squashed.
 squashed ,chore: squashed 
-squashed 1,chore: squashed 1
-squashed ;2,chore: squashed ;2
-squashed(,chore: squashed(
-squashed( ,chore: squashed( 
-squashed( 1,chore: squashed( 1
-squashed( ;2,chore: squashed( ;2
-squashed!,chore: squashed!
-squashed! ,chore: squashed! 
-squashed! 1,chore: squashed! 1
-squashed! ;2,chore: squashed! ;2
+squashed .,chore: squashed .
 squashed:,chore: squashed:
-squashed: ,chore: squashed: 
-squashed: 1,chore: squashed: 1
-squashed: ;2,chore: squashed: ;2
-squashed[,chore: squashed[
-squashed[ ,chore: squashed[ 
-squashed[ 1,chore: squashed[ 1
-squashed[ ;2,chore: squashed[ ;2
+squashed:.,chore: squashed:.
+squashed!,chore: squashed!
+squashed!.,chore: squashed!.
 Squashes,chore: squashes
+Squashes.,chore: squashes.
 Squashes ,chore: squashes 
-Squashes 1,chore: squashes 1
-Squashes ;2,chore: squashes ;2
-Squashes(,chore: squashes(
-Squashes( ,chore: squashes( 
-Squashes( 1,chore: squashes( 1
-Squashes( ;2,chore: squashes( ;2
-Squashes!,chore: squashes!
-Squashes! ,chore: squashes! 
-Squashes! 1,chore: squashes! 1
-Squashes! ;2,chore: squashes! ;2
+Squashes .,chore: squashes .
 Squashes:,chore: squashes:
-Squashes: ,chore: squashes: 
-Squashes: 1,chore: squashes: 1
-Squashes: ;2,chore: squashes: ;2
-Squashes[,chore: squashes[
-Squashes[ ,chore: squashes[ 
-Squashes[ 1,chore: squashes[ 1
-Squashes[ ;2,chore: squashes[ ;2
+Squashes:.,chore: squashes:.
+Squashes!,chore: squashes!
+Squashes!.,chore: squashes!.
 squashes,chore: squashes
+squashes.,chore: squashes.
 squashes ,chore: squashes 
-squashes 1,chore: squashes 1
-squashes ;2,chore: squashes ;2
-squashes(,chore: squashes(
-squashes( ,chore: squashes( 
-squashes( 1,chore: squashes( 1
-squashes( ;2,chore: squashes( ;2
-squashes!,chore: squashes!
-squashes! ,chore: squashes! 
-squashes! 1,chore: squashes! 1
-squashes! ;2,chore: squashes! ;2
+squashes .,chore: squashes .
 squashes:,chore: squashes:
-squashes: ,chore: squashes: 
-squashes: 1,chore: squashes: 1
-squashes: ;2,chore: squashes: ;2
-squashes[,chore: squashes[
-squashes[ ,chore: squashes[ 
-squashes[ 1,chore: squashes[ 1
-squashes[ ;2,chore: squashes[ ;2
+squashes:.,chore: squashes:.
+squashes!,chore: squashes!
+squashes!.,chore: squashes!.
  Merge,chore: merge
+ Merge.,chore: merge.
  Merge ,chore: merge 
- Merge 1,chore: merge 1
- Merge ;2,chore: merge ;2
- Merge(,chore: merge(
- Merge( ,chore: merge( 
- Merge( 1,chore: merge( 1
- Merge( ;2,chore: merge( ;2
- Merge!,chore: merge!
- Merge! ,chore: merge! 
- Merge! 1,chore: merge! 1
- Merge! ;2,chore: merge! ;2
+ Merge .,chore: merge .
  Merge:,chore: merge:
- Merge: ,chore: merge: 
- Merge: 1,chore: merge: 1
- Merge: ;2,chore: merge: ;2
- Merge[,chore: merge[
- Merge[ ,chore: merge[ 
- Merge[ 1,chore: merge[ 1
- Merge[ ;2,chore: merge[ ;2
+ Merge:.,chore: merge:.
+ Merge!,chore: merge!
+ Merge!.,chore: merge!.
  merge,chore: merge
+ merge.,chore: merge.
  merge ,chore: merge 
- merge 1,chore: merge 1
- merge ;2,chore: merge ;2
- merge(,chore: merge(
- merge( ,chore: merge( 
- merge( 1,chore: merge( 1
- merge( ;2,chore: merge( ;2
- merge!,chore: merge!
- merge! ,chore: merge! 
- merge! 1,chore: merge! 1
- merge! ;2,chore: merge! ;2
+ merge .,chore: merge .
  merge:,chore: merge:
- merge: ,chore: merge: 
- merge: 1,chore: merge: 1
- merge: ;2,chore: merge: ;2
- merge[,chore: merge[
- merge[ ,chore: merge[ 
- merge[ 1,chore: merge[ 1
- merge[ ;2,chore: merge[ ;2
+ merge:.,chore: merge:.
+ merge!,chore: merge!
+ merge!.,chore: merge!.
  Merged,chore: merged
+ Merged.,chore: merged.
  Merged ,chore: merged 
- Merged 1,chore: merged 1
- Merged ;2,chore: merged ;2
- Merged(,chore: merged(
- Merged( ,chore: merged( 
- Merged( 1,chore: merged( 1
- Merged( ;2,chore: merged( ;2
- Merged!,chore: merged!
- Merged! ,chore: merged! 
- Merged! 1,chore: merged! 1
- Merged! ;2,chore: merged! ;2
+ Merged .,chore: merged .
  Merged:,chore: merged:
- Merged: ,chore: merged: 
- Merged: 1,chore: merged: 1
- Merged: ;2,chore: merged: ;2
- Merged[,chore: merged[
- Merged[ ,chore: merged[ 
- Merged[ 1,chore: merged[ 1
- Merged[ ;2,chore: merged[ ;2
+ Merged:.,chore: merged:.
+ Merged!,chore: merged!
+ Merged!.,chore: merged!.
  merged,chore: merged
+ merged.,chore: merged.
  merged ,chore: merged 
- merged 1,chore: merged 1
- merged ;2,chore: merged ;2
- merged(,chore: merged(
- merged( ,chore: merged( 
- merged( 1,chore: merged( 1
- merged( ;2,chore: merged( ;2
- merged!,chore: merged!
- merged! ,chore: merged! 
- merged! 1,chore: merged! 1
- merged! ;2,chore: merged! ;2
+ merged .,chore: merged .
  merged:,chore: merged:
- merged: ,chore: merged: 
- merged: 1,chore: merged: 1
- merged: ;2,chore: merged: ;2
- merged[,chore: merged[
- merged[ ,chore: merged[ 
- merged[ 1,chore: merged[ 1
- merged[ ;2,chore: merged[ ;2
+ merged:.,chore: merged:.
+ merged!,chore: merged!
+ merged!.,chore: merged!.
  Merges,chore: merges
+ Merges.,chore: merges.
  Merges ,chore: merges 
- Merges 1,chore: merges 1
- Merges ;2,chore: merges ;2
- Merges(,chore: merges(
- Merges( ,chore: merges( 
- Merges( 1,chore: merges( 1
- Merges( ;2,chore: merges( ;2
- Merges!,chore: merges!
- Merges! ,chore: merges! 
- Merges! 1,chore: merges! 1
- Merges! ;2,chore: merges! ;2
+ Merges .,chore: merges .
  Merges:,chore: merges:
- Merges: ,chore: merges: 
- Merges: 1,chore: merges: 1
- Merges: ;2,chore: merges: ;2
- Merges[,chore: merges[
- Merges[ ,chore: merges[ 
- Merges[ 1,chore: merges[ 1
- Merges[ ;2,chore: merges[ ;2
+ Merges:.,chore: merges:.
+ Merges!,chore: merges!
+ Merges!.,chore: merges!.
  merges,chore: merges
+ merges.,chore: merges.
  merges ,chore: merges 
- merges 1,chore: merges 1
- merges ;2,chore: merges ;2
- merges(,chore: merges(
- merges( ,chore: merges( 
- merges( 1,chore: merges( 1
- merges( ;2,chore: merges( ;2
- merges!,chore: merges!
- merges! ,chore: merges! 
- merges! 1,chore: merges! 1
- merges! ;2,chore: merges! ;2
+ merges .,chore: merges .
  merges:,chore: merges:
- merges: ,chore: merges: 
- merges: 1,chore: merges: 1
- merges: ;2,chore: merges: ;2
- merges[,chore: merges[
- merges[ ,chore: merges[ 
- merges[ 1,chore: merges[ 1
- merges[ ;2,chore: merges[ ;2
+ merges:.,chore: merges:.
+ merges!,chore: merges!
+ merges!.,chore: merges!.
  Squash,chore: squash
+ Squash.,chore: squash.
  Squash ,chore: squash 
- Squash 1,chore: squash 1
- Squash ;2,chore: squash ;2
- Squash(,chore: squash(
- Squash( ,chore: squash( 
- Squash( 1,chore: squash( 1
- Squash( ;2,chore: squash( ;2
- Squash!,chore: squash!
- Squash! ,chore: squash! 
- Squash! 1,chore: squash! 1
- Squash! ;2,chore: squash! ;2
+ Squash .,chore: squash .
  Squash:,chore: squash:
- Squash: ,chore: squash: 
- Squash: 1,chore: squash: 1
- Squash: ;2,chore: squash: ;2
- Squash[,chore: squash[
- Squash[ ,chore: squash[ 
- Squash[ 1,chore: squash[ 1
- Squash[ ;2,chore: squash[ ;2
+ Squash:.,chore: squash:.
+ Squash!,chore: squash!
+ Squash!.,chore: squash!.
  squash,chore: squash
+ squash.,chore: squash.
  squash ,chore: squash 
- squash 1,chore: squash 1
- squash ;2,chore: squash ;2
- squash(,chore: squash(
- squash( ,chore: squash( 
- squash( 1,chore: squash( 1
- squash( ;2,chore: squash( ;2
- squash!,chore: squash!
- squash! ,chore: squash! 
- squash! 1,chore: squash! 1
- squash! ;2,chore: squash! ;2
+ squash .,chore: squash .
  squash:,chore: squash:
- squash: ,chore: squash: 
- squash: 1,chore: squash: 1
- squash: ;2,chore: squash: ;2
- squash[,chore: squash[
- squash[ ,chore: squash[ 
- squash[ 1,chore: squash[ 1
- squash[ ;2,chore: squash[ ;2
+ squash:.,chore: squash:.
+ squash!,chore: squash!
+ squash!.,chore: squash!.
  Squashed,chore: squashed
+ Squashed.,chore: squashed.
  Squashed ,chore: squashed 
- Squashed 1,chore: squashed 1
- Squashed ;2,chore: squashed ;2
- Squashed(,chore: squashed(
- Squashed( ,chore: squashed( 
- Squashed( 1,chore: squashed( 1
- Squashed( ;2,chore: squashed( ;2
- Squashed!,chore: squashed!
- Squashed! ,chore: squashed! 
- Squashed! 1,chore: squashed! 1
- Squashed! ;2,chore: squashed! ;2
+ Squashed .,chore: squashed .
  Squashed:,chore: squashed:
- Squashed: ,chore: squashed: 
- Squashed: 1,chore: squashed: 1
- Squashed: ;2,chore: squashed: ;2
- Squashed[,chore: squashed[
- Squashed[ ,chore: squashed[ 
- Squashed[ 1,chore: squashed[ 1
- Squashed[ ;2,chore: squashed[ ;2
+ Squashed:.,chore: squashed:.
+ Squashed!,chore: squashed!
+ Squashed!.,chore: squashed!.
  squashed,chore: squashed
+ squashed.,chore: squashed.
  squashed ,chore: squashed 
- squashed 1,chore: squashed 1
- squashed ;2,chore: squashed ;2
- squashed(,chore: squashed(
- squashed( ,chore: squashed( 
- squashed( 1,chore: squashed( 1
- squashed( ;2,chore: squashed( ;2
- squashed!,chore: squashed!
- squashed! ,chore: squashed! 
- squashed! 1,chore: squashed! 1
- squashed! ;2,chore: squashed! ;2
+ squashed .,chore: squashed .
  squashed:,chore: squashed:
- squashed: ,chore: squashed: 
- squashed: 1,chore: squashed: 1
- squashed: ;2,chore: squashed: ;2
- squashed[,chore: squashed[
- squashed[ ,chore: squashed[ 
- squashed[ 1,chore: squashed[ 1
- squashed[ ;2,chore: squashed[ ;2
+ squashed:.,chore: squashed:.
+ squashed!,chore: squashed!
+ squashed!.,chore: squashed!.
  Squashes,chore: squashes
+ Squashes.,chore: squashes.
  Squashes ,chore: squashes 
- Squashes 1,chore: squashes 1
- Squashes ;2,chore: squashes ;2
- Squashes(,chore: squashes(
- Squashes( ,chore: squashes( 
- Squashes( 1,chore: squashes( 1
- Squashes( ;2,chore: squashes( ;2
- Squashes!,chore: squashes!
- Squashes! ,chore: squashes! 
- Squashes! 1,chore: squashes! 1
- Squashes! ;2,chore: squashes! ;2
+ Squashes .,chore: squashes .
  Squashes:,chore: squashes:
- Squashes: ,chore: squashes: 
- Squashes: 1,chore: squashes: 1
- Squashes: ;2,chore: squashes: ;2
- Squashes[,chore: squashes[
- Squashes[ ,chore: squashes[ 
- Squashes[ 1,chore: squashes[ 1
- Squashes[ ;2,chore: squashes[ ;2
+ Squashes:.,chore: squashes:.
+ Squashes!,chore: squashes!
+ Squashes!.,chore: squashes!.
  squashes,chore: squashes
+ squashes.,chore: squashes.
  squashes ,chore: squashes 
- squashes 1,chore: squashes 1
- squashes ;2,chore: squashes ;2
- squashes(,chore: squashes(
- squashes( ,chore: squashes( 
- squashes( 1,chore: squashes( 1
- squashes( ;2,chore: squashes( ;2
- squashes!,chore: squashes!
- squashes! ,chore: squashes! 
- squashes! 1,chore: squashes! 1
- squashes! ;2,chore: squashes! ;2
+ squashes .,chore: squashes .
  squashes:,chore: squashes:
- squashes: ,chore: squashes: 
- squashes: 1,chore: squashes: 1
- squashes: ;2,chore: squashes: ;2
- squashes[,chore: squashes[
- squashes[ ,chore: squashes[ 
- squashes[ 1,chore: squashes[ 1
- squashes[ ;2,chore: squashes[ ;2
+ squashes:.,chore: squashes:.
+ squashes!,chore: squashes!
+ squashes!.,chore: squashes!.
   Merge,chore: merge
+  Merge.,chore: merge.
   Merge ,chore: merge 
-  Merge 1,chore: merge 1
-  Merge ;2,chore: merge ;2
-  Merge(,chore: merge(
-  Merge( ,chore: merge( 
-  Merge( 1,chore: merge( 1
-  Merge( ;2,chore: merge( ;2
-  Merge!,chore: merge!
-  Merge! ,chore: merge! 
-  Merge! 1,chore: merge! 1
-  Merge! ;2,chore: merge! ;2
+  Merge .,chore: merge .
   Merge:,chore: merge:
-  Merge: ,chore: merge: 
-  Merge: 1,chore: merge: 1
-  Merge: ;2,chore: merge: ;2
-  Merge[,chore: merge[
-  Merge[ ,chore: merge[ 
-  Merge[ 1,chore: merge[ 1
-  Merge[ ;2,chore: merge[ ;2
+  Merge:.,chore: merge:.
+  Merge!,chore: merge!
+  Merge!.,chore: merge!.
   merge,chore: merge
+  merge.,chore: merge.
   merge ,chore: merge 
-  merge 1,chore: merge 1
-  merge ;2,chore: merge ;2
-  merge(,chore: merge(
-  merge( ,chore: merge( 
-  merge( 1,chore: merge( 1
-  merge( ;2,chore: merge( ;2
-  merge!,chore: merge!
-  merge! ,chore: merge! 
-  merge! 1,chore: merge! 1
-  merge! ;2,chore: merge! ;2
+  merge .,chore: merge .
   merge:,chore: merge:
-  merge: ,chore: merge: 
-  merge: 1,chore: merge: 1
-  merge: ;2,chore: merge: ;2
-  merge[,chore: merge[
-  merge[ ,chore: merge[ 
-  merge[ 1,chore: merge[ 1
-  merge[ ;2,chore: merge[ ;2
+  merge:.,chore: merge:.
+  merge!,chore: merge!
+  merge!.,chore: merge!.
   Merged,chore: merged
+  Merged.,chore: merged.
   Merged ,chore: merged 
-  Merged 1,chore: merged 1
-  Merged ;2,chore: merged ;2
-  Merged(,chore: merged(
-  Merged( ,chore: merged( 
-  Merged( 1,chore: merged( 1
-  Merged( ;2,chore: merged( ;2
-  Merged!,chore: merged!
-  Merged! ,chore: merged! 
-  Merged! 1,chore: merged! 1
-  Merged! ;2,chore: merged! ;2
+  Merged .,chore: merged .
   Merged:,chore: merged:
-  Merged: ,chore: merged: 
-  Merged: 1,chore: merged: 1
-  Merged: ;2,chore: merged: ;2
-  Merged[,chore: merged[
-  Merged[ ,chore: merged[ 
-  Merged[ 1,chore: merged[ 1
-  Merged[ ;2,chore: merged[ ;2
+  Merged:.,chore: merged:.
+  Merged!,chore: merged!
+  Merged!.,chore: merged!.
   merged,chore: merged
+  merged.,chore: merged.
   merged ,chore: merged 
-  merged 1,chore: merged 1
-  merged ;2,chore: merged ;2
-  merged(,chore: merged(
-  merged( ,chore: merged( 
-  merged( 1,chore: merged( 1
-  merged( ;2,chore: merged( ;2
-  merged!,chore: merged!
-  merged! ,chore: merged! 
-  merged! 1,chore: merged! 1
-  merged! ;2,chore: merged! ;2
+  merged .,chore: merged .
   merged:,chore: merged:
-  merged: ,chore: merged: 
-  merged: 1,chore: merged: 1
-  merged: ;2,chore: merged: ;2
-  merged[,chore: merged[
-  merged[ ,chore: merged[ 
-  merged[ 1,chore: merged[ 1
-  merged[ ;2,chore: merged[ ;2
+  merged:.,chore: merged:.
+  merged!,chore: merged!
+  merged!.,chore: merged!.
   Merges,chore: merges
+  Merges.,chore: merges.
   Merges ,chore: merges 
-  Merges 1,chore: merges 1
-  Merges ;2,chore: merges ;2
-  Merges(,chore: merges(
-  Merges( ,chore: merges( 
-  Merges( 1,chore: merges( 1
-  Merges( ;2,chore: merges( ;2
-  Merges!,chore: merges!
-  Merges! ,chore: merges! 
-  Merges! 1,chore: merges! 1
-  Merges! ;2,chore: merges! ;2
+  Merges .,chore: merges .
   Merges:,chore: merges:
-  Merges: ,chore: merges: 
-  Merges: 1,chore: merges: 1
-  Merges: ;2,chore: merges: ;2
-  Merges[,chore: merges[
-  Merges[ ,chore: merges[ 
-  Merges[ 1,chore: merges[ 1
-  Merges[ ;2,chore: merges[ ;2
+  Merges:.,chore: merges:.
+  Merges!,chore: merges!
+  Merges!.,chore: merges!.
   merges,chore: merges
+  merges.,chore: merges.
   merges ,chore: merges 
-  merges 1,chore: merges 1
-  merges ;2,chore: merges ;2
-  merges(,chore: merges(
-  merges( ,chore: merges( 
-  merges( 1,chore: merges( 1
-  merges( ;2,chore: merges( ;2
-  merges!,chore: merges!
-  merges! ,chore: merges! 
-  merges! 1,chore: merges! 1
-  merges! ;2,chore: merges! ;2
+  merges .,chore: merges .
   merges:,chore: merges:
-  merges: ,chore: merges: 
-  merges: 1,chore: merges: 1
-  merges: ;2,chore: merges: ;2
-  merges[,chore: merges[
-  merges[ ,chore: merges[ 
-  merges[ 1,chore: merges[ 1
-  merges[ ;2,chore: merges[ ;2
+  merges:.,chore: merges:.
+  merges!,chore: merges!
+  merges!.,chore: merges!.
   Squash,chore: squash
+  Squash.,chore: squash.
   Squash ,chore: squash 
-  Squash 1,chore: squash 1
-  Squash ;2,chore: squash ;2
-  Squash(,chore: squash(
-  Squash( ,chore: squash( 
-  Squash( 1,chore: squash( 1
-  Squash( ;2,chore: squash( ;2
-  Squash!,chore: squash!
-  Squash! ,chore: squash! 
-  Squash! 1,chore: squash! 1
-  Squash! ;2,chore: squash! ;2
+  Squash .,chore: squash .
   Squash:,chore: squash:
-  Squash: ,chore: squash: 
-  Squash: 1,chore: squash: 1
-  Squash: ;2,chore: squash: ;2
-  Squash[,chore: squash[
-  Squash[ ,chore: squash[ 
-  Squash[ 1,chore: squash[ 1
-  Squash[ ;2,chore: squash[ ;2
+  Squash:.,chore: squash:.
+  Squash!,chore: squash!
+  Squash!.,chore: squash!.
   squash,chore: squash
+  squash.,chore: squash.
   squash ,chore: squash 
-  squash 1,chore: squash 1
-  squash ;2,chore: squash ;2
-  squash(,chore: squash(
-  squash( ,chore: squash( 
-  squash( 1,chore: squash( 1
-  squash( ;2,chore: squash( ;2
-  squash!,chore: squash!
-  squash! ,chore: squash! 
-  squash! 1,chore: squash! 1
-  squash! ;2,chore: squash! ;2
+  squash .,chore: squash .
   squash:,chore: squash:
-  squash: ,chore: squash: 
-  squash: 1,chore: squash: 1
-  squash: ;2,chore: squash: ;2
-  squash[,chore: squash[
-  squash[ ,chore: squash[ 
-  squash[ 1,chore: squash[ 1
-  squash[ ;2,chore: squash[ ;2
+  squash:.,chore: squash:.
+  squash!,chore: squash!
+  squash!.,chore: squash!.
   Squashed,chore: squashed
+  Squashed.,chore: squashed.
   Squashed ,chore: squashed 
-  Squashed 1,chore: squashed 1
-  Squashed ;2,chore: squashed ;2
-  Squashed(,chore: squashed(
-  Squashed( ,chore: squashed( 
-  Squashed( 1,chore: squashed( 1
-  Squashed( ;2,chore: squashed( ;2
-  Squashed!,chore: squashed!
-  Squashed! ,chore: squashed! 
-  Squashed! 1,chore: squashed! 1
-  Squashed! ;2,chore: squashed! ;2
+  Squashed .,chore: squashed .
   Squashed:,chore: squashed:
-  Squashed: ,chore: squashed: 
-  Squashed: 1,chore: squashed: 1
-  Squashed: ;2,chore: squashed: ;2
-  Squashed[,chore: squashed[
-  Squashed[ ,chore: squashed[ 
-  Squashed[ 1,chore: squashed[ 1
-  Squashed[ ;2,chore: squashed[ ;2
+  Squashed:.,chore: squashed:.
+  Squashed!,chore: squashed!
+  Squashed!.,chore: squashed!.
   squashed,chore: squashed
+  squashed.,chore: squashed.
   squashed ,chore: squashed 
-  squashed 1,chore: squashed 1
-  squashed ;2,chore: squashed ;2
-  squashed(,chore: squashed(
-  squashed( ,chore: squashed( 
-  squashed( 1,chore: squashed( 1
-  squashed( ;2,chore: squashed( ;2
-  squashed!,chore: squashed!
-  squashed! ,chore: squashed! 
-  squashed! 1,chore: squashed! 1
-  squashed! ;2,chore: squashed! ;2
+  squashed .,chore: squashed .
   squashed:,chore: squashed:
-  squashed: ,chore: squashed: 
-  squashed: 1,chore: squashed: 1
-  squashed: ;2,chore: squashed: ;2
-  squashed[,chore: squashed[
-  squashed[ ,chore: squashed[ 
-  squashed[ 1,chore: squashed[ 1
-  squashed[ ;2,chore: squashed[ ;2
+  squashed:.,chore: squashed:.
+  squashed!,chore: squashed!
+  squashed!.,chore: squashed!.
   Squashes,chore: squashes
+  Squashes.,chore: squashes.
   Squashes ,chore: squashes 
-  Squashes 1,chore: squashes 1
-  Squashes ;2,chore: squashes ;2
-  Squashes(,chore: squashes(
-  Squashes( ,chore: squashes( 
-  Squashes( 1,chore: squashes( 1
-  Squashes( ;2,chore: squashes( ;2
-  Squashes!,chore: squashes!
-  Squashes! ,chore: squashes! 
-  Squashes! 1,chore: squashes! 1
-  Squashes! ;2,chore: squashes! ;2
+  Squashes .,chore: squashes .
   Squashes:,chore: squashes:
-  Squashes: ,chore: squashes: 
-  Squashes: 1,chore: squashes: 1
-  Squashes: ;2,chore: squashes: ;2
-  Squashes[,chore: squashes[
-  Squashes[ ,chore: squashes[ 
-  Squashes[ 1,chore: squashes[ 1
-  Squashes[ ;2,chore: squashes[ ;2
+  Squashes:.,chore: squashes:.
+  Squashes!,chore: squashes!
+  Squashes!.,chore: squashes!.
   squashes,chore: squashes
+  squashes.,chore: squashes.
   squashes ,chore: squashes 
-  squashes 1,chore: squashes 1
-  squashes ;2,chore: squashes ;2
-  squashes(,chore: squashes(
-  squashes( ,chore: squashes( 
-  squashes( 1,chore: squashes( 1
-  squashes( ;2,chore: squashes( ;2
-  squashes!,chore: squashes!
-  squashes! ,chore: squashes! 
-  squashes! 1,chore: squashes! 1
-  squashes! ;2,chore: squashes! ;2
+  squashes .,chore: squashes .
   squashes:,chore: squashes:
-  squashes: ,chore: squashes: 
-  squashes: 1,chore: squashes: 1
-  squashes: ;2,chore: squashes: ;2
-  squashes[,chore: squashes[
-  squashes[ ,chore: squashes[ 
-  squashes[ 1,chore: squashes[ 1
-  squashes[ ;2,chore: squashes[ ;2
+  squashes:.,chore: squashes:.
+  squashes!,chore: squashes!
+  squashes!.,chore: squashes!.
