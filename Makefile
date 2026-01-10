@@ -91,9 +91,16 @@ develop: ## Set up the project for development (WITH_HOOKS={true|false}, default
         $(MAKE) enable-pre-commit; \
     fi
 
-.PHONY: test
-test: ## Run all tests
+.PHONY: test-hooks
+test-hooks: ## Run hook unit tests
 	@bash tests/test-runner.sh
+
+.PHONY: test-integration
+test-integration: ## Run pre-commit integration tests
+	@bash tests/test-integration.sh
+
+.PHONY: test
+test: test-hooks test-integration ## Run all tests
 
 .PHONY: check
 check: run-pre-commit test ## Run all code quality checks and tests
