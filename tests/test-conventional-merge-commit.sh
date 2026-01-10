@@ -22,7 +22,7 @@ echo "Running $CSV_COUNT CSV test cases in parallel..."
 FAIL_FLAG=$(mktemp)
 rm -f "$FAIL_FLAG" # Remove so we can check existence
 
-# Kill background jobs (POSIX-compliant, no xargs -r which is GNU-specific)
+# Kill background jobs using POSIX-compatible commands (script still requires bash; no xargs -r which is GNU-specific)
 # shellcheck disable=SC2317 # Called via trap and early termination
 kill_jobs() {
 	local pids
