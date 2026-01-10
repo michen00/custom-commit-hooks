@@ -13,15 +13,23 @@ commit_msg_file="$1"
 # Read and parse commit message
 read_commit_msg "$commit_msg_file"
 
-# Check if first line matches "Merge *" pattern
+# Check if first line matches merge pattern (case-insensitive)
+# Matches: "Merge ...", "merge ...", "Merge", "merge"
+# Does NOT match: "Merges...", "merges...", "merging..."
 case "$COMMIT_FIRST_LINE" in
 Merge\ *)
-	# Transform to conventional format
 	rest="${COMMIT_FIRST_LINE#Merge }"
 	new_first_line="chore: merge $rest"
-	write_commit_msg "$commit_msg_file" "$new_first_line" "$COMMIT_REST"
+	;;
+merge\ *)
+	rest="${COMMIT_FIRST_LINE#merge }"
+	new_first_line="chore: merge $rest"
+	;;
+Merge | merge)
+	new_first_line="chore: merge"
 	;;
 *)
 	exit 0
 	;;
 esac
+write_commit_msg "$commit_msg_file" "$new_first_line" "$COMMIT_REST"
