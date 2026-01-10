@@ -42,7 +42,8 @@ test_enhance_scope \
 	"feat: add feature
 
 This is the body
-with multiple lines"
+with multiple lines" \
+	"This is the body"
 
 echo ""
 echo -e "Results: ${GREEN}$PASSED passed${NC}, ${RED}$FAILED failed${NC}"
