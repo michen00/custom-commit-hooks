@@ -2,16 +2,11 @@
 # prepare-commit-msg:
 # rewrite auto-generated merge/squash messages to conventional commit format
 
-commit_source=${2-}
-case "$commit_source" in
-merge | squash) ;;
-*) exit 0 ;;
-esac
-
 # shellcheck source=lib/commit-msg.sh disable=SC1091
 . "$(dirname "$0")/lib/commit-msg.sh"
 
 commit_msg_file="$1"
+commit_source=${2-}
 
 # Read and parse commit message
 read_commit_msg "$commit_msg_file"
@@ -19,7 +14,27 @@ read_commit_msg "$commit_msg_file"
 # Strip leading whitespace (POSIX parameter expansion)
 stripped="${COMMIT_FIRST_LINE#"${COMMIT_FIRST_LINE%%[![:space:]]*}"}"
 
-# Check if matches trigger pattern:
+# If commit_source not provided (e.g., pre-commit), detect from message content
+# This allows the hook to work both as a native git hook and via pre-commit
+if [ -z "$commit_source" ]; then
+	case "$stripped" in
+	[Mm]erges | [Mm]erges[![:alnum:]_]*) commit_source="merge" ;;
+	[Mm]erged | [Mm]erged[![:alnum:]_]*) commit_source="merge" ;;
+	[Mm]erge | [Mm]erge[![:alnum:]_]*) commit_source="merge" ;;
+	[Ss]quashes | [Ss]quashes[![:alnum:]_]*) commit_source="squash" ;;
+	[Ss]quashed | [Ss]quashed[![:alnum:]_]*) commit_source="squash" ;;
+	[Ss]quash | [Ss]quash[![:alnum:]_]*) commit_source="squash" ;;
+	esac
+fi
+
+# Only process merge/squash commits
+case "$commit_source" in
+merge | squash) ;;
+*) exit 0 ;;
+esac
+
+# Verify message matches trigger pattern (required for native git hooks where
+# $2 is provided but message may have been edited)
 #   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?)\b.*$
 # Word boundary: keyword alone or followed by non-word character
 # Order matters: longest keywords first to prevent partial matches

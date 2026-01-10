@@ -155,10 +155,22 @@ test_conventional_merge_commit \
 	"Merge branch"
 
 test_conventional_merge_commit \
-	"Empty commit source unchanged" \
-	"Merge branch" \
+	"Auto-detection transforms merge message" \
+	"chore: merge branch" \
 	"" \
 	"Merge branch"
+
+test_conventional_merge_commit \
+	"Auto-detect: 'Squash commits' transforms" \
+	"chore: squash commits" \
+	"" \
+	"Squash commits"
+
+test_conventional_merge_commit \
+	"Auto-detect: non-trigger word unchanged" \
+	"Regular commit message" \
+	"" \
+	"Regular commit message"
 
 # === Squash commit source ===
 test_conventional_merge_commit \
@@ -166,6 +178,40 @@ test_conventional_merge_commit \
 	"chore: squashed commits" \
 	"squash" \
 	"Squashed commits"
+
+# === Body preservation tests ===
+test_conventional_merge_commit \
+	"Multi-line merge preserves body" \
+	"chore: merge branch 'feature'" \
+	"merge" \
+	"Merge branch 'feature'
+
+This merges the feature branch with detailed notes." \
+	"This merges the feature branch with detailed notes."
+
+test_conventional_merge_commit \
+	"Multi-line squash preserves body" \
+	"chore: squash branch 'feature'" \
+	"squash" \
+	"Squash branch 'feature'
+
+* commit 1
+* commit 2" \
+	"* commit 1
+* commit 2"
+
+# === Word boundary tests ===
+test_conventional_merge_commit \
+	"'Merge_branch' unchanged (underscore is word char)" \
+	"Merge_branch" \
+	"merge" \
+	"Merge_branch"
+
+test_conventional_merge_commit \
+	"'Squash_commits' unchanged (underscore is word char)" \
+	"Squash_commits" \
+	"squash" \
+	"Squash_commits"
 
 echo ""
 echo -e "Results: ${GREEN}${PASSED} passed${NC}, ${RED}${FAILED} failed${NC}"
