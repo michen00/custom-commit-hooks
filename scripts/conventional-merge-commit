@@ -20,16 +20,15 @@ read_commit_msg "$commit_msg_file"
 stripped="${COMMIT_FIRST_LINE#"${COMMIT_FIRST_LINE%%[![:space:]]*}"}"
 
 # Check if matches trigger pattern:
-#   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?)[(!:\[]?( .*)?$
-# Using case statement to enumerate keyword variants
-# Pattern: keyword alone, or keyword followed by space/(/!/:/[
+#   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?)\b.*$
+# Word boundary: keyword alone or followed by non-word character
 case "$stripped" in
-[Mm]erge | [Mm]erge' '* | [Mm]erge\(* | [Mm]erge!* | [Mm]erge:* | [Mm]erge\[*) ;;
-[Mm]erged | [Mm]erged' '* | [Mm]erged\(* | [Mm]erged!* | [Mm]erged:* | [Mm]erged\[*) ;;
-[Mm]erges | [Mm]erges' '* | [Mm]erges\(* | [Mm]erges!* | [Mm]erges:* | [Mm]erges\[*) ;;
-[Ss]quash | [Ss]quash' '* | [Ss]quash\(* | [Ss]quash!* | [Ss]quash:* | [Ss]quash\[*) ;;
-[Ss]quashed | [Ss]quashed' '* | [Ss]quashed\(* | [Ss]quashed!* | [Ss]quashed:* | [Ss]quashed\[*) ;;
-[Ss]quashes | [Ss]quashes' '* | [Ss]quashes\(* | [Ss]quashes!* | [Ss]quashes:* | [Ss]quashes\[*) ;;
+[Mm]erges | [Mm]erges[![:alnum:]_]*) ;;
+[Mm]erged | [Mm]erged[![:alnum:]_]*) ;;
+[Mm]erge | [Mm]erge[![:alnum:]_]*) ;;
+[Ss]quashes | [Ss]quashes[![:alnum:]_]*) ;;
+[Ss]quashed | [Ss]quashed[![:alnum:]_]*) ;;
+[Ss]quash | [Ss]quash[![:alnum:]_]*) ;;
 *)
 	exit 0
 	;;
