@@ -22,6 +22,7 @@ stripped="${COMMIT_FIRST_LINE#"${COMMIT_FIRST_LINE%%[![:space:]]*}"}"
 # Check if matches trigger pattern:
 #   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?)\b.*$
 # Word boundary: keyword alone or followed by non-word character
+# Order matters: longest keywords first to prevent partial matches
 case "$stripped" in
 [Mm]erges | [Mm]erges[![:alnum:]_]*) ;;
 [Mm]erged | [Mm]erged[![:alnum:]_]*) ;;
