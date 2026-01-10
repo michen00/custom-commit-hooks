@@ -12,7 +12,7 @@ TEST_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 printf "Testing conventional-merge-commit hook...\n\n"
 
-# === CSV-driven tests (720 cases, parallelized) ===
+# === CSV-driven tests (auto-counted, parallelized) ===
 CSV_FILE="$TEST_SCRIPT_DIR/test-conventional-merge-commit.csv"
 CSV_COUNT=$(($(wc -l <"$CSV_FILE") - 1)) # Subtract header
 
