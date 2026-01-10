@@ -42,7 +42,11 @@ has_wait_n() {
 }
 
 # Read CSV preserving whitespace (skip header)
-# Note: this will break if cells contain commas
+# Note: this simple parser will break if cells contain commas.
+# If you need commas in fields, either:
+#   - introduce an escape convention in the CSV (e.g., '\,' for literal commas)
+#     and add a small unescape step after `read`, or
+#   - switch the test data to use a different delimiter and update IFS accordingly.
 {
 	read -r # Skip header
 	while IFS=, read -r original transformed; do
