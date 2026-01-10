@@ -3,17 +3,15 @@
 # shellcheck disable=SC2154 # Variables from sourced library: file_ends_with_nl, NL, COMMIT_FIRST_LINE, COMMIT_REST
 
 set -uo pipefail
+TEST_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-
-# Load shared color definitions
-# shellcheck disable=SC1091
-. "$SCRIPT_DIR/colors.sh"
+# Load shared configurations
+# shellcheck disable=SC1091 # Dynamic path via $TEST_SCRIPT_DIR
+. "$TEST_SCRIPT_DIR/colors.sh"
 
 # Load the library under test (provides: NL, file_ends_with_nl, COMMIT_FIRST_LINE, COMMIT_REST)
 # shellcheck disable=SC1091
-. "$REPO_ROOT/scripts/lib/commit-msg.sh"
+. "$TEST_SCRIPT_DIR/../scripts/lib/commit-msg.sh"
 
 PASSED=0
 FAILED=0
@@ -32,8 +30,7 @@ fail() {
 	((FAILED++))
 }
 
-echo "Testing scripts/lib/commit-msg.sh..."
-echo ""
+printf "Testing scripts/lib/commit-msg.sh...\n\n"
 
 # Test: NL variable is a newline
 if [ "$NL" = "
