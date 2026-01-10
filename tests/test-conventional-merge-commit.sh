@@ -21,7 +21,15 @@ echo "Running $CSV_COUNT CSV test cases in parallel..."
 # Track failures across parallel jobs
 FAIL_FLAG=$(mktemp)
 rm -f "$FAIL_FLAG" # Remove so we can check existence
-trap 'rm -f "$FAIL_FLAG"' EXIT
+
+# Cleanup function to kill background jobs and remove temp files
+# shellcheck disable=SC2329 # Called via trap
+cleanup() {
+	# Kill any remaining background jobs from this script
+	jobs -p 2>/dev/null | xargs -r kill 2>/dev/null || true
+	rm -f "$FAIL_FLAG"
+}
+trap cleanup EXIT
 
 MAX_JOBS=8
 job_count=0
@@ -69,8 +77,9 @@ has_wait_n() {
 			fi
 		fi
 
-		# Early termination check
+		# Early termination: stop launching new jobs and kill running ones
 		if [ -f "$FAIL_FLAG" ]; then
+			jobs -p 2>/dev/null | xargs -r kill 2>/dev/null || true
 			break
 		fi
 	done
@@ -95,7 +104,7 @@ FAILED=0
 CMC_TEMP_DIR=$(mktemp -d)
 # shellcheck disable=SC2034 # CMC_MSG_FILE is used by sourced helper
 CMC_MSG_FILE="$CMC_TEMP_DIR/COMMIT_EDITMSG"
-trap 'rm -rf "$CMC_TEMP_DIR"; rm -f "$FAIL_FLAG"' EXIT
+trap 'cleanup; rm -rf "$CMC_TEMP_DIR"' EXIT
 
 echo "=== Manual edge case tests ==="
 echo ""
