@@ -4,125 +4,130 @@
 set -uo pipefail
 TEST_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Load shared configurations
+# Load shared configurations and helpers
 # shellcheck disable=SC1091 # Dynamic path via $TEST_SCRIPT_DIR
 . "$TEST_SCRIPT_DIR/colors.sh"
-
-HOOK="$TEST_SCRIPT_DIR/../scripts/conventional-merge-commit"
-PASSED=0
-FAILED=0
+# shellcheck disable=SC1091
+. "$TEST_SCRIPT_DIR/conventional-merge-commit-helper.sh"
 
 printf "Testing conventional-merge-commit hook...\n\n"
 
-# Test helper function for conventional merge commit
+# === CSV-driven tests (720 cases, parallelized) ===
+CSV_FILE="$TEST_SCRIPT_DIR/test-conventional-merge-commit.csv"
+CSV_COUNT=$(($(wc -l <"$CSV_FILE") - 1)) # Subtract header
 
-test_message() {
-	local test_name="$1"
-	local expected_msg="$2"
-	local commit_source="$3"
-	local input_msg="$4"
-	local expected_exit="${5:-0}"
+echo "Running $CSV_COUNT CSV test cases in parallel..."
 
-	local temp_dir
-	temp_dir=$(mktemp -d)
-	trap 'rm -rf "$temp_dir"' RETURN
+# Track failures across parallel jobs
+FAIL_FLAG=$(mktemp)
+rm -f "$FAIL_FLAG" # Remove so we can check existence
+trap 'rm -f "$FAIL_FLAG"' EXIT
 
-	local msg_file="$temp_dir/COMMIT_EDITMSG"
-	echo "$input_msg" >"$msg_file"
+MAX_JOBS=8
+job_count=0
 
-	# Run hook with commit source and capture exit code
-	local actual_exit=0
-	"$HOOK" "$msg_file" "$commit_source" >/dev/null 2>&1 || actual_exit=$?
+# Read CSV preserving whitespace (skip header)
+{
+	read -r # Skip header
+	while IFS=, read -r original transformed; do
+		# Launch test in background
+		(
+			tmp_file=$(mktemp)
+			trap 'rm -f "$tmp_file"' EXIT
 
-	# Check result
-	local actual_msg
-	actual_msg=$(head -n 1 "$msg_file")
+			printf '%s' "$original" >"$tmp_file"
+			"$HOOK_MERGE" "$tmp_file" "merge" >/dev/null 2>&1 || true
 
-	if [ "$actual_msg" = "$expected_msg" ] && [ "$actual_exit" -eq "$expected_exit" ]; then
-		echo -e "${GREEN}✓${NC} $test_name"
-		((PASSED++))
-	else
-		echo -e "${RED}✗${NC} $test_name"
-		if [ "$actual_msg" != "$expected_msg" ]; then
-			echo -e "  Expected msg: ${YELLOW}$expected_msg${NC}"
-			echo -e "  Got msg:      ${YELLOW}$actual_msg${NC}"
+			actual=$(head -n 1 "$tmp_file")
+
+			if [ "$actual" != "$transformed" ]; then
+				echo -e "${RED}✗${NC} '$original' -> expected '$transformed', got '$actual'" >&2
+				touch "$FAIL_FLAG"
+				exit 1
+			fi
+		) &
+
+		job_count=$((job_count + 1))
+
+		# Limit concurrent jobs
+		if [ "$job_count" -ge "$MAX_JOBS" ]; then
+			wait -n 2>/dev/null || true # Wait for any job (bash 4.3+)
+			job_count=$((job_count - 1))
 		fi
-		if [ "$actual_exit" -ne "$expected_exit" ]; then
-			echo -e "  Expected exit: ${YELLOW}$expected_exit${NC}"
-			echo -e "  Got exit:      ${YELLOW}$actual_exit${NC}"
+
+		# Early termination check
+		if [ -f "$FAIL_FLAG" ]; then
+			break
 		fi
-		((FAILED++))
-	fi
-}
+	done
+} <"$CSV_FILE"
 
-# === Basic merge conversions ===
-test_message \
-	"Merge commit converted to conventional format" \
-	"chore: merge branch 'feat/example' into main" \
-	"merge" \
-	"Merge branch 'feat/example' into main"
+# Wait for remaining jobs
+wait
 
-test_message \
-	"GitHub PR merge converted" \
-	"chore: merge pull request #123 from user/feature-branch" \
-	"merge" \
-	"Merge pull request #123 from user/feature-branch"
+if [ -f "$FAIL_FLAG" ]; then
+	echo -e "${RED}CSV tests failed${NC}"
+	exit 1
+fi
 
-# === Bare merge keywords ===
-test_message \
-	"Bare 'Merge' converted" \
-	"chore: merge" \
-	"merge" \
-	"Merge"
+echo -e "${GREEN}✓${NC} All $CSV_COUNT CSV tests passed"
+echo ""
 
-test_message \
-	"Bare 'merge' converted" \
-	"chore: merge" \
-	"merge" \
-	"merge"
+# === Manual edge case tests (sequential, with counting) ===
+PASSED=$CSV_COUNT
+FAILED=0
 
-test_message \
-	"Bare 'Merge ' converted" \
-	"chore: merge " \
-	"merge" \
-	"Merge "
+# Set up temp directory for manual tests
+CMC_TEMP_DIR=$(mktemp -d)
+# shellcheck disable=SC2034 # CMC_MSG_FILE is used by sourced helper
+CMC_MSG_FILE="$CMC_TEMP_DIR/COMMIT_EDITMSG"
+trap 'rm -rf "$CMC_TEMP_DIR"; rm -f "$FAIL_FLAG"' EXIT
 
-test_message \
-	"Bare 'merge ' converted" \
-	"chore: merge " \
-	"merge" \
-	"merge "
+echo "=== Manual edge case tests ==="
+echo ""
 
 # === Messages that should NOT be modified ===
-test_message \
-	"'Merges' unchanged (not a merge keyword)" \
-	"Merges ." \
+test_conventional_merge_commit \
+	"'Merging' unchanged (not a merge keyword)" \
+	"Merging stuff" \
 	"merge" \
-	"Merges ."
+	"Merging stuff"
 
-test_message \
-	"'merges' unchanged (not a merge keyword)" \
-	"merges ." \
+test_conventional_merge_commit \
+	"'merging' unchanged (not a merge keyword)" \
+	"merging stuff" \
 	"merge" \
-	"merges ."
+	"merging stuff"
 
-test_message \
+test_conventional_merge_commit \
+	"'Squashing' unchanged (not a squash keyword)" \
+	"Squashing commits" \
+	"merge" \
+	"Squashing commits"
+
+test_conventional_merge_commit \
+	"'squashing' unchanged (not a squash keyword)" \
+	"squashing commits" \
+	"merge" \
+	"squashing commits"
+
+test_conventional_merge_commit \
 	"Non-merge commit source unchanged" \
-	"Merge .+: ." \
+	"Merge branch 'feature'" \
 	"commit" \
-	"Merge .+"
+	"Merge branch 'feature'"
 
-test_message \
+test_conventional_merge_commit \
 	"Empty commit source unchanged" \
-	"Merge .+" \
+	"Merge branch 'feature'" \
 	"" \
-	"Merge .+"
+	"Merge branch 'feature'"
 
-test_message \
-	"Message without [Mm]erge prefix unchanged" \
-	".+" \
+test_conventional_merge_commit \
+	"Message without merge/squash prefix unchanged" \
+	"feat: add new feature" \
 	"merge" \
-	".+"
+	"feat: add new feature"
 
 echo ""
 echo -e "Results: ${GREEN}${PASSED} passed${NC}, ${RED}${FAILED} failed${NC}"

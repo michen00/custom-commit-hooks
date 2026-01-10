@@ -63,6 +63,7 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: ^tests/test-conventional-merge-commit\.csv$
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.7.4
     hooks:
