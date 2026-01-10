@@ -43,7 +43,8 @@ test_enhance_scope \
 
 This is the body
 with multiple lines" \
-	"This is the body"
+	"This is the body
+with multiple lines"
 
 echo ""
 echo -e "Results: ${GREEN}$PASSED passed${NC}, ${RED}$FAILED failed${NC}"
