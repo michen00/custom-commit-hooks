@@ -126,9 +126,9 @@ test_conventional_merge_commit \
 # === Squash commit source ===
 test_conventional_merge_commit \
 	"Squash commit source transforms message" \
-	"chore: squashed commit of the following:" \
+	"chore: squashed commits" \
 	"squash" \
-	"Squashed commit of the following:"
+	"Squashed commits"
 
 echo ""
 echo -e "Results: ${GREEN}${PASSED} passed${NC}, ${RED}${FAILED} failed${NC}"
