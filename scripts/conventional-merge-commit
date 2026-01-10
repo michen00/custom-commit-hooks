@@ -14,17 +14,24 @@ read_commit_msg "$commit_msg_file"
 # Strip leading whitespace (POSIX parameter expansion)
 stripped="${COMMIT_FIRST_LINE#"${COMMIT_FIRST_LINE%%[![:space:]]*}"}"
 
-# If commit_source not provided (e.g., pre-commit), detect from message content
+# Detect message type from content (single source of truth for trigger patterns)
+# Word boundary: keyword alone or followed by non-word character
+# Order matters: longest keywords first to prevent partial matches
+#   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?)\b.*$
+msg_type=""
+case "$stripped" in
+[Mm]erges | [Mm]erges[![:alnum:]_]*) msg_type="merge" ;;
+[Mm]erged | [Mm]erged[![:alnum:]_]*) msg_type="merge" ;;
+[Mm]erge | [Mm]erge[![:alnum:]_]*) msg_type="merge" ;;
+[Ss]quashes | [Ss]quashes[![:alnum:]_]*) msg_type="squash" ;;
+[Ss]quashed | [Ss]quashed[![:alnum:]_]*) msg_type="squash" ;;
+[Ss]quash | [Ss]quash[![:alnum:]_]*) msg_type="squash" ;;
+esac
+
+# If commit_source not provided (e.g., pre-commit), use detected type
 # This allows the hook to work both as a native git hook and via pre-commit
 if [ -z "$commit_source" ]; then
-	case "$stripped" in
-	[Mm]erges | [Mm]erges[![:alnum:]_]*) commit_source="merge" ;;
-	[Mm]erged | [Mm]erged[![:alnum:]_]*) commit_source="merge" ;;
-	[Mm]erge | [Mm]erge[![:alnum:]_]*) commit_source="merge" ;;
-	[Ss]quashes | [Ss]quashes[![:alnum:]_]*) commit_source="squash" ;;
-	[Ss]quashed | [Ss]quashed[![:alnum:]_]*) commit_source="squash" ;;
-	[Ss]quash | [Ss]quash[![:alnum:]_]*) commit_source="squash" ;;
-	esac
+	commit_source="$msg_type"
 fi
 
 # Only process merge/squash commits
@@ -35,20 +42,9 @@ esac
 
 # Verify message matches trigger pattern (required for native git hooks where
 # $2 is provided but message may have been edited)
-#   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?)\b.*$
-# Word boundary: keyword alone or followed by non-word character
-# Order matters: longest keywords first to prevent partial matches
-case "$stripped" in
-[Mm]erges | [Mm]erges[![:alnum:]_]*) ;;
-[Mm]erged | [Mm]erged[![:alnum:]_]*) ;;
-[Mm]erge | [Mm]erge[![:alnum:]_]*) ;;
-[Ss]quashes | [Ss]quashes[![:alnum:]_]*) ;;
-[Ss]quashed | [Ss]quashed[![:alnum:]_]*) ;;
-[Ss]quash | [Ss]quash[![:alnum:]_]*) ;;
-*)
+if [ -z "$msg_type" ]; then
 	exit 0
-	;;
-esac
+fi
 
 # Transform: "chore: " + lowercase first char + rest
 first_char="${stripped%"${stripped#?}"}"
