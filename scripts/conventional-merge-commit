@@ -1,6 +1,6 @@
 #!/bin/sh
 # prepare-commit-msg:
-# rewrite auto-generated merge messages to conventional commit format
+# rewrite auto-generated merge/squash messages to conventional commit format
 
 commit_source=${2-}
 [ "$commit_source" = "merge" ] || exit 0
@@ -13,23 +13,32 @@ commit_msg_file="$1"
 # Read and parse commit message
 read_commit_msg "$commit_msg_file"
 
-# Check if first line matches merge pattern (case-insensitive)
-# Matches: "Merge ...", "merge ...", "Merge", "merge"
-# Does NOT match: "Merges...", "merges...", "merging..."
-case "$COMMIT_FIRST_LINE" in
-Merge\ *)
-	rest="${COMMIT_FIRST_LINE#Merge }"
-	new_first_line="chore: merge $rest"
-	;;
-merge\ *)
-	rest="${COMMIT_FIRST_LINE#merge }"
-	new_first_line="chore: merge $rest"
-	;;
-Merge | merge)
-	new_first_line="chore: merge"
-	;;
+# Strip leading whitespace (POSIX parameter expansion)
+stripped="${COMMIT_FIRST_LINE#"${COMMIT_FIRST_LINE%%[![:space:]]*}"}"
+
+# Check if matches trigger pattern:
+#   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?)[(!:\[]?( .*)?$
+# Using case statement to enumerate keyword variants
+# Pattern: keyword alone, or keyword followed by space/(/!/:/[
+case "$stripped" in
+[Mm]erge | [Mm]erge' '* | [Mm]erge\(* | [Mm]erge!* | [Mm]erge:* | [Mm]erge\[*) ;;
+[Mm]erged | [Mm]erged' '* | [Mm]erged\(* | [Mm]erged!* | [Mm]erged:* | [Mm]erged\[*) ;;
+[Mm]erges | [Mm]erges' '* | [Mm]erges\(* | [Mm]erges!* | [Mm]erges:* | [Mm]erges\[*) ;;
+[Ss]quash | [Ss]quash' '* | [Ss]quash\(* | [Ss]quash!* | [Ss]quash:* | [Ss]quash\[*) ;;
+[Ss]quashed | [Ss]quashed' '* | [Ss]quashed\(* | [Ss]quashed!* | [Ss]quashed:* | [Ss]quashed\[*) ;;
+[Ss]quashes | [Ss]quashes' '* | [Ss]quashes\(* | [Ss]quashes!* | [Ss]quashes:* | [Ss]quashes\[*) ;;
 *)
 	exit 0
 	;;
 esac
+
+# Transform: "chore: " + lowercase first char + rest
+first_char="${stripped%"${stripped#?}"}"
+rest="${stripped#?}"
+
+case "$first_char" in
+[Mm]) new_first_line="chore: m$rest" ;;
+*) new_first_line="chore: s$rest" ;; # Default: S/s (squash)
+esac
+
 write_commit_msg "$commit_msg_file" "$new_first_line" "$COMMIT_REST"
