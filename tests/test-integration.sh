@@ -25,7 +25,7 @@ setup_test_repo() {
 	TEST_REPO=$(mktemp -d)
 	cd "$TEST_REPO" || exit 1
 
-	git init --quiet
+	git init --quiet -b main
 	git config user.name "Test User"
 	git config user.email "test@example.com"
 
