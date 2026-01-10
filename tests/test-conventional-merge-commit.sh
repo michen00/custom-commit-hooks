@@ -34,6 +34,7 @@ has_wait_n() {
 }
 
 # Read CSV preserving whitespace (skip header)
+# Note: this will break if cells contain commas
 {
 	read -r # Skip header
 	while IFS=, read -r original transformed; do
