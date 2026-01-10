@@ -7,7 +7,7 @@ HOOK="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../scripts/enhance-scope"
 #   test_enhance_scope "name" "expected_first" "setup_cmd" "input_msg" ["expected_body"]
 #
 # For first-line-only tests: omit expected_body
-# For body preservation tests: pass expected_body string
+# For body preservation tests: pass expected_body (full body from line 3 onward)
 test_enhance_scope() {
 	local test_name="$1"
 	local expected_msg="$2"
@@ -46,7 +46,8 @@ test_enhance_scope() {
 		# Write results to temp files for parent to read
 		head -n 1 "$msg_file" >"$temp_dir/result_first"
 		sed -n '2p' "$msg_file" >"$temp_dir/result_blank"
-		sed -n '3p' "$msg_file" >"$temp_dir/result_body"
+		# Capture full body (line 3 to end)
+		tail -n +3 "$msg_file" >"$temp_dir/result_body"
 	)
 
 	# Read results from temp files

@@ -12,7 +12,7 @@ HOOK_MERGE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../scripts/conventiona
 #   test_conventional_merge_commit "name" "expected_first" "source" "input" ["expected_body"] [expected_exit]
 #
 # For first-line-only tests (CSV bulk): omit expected_body or pass ""
-# For body preservation tests: pass expected_body string
+# For body preservation tests: pass expected_body (full body from line 3 onward)
 test_conventional_merge_commit() {
 	local test_name="$1"
 	local expected_first_line="$2"
@@ -41,7 +41,8 @@ test_conventional_merge_commit() {
 	local actual_body=""
 	if [ -n "$expected_body" ]; then
 		actual_blank_line=$(sed -n '2p' "$CMC_MSG_FILE")
-		actual_body=$(sed -n '3p' "$CMC_MSG_FILE")
+		# Capture full body (line 3 to end)
+		actual_body=$(tail -n +3 "$CMC_MSG_FILE")
 		[ -n "$actual_blank_line" ] && pass=false # Line 2 must be blank
 		[ "$actual_body" != "$expected_body" ] && pass=false
 	fi
