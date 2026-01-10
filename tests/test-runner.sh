@@ -2,12 +2,11 @@
 # Test runner for all commit hook tests
 
 set -uo pipefail
+TEST_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Load shared color definitions
-# shellcheck disable=SC1091 # Dynamic path via $SCRIPT_DIR
-. "$SCRIPT_DIR/colors.sh"
+# Load shared configurations
+# shellcheck disable=SC1091 # Dynamic path via $TEST_SCRIPT_DIR
+. "$TEST_SCRIPT_DIR/colors.sh"
 
 TOTAL_PASSED=0
 TOTAL_FAILED=0
@@ -37,9 +36,10 @@ echo "=========================================="
 echo ""
 
 # Run all tests
-run_test "$SCRIPT_DIR/test-lib-commit-msg.sh" "lib/commit-msg.sh tests"
-run_test "$SCRIPT_DIR/test-enhance-scope.sh" "enhance-scope tests"
-run_test "$SCRIPT_DIR/test-conventional-merge-commit.sh" "conventional-merge-commit tests"
+run_test "$TEST_SCRIPT_DIR/test-examples.sh" "basic usage tests"
+run_test "$TEST_SCRIPT_DIR/test-lib-commit-msg.sh" "lib/commit-msg.sh tests"
+run_test "$TEST_SCRIPT_DIR/test-enhance-scope.sh" "enhance-scope tests"
+run_test "$TEST_SCRIPT_DIR/test-conventional-merge-commit.sh" "conventional-merge-commit tests"
 
 # Summary
 echo "=========================================="
