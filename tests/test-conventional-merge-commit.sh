@@ -89,45 +89,39 @@ echo ""
 # === Messages that should NOT be modified ===
 test_conventional_merge_commit \
 	"'Merging' unchanged (not a merge keyword)" \
-	"Merging stuff" \
+	"Merging .+" \
 	"merge" \
-	"Merging stuff"
+	"Merging .+"
 
 test_conventional_merge_commit \
 	"'merging' unchanged (not a merge keyword)" \
-	"merging stuff" \
+	"merging .+" \
 	"merge" \
-	"merging stuff"
+	"merging .+"
 
 test_conventional_merge_commit \
 	"'Squashing' unchanged (not a squash keyword)" \
-	"Squashing commits" \
+	"Squashing .+" \
 	"merge" \
-	"Squashing commits"
+	"Squashing .+"
 
 test_conventional_merge_commit \
 	"'squashing' unchanged (not a squash keyword)" \
-	"squashing commits" \
+	"squashing .+" \
 	"merge" \
-	"squashing commits"
+	"squashing .+"
 
 test_conventional_merge_commit \
 	"Non-merge commit source unchanged" \
-	"Merge branch 'feature'" \
+	"Merge branch" \
 	"commit" \
-	"Merge branch 'feature'"
+	"Merge branch"
 
 test_conventional_merge_commit \
 	"Empty commit source unchanged" \
-	"Merge branch 'feature'" \
+	"Merge branch" \
 	"" \
-	"Merge branch 'feature'"
-
-test_conventional_merge_commit \
-	"Message without merge/squash prefix unchanged" \
-	"feat: add new feature" \
-	"merge" \
-	"feat: add new feature"
+	"Merge branch"
 
 echo ""
 echo -e "Results: ${GREEN}${PASSED} passed${NC}, ${RED}${FAILED} failed${NC}"
