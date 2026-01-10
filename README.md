@@ -82,3 +82,7 @@ Merge branch 'feature/new-api' into main
 ```commit-message-summary
 chore: merge branch 'feature/new-api' into main
 ```
+
+## Documentation
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/michen00/custom-commit-hooks)
