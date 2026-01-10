@@ -22,11 +22,21 @@ echo "Running $CSV_COUNT CSV test cases in parallel..."
 FAIL_FLAG=$(mktemp)
 rm -f "$FAIL_FLAG" # Remove so we can check existence
 
+# Kill background jobs (POSIX-compliant, no xargs -r which is GNU-specific)
+# shellcheck disable=SC2317 # Called via trap and early termination
+kill_jobs() {
+	local pids
+	pids=$(jobs -p 2>/dev/null) || true
+	if [ -n "$pids" ]; then
+		# shellcheck disable=SC2086 # Word splitting intended for PIDs
+		kill $pids 2>/dev/null || true
+	fi
+}
+
 # Cleanup function to kill background jobs and remove temp files
 # shellcheck disable=SC2329 # Called via trap
 cleanup() {
-	# Kill any remaining background jobs from this script
-	jobs -p 2>/dev/null | xargs -r kill 2>/dev/null || true
+	kill_jobs
 	rm -f "$FAIL_FLAG"
 }
 trap cleanup EXIT
@@ -83,7 +93,7 @@ has_wait_n() {
 
 		# Early termination: stop launching new jobs and kill running ones
 		if [ -f "$FAIL_FLAG" ]; then
-			jobs -p 2>/dev/null | xargs -r kill 2>/dev/null || true
+			kill_jobs
 			break
 		fi
 	done
