@@ -26,6 +26,13 @@ trap 'rm -f "$FAIL_FLAG"' EXIT
 MAX_JOBS=8
 job_count=0
 
+# Check if wait -n is available (bash 4.3+)
+# On older bash, we fall back to batch processing
+has_wait_n() {
+	[ "${BASH_VERSINFO[0]}" -gt 4 ] ||
+		{ [ "${BASH_VERSINFO[0]}" -eq 4 ] && [ "${BASH_VERSINFO[1]}" -ge 3 ]; }
+}
+
 # Read CSV preserving whitespace (skip header)
 {
 	read -r # Skip header
@@ -51,8 +58,14 @@ job_count=0
 
 		# Limit concurrent jobs
 		if [ "$job_count" -ge "$MAX_JOBS" ]; then
-			wait -n 2>/dev/null || true # Wait for any job (bash 4.3+)
-			job_count=$((job_count - 1))
+			if has_wait_n; then
+				wait -n # Wait for any single job (bash 4.3+)
+				job_count=$((job_count - 1))
+			else
+				# Fallback: wait for all jobs in batch, then reset
+				wait
+				job_count=0
+			fi
 		fi
 
 		# Early termination check
