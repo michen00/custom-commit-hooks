@@ -45,3 +45,20 @@ jobs:
       - name: Run test suite
         run: |
           bash tests/test-runner.sh
+
+  test-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Set up Git
+        run: |
+          git config --global user.name "Test User"
+          git config --global user.email "test@example.com"
+      - name: Install pre-commit
+        run: |
+          pip install --upgrade pip
+          pip install pre-commit
+      - name: Run pre-commit integration tests
+        run: |
+          bash tests/test-integration.sh
