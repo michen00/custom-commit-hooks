@@ -33,7 +33,10 @@ FILENAME="${FILES_TOUCHED%%"${NL}"*}"
 # Check if commit matches conventional format without scope
 ORIGINAL_TYPE=""
 case "$COMMIT_SUMMARY" in
-build:\ ?* | chore:\ ?* | ci:\ ?* | docs:\ ?* | feat:\ ?* | fix:\ ?* | perf:\ ?* | refactor:\ ?* | revert:\ ?* | style:\ ?* | test:\ ?*)
+feat:\ ?* | fix:\ ?* | chore:\ ?* | docs:\ ?* | refactor:\ ?* | \
+	test:\ ?* | build:\ ?* | ci:\ ?* | style:\ ?* | perf:\ ?* | revert:\ ?* | \
+	feat!:\ ?* | fix!:\ ?* | chore!:\ ?* | docs!:\ ?* | refactor!:\ ?* | \
+	test!:\ ?* | build!:\ ?* | ci!:\ ?* | style!:\ ?* | perf!:\ ?* | revert!:\ ?*)
 	ORIGINAL_TYPE="${COMMIT_SUMMARY%%:*}"
 	;;
 esac
