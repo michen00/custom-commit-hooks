@@ -1,10 +1,11 @@
+---
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
+  - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: cron
+      cronjob: "0 0 1,15 * *" # 1st and 15th monthly at midnight UTC
     groups:
       actions:
-        patterns:
-          - "*"
+        patterns: ["*"]

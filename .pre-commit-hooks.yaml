@@ -1,3 +1,4 @@
+---
 - id: enhance-scope
   name: enhance-scope
   description: adds filename to conventional commit scope for single-file commits
