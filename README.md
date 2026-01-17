@@ -1,5 +1,11 @@
 # custom-commit-hooks
 
+[![Build Status](https://img.shields.io/github/actions/workflow/status/michen00/custom-commit-hooks/CI.yml?style=plastic)](https://github.com/michen00/custom-commit-hooks/actions)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=plastic)](CONTRIBUTING.md)
+[![License](https://img.shields.io/github/license/michen00/custom-commit-hooks?style=plastic)](LICENSE)
+
+<!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.YOUR_ZENODO_ID.svg?style=plastic)](https://doi.org/10.5281/zenodo.YOUR_ZENODO_ID) -->
+
 Custom commit hooks for use with [pre-commit](https://pre-commit.com/) that enhance conventional commit messages with better context and consistency.
 
 ## Features
@@ -83,6 +89,4 @@ Merge branch 'feature/new-api' into main
 chore: merge branch 'feature/new-api' into main
 ```
 
-## Documentation
-
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/michen00/custom-commit-hooks)
+## Documentation: [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/michen00/custom-commit-hooks)
