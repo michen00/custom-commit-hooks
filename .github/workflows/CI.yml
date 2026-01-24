@@ -56,10 +56,7 @@ jobs:
         id: coverage-unit
         if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo snap install kcov
-          sudo snap connect kcov:process-control
-          /snap/bin/kcov --include-path="$PWD/scripts" unit bash tests/test-runner.sh
-          echo "coverage=$(cat unit/coverage.json)" >> "$GITHUB_OUTPUT"
+          .github/scripts/run-kcov.sh unit tests/test-runner.sh
       - name: Run unit tests without coverage
         if: matrix.os != 'ubuntu-latest'
         run: bash tests/test-runner.sh
@@ -85,10 +82,7 @@ jobs:
         id: coverage-integration
         if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo snap install kcov
-          sudo snap connect kcov:process-control
-          /snap/bin/kcov --include-path="$PWD/scripts" integration bash tests/test-integration.sh
-          echo "coverage=$(cat integration/coverage.json)" >> "$GITHUB_OUTPUT"
+          .github/scripts/run-kcov.sh integration tests/test-integration.sh
       - name: Run integration tests without coverage
         if: matrix.os != 'ubuntu-latest'
         run: bash tests/test-integration.sh
