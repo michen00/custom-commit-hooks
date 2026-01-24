@@ -9,9 +9,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  ci:
-    name: CI
-    runs-on: ubuntu-latest
+  pre-commit:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
       - name: Install pre-commit
@@ -34,30 +36,73 @@ jobs:
         run: |
           pre-commit run --all-files
 
-  test:
-    runs-on: ubuntu-latest
+  test-unit:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    outputs:
+      coverage: ${{ steps.coverage-unit.outputs.coverage }}
     steps:
       - uses: actions/checkout@v6
       - name: Set up Git
         run: |
-          git config --global user.name "Test User"
-          git config --global user.email "test@example.com"
-      - name: Run test suite
+          git config --global user.name 'Test User'
+          git config --global user.email 'test@example.com'
+      - name: Install kcov
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          bash tests/test-runner.sh
+          sudo apt-get update
+          sudo apt-get install -y kcov
+      - name: Run unit tests with coverage
+        id: coverage-unit
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          kcov --include-path="$PWD/scripts" unit bash tests/test-runner.sh
+          echo "coverage=$(cat unit/coverage.json)" >> "$GITHUB_OUTPUT"
+      - name: Run unit tests without coverage
+        if: matrix.os != 'ubuntu-latest'
+        run: bash tests/test-runner.sh
 
   test-integration:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    outputs:
+      coverage: ${{ steps.coverage-integration.outputs.coverage }}
     steps:
       - uses: actions/checkout@v6
       - name: Set up Git
         run: |
-          git config --global user.name "Test User"
-          git config --global user.email "test@example.com"
+          git config --global user.name 'Test User'
+          git config --global user.email 'test@example.com'
       - name: Install pre-commit
         run: |
           pip install --upgrade pip
           pip install pre-commit
-      - name: Run pre-commit integration tests
+      - name: Run integration tests with coverage
+        id: coverage-integration
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          bash tests/test-integration.sh
+          kcov --include-path="$PWD/scripts" integration bash tests/test-integration.sh
+          echo "coverage=$(cat integration/coverage.json)" >> "$GITHUB_OUTPUT"
+      - name: Run integration tests without coverage
+        if: matrix.os != 'ubuntu-latest'
+        run: bash tests/test-integration.sh
+
+  merge-coverage-reports:
+    runs-on: ubuntu-latest
+    needs: [test-unit, test-integration]
+    steps:
+      - name: Merge coverage reports
+        run: |
+          echo ${{ needs.test-unit.outputs.coverage }} >> unit/coverage.json
+          echo ${{ needs.test-integration.outputs.coverage }} >> integration/coverage.json
+          kcov --merge coverage-merged unit integration
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          directory: coverage-merged
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
