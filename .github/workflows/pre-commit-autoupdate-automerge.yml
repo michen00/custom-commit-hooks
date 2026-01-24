@@ -2,6 +2,9 @@
 name: pre-commit autoupdate auto-merge
 on:
   pull_request:
+  workflow_run:
+    workflows: [pre-commit-autoupdate]
+    types: [completed]
 
 # A ruleset that requires status checks to pass must be configured for the repository.
 
@@ -13,7 +16,10 @@ permissions:
 jobs:
   pre-commit-automerge:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'github-actions[bot]' }}
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.workflow_run.conclusion == 'success' &&
+      (github.actor == 'github-actions[bot]' || github.actor == 'pre-commit-ci[bot]')
     timeout-minutes: 30
     env:
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -37,16 +43,16 @@ jobs:
             echo "valid=false" >> "$GITHUB_OUTPUT"
             exit 1
           fi
-      - name: Wait for checks to complete
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.validate-title.outputs.valid == 'true'
-        run: |
-          gh pr checks "$PR_NUMBER" --fail-fast --required --watch || {
-            echo "Required checks failed or timed out"
-            exit 1
-          }
-      - name: Approve a PR if not already approved
+      # - name: Wait for checks to complete
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   if: steps.validate-title.outputs.valid == 'true'
+      #   run: |
+      #     gh pr checks "$PR_NUMBER" --fail-fast --required --watch || {
+      #       echo "Required checks failed or timed out"
+      #       exit 1
+      #     }
+      - name: Approve and enable auto-merge
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: steps.validate-title.outputs.valid == 'true'
@@ -57,3 +63,4 @@ jobs:
           else
             gh pr review --approve "$PR_NUMBER" && echo "PR approved."
           fi
+          gh pr merge --auto --squash "${{ github.event.pull_request.number }}"
