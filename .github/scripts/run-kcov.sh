@@ -22,7 +22,8 @@ sudo apt-get install -y \
 	libelf-dev \
 	libstdc++-12-dev \
 	zlib1g-dev \
-	libdw-dev
+	libdw-dev \
+	libiberty-dev
 
 if ! command -v kcov >/dev/null 2>&1; then
 	git clone https://github.com/SimonKagstrom/kcov.git --depth 1
