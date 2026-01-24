@@ -42,7 +42,7 @@ jobs:
       - name: Update pre-commit hooks
         id: autoupdate-pre-commit
         run: |
-          OUTPUT=$(pre-commit autoupdate || echo "autoupdate failed")
+          OUTPUT=$(pre-commit autoupdate || echo 'autoupdate failed')
           echo "$OUTPUT"
           if [[ "$OUTPUT" == *"No updates available"* ]]; then
             exit 0
@@ -50,17 +50,38 @@ jobs:
       - name: Test updated pre-commit hooks
         run: |
           if ! pre-commit run --all-files; then
-            echo "Pre-commit hooks failed. Please review the log for details." >&2
+            echo 'Pre-commit hooks failed. Please review the log for details.' >&2
             exit 1
           fi
       - name: Push changes and create PR
-        uses: peter-evans/create-pull-request@v8
-        with:
-          branch: "${{ env.BRANCH_NAME }}"
-          sign-commits: true
-          title: "chore: autoupdate pre-commit hooks"
-          body: |
-            This PR updates pre-commit hooks to their latest versions.
-          commit-message: "chore(pre-commit): bump hook versions"
-          delete-branch: true
-          base: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet .pre-commit-config.yaml; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+          # Switch to branch, create if it doesn't exist
+          if git show-ref --verify --quiet refs/heads/"${{ env.BRANCH_NAME }}"; then
+            git switch "${{ env.BRANCH_NAME }}"
+          else
+            git switch -c "${{ env.BRANCH_NAME }}"
+          fi
+
+          git add .pre-commit-config.yaml
+          git commit -m 'chore(pre-commit): bump hook versions'
+          git push -u origin "${{ env.BRANCH_NAME }}" --force-with-lease
+
+          # Create PR if it doesn't exist
+          if ! gh pr view "${{ env.BRANCH_NAME }}" --json number &>/dev/null; then
+            gh pr create \
+              --base main \
+              --head "${{ env.BRANCH_NAME }}" \
+              --title 'chore: autoupdate pre-commit hooks' \
+              --body 'This PR updates pre-commit hooks to their latest versions.'
+          else
+            echo 'PR already exists for branch ${{ env.BRANCH_NAME }}'
+          fi

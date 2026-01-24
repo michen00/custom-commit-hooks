@@ -5,6 +5,7 @@
 .gitattributes  text
 .gitignore      text
 .project        text
+.yamllint       text diff=yaml eol=lf
 *.conf          text
 *.css           text diff=css
 *.htm           text diff=html
