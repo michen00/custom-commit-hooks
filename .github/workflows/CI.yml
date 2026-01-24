@@ -52,15 +52,12 @@ jobs:
         run: |
           git config --global user.name 'Test User'
           git config --global user.email 'test@example.com'
-      - name: Install kcov
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y kcov
       - name: Run unit tests with coverage
         id: coverage-unit
         if: matrix.os == 'ubuntu-latest'
         run: |
+          sudo apt-get update
+          sudo apt-get install -y kcov
           kcov --include-path="$PWD/scripts" unit bash tests/test-runner.sh
           echo "coverage=$(cat unit/coverage.json)" >> "$GITHUB_OUTPUT"
       - name: Run unit tests without coverage
@@ -88,6 +85,8 @@ jobs:
         id: coverage-integration
         if: matrix.os == 'ubuntu-latest'
         run: |
+          sudo apt-get update
+          sudo apt-get install -y kcov
           kcov --include-path="$PWD/scripts" integration bash tests/test-integration.sh
           echo "coverage=$(cat integration/coverage.json)" >> "$GITHUB_OUTPUT"
       - name: Run integration tests without coverage
