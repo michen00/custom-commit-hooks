@@ -56,6 +56,7 @@ jobs:
         id: coverage-unit
         if: matrix.os == 'ubuntu-latest'
         run: |
+          mkdir -p unit
           .github/scripts/run-kcov.sh unit tests/test-runner.sh
       - name: Run unit tests without coverage
         if: matrix.os != 'ubuntu-latest'
@@ -82,6 +83,7 @@ jobs:
         id: coverage-integration
         if: matrix.os == 'ubuntu-latest'
         run: |
+          mkdir -p integration
           .github/scripts/run-kcov.sh integration tests/test-integration.sh
       - name: Run integration tests without coverage
         if: matrix.os != 'ubuntu-latest'
