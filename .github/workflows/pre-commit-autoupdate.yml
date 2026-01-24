@@ -77,7 +77,7 @@ jobs:
           fi
 
           git add .pre-commit-config.yaml
-          git commit -m 'chore(pre-commit): bump hook versions'
+          git commit -m 'chore(pre-commit): bump hook versions' -s
           git push -u origin "${{ env.BRANCH_NAME }}" --force-with-lease
 
           pr_state=$(gh pr view "${{ env.BRANCH_NAME }}" --state all --json state --jq '.state' 2>/dev/null || echo "MISSING")
