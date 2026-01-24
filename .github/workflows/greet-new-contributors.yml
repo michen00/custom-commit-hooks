@@ -20,24 +20,26 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const isBotUser = (user) => {
-              if (!user) return false;
-              if (user.type === 'Bot') return true;
-              if (typeof user.login === 'string' && user.login.endsWith('[bot]')) return true;
-              return false;
-            };
-
+            let user;
             if (context.eventName === 'issues') {
-              return isBotUser(context.payload.issue?.user) ? 'true' : 'false';
+              user = context.payload.issue?.user;
+            } else if (context.eventName === 'pull_request') {
+              user = context.payload.pull_request?.user;
             }
 
-            if (context.eventName === 'pull_request') {
-              return isBotUser(context.payload.pull_request?.user) ? 'true' : 'false';
+            if (
+              user &&
+              (user.type === 'Bot' ||
+                (typeof user.login === 'string' && user.login.endsWith('[bot]')))
+            ) {
+              console.log('Bot user detected:', user.login);
+              core.setOutput('result', 'true');
+              return;
             }
 
             return 'false';
       - name: greet first interactions
-        if: steps.bot-author-check.outputs.result != 'true'
+        if: steps.bot-author-check.outputs.result == 'false'
         uses: actions/first-interaction@v3
         with:
           issue_message: |
