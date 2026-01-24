@@ -7,3 +7,5 @@ changelog:
       - dependabot[bot]
       - github-actions[bot]
       - pre-commit-ci[bot]
+      - renovate[bot]
+      - snyk-bot
