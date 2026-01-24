@@ -80,13 +80,13 @@ jobs:
           git commit -m 'chore(pre-commit): bump hook versions'
           git push -u origin "${{ env.BRANCH_NAME }}" --force-with-lease
 
-          # Create PR if it doesn't exist
-          if ! gh pr view "${{ env.BRANCH_NAME }}" --json number &>/dev/null; then
-            gh pr create \
-              --base main \
-              --head "${{ env.BRANCH_NAME }}" \
-              --title 'chore: autoupdate pre-commit hooks' \
-              --body 'This PR updates pre-commit hooks to their latest versions.'
-          else
-            echo 'PR already exists for branch ${{ env.BRANCH_NAME }}'
+          pr_state=$(gh pr view "${{ env.BRANCH_NAME }}" --state all --json state --jq '.state' 2>/dev/null || echo "MISSING")
+          if [ "$pr_state" = "OPEN" ]; then
+            echo "PR already exists for branch ${{ env.BRANCH_NAME }}"
+            exit 0
           fi
+          gh pr create \
+            --base main \
+            --head "${{ env.BRANCH_NAME }}" \
+            --title 'chore: autoupdate pre-commit hooks' \
+            --body 'This PR updates pre-commit hooks to their latest versions.'
