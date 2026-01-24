@@ -44,31 +44,40 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    outputs:
-      coverage: ${{ steps.coverage-unit.outputs.coverage }}
     steps:
       - uses: actions/checkout@v6
       - name: Set up Git
         run: |
           git config --global user.name 'Test User'
           git config --global user.email 'test@example.com'
-      - name: Run unit tests with coverage
-        id: coverage-unit
+      - name: Set up Ruby
         if: matrix.os == 'ubuntu-latest'
-        run: |
-          mkdir -p unit
-          .github/scripts/run-kcov.sh unit tests/test-runner.sh
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - name: Install bashcov
+        if: matrix.os == 'ubuntu-latest'
+        run: gem install bashcov
+      - name: Run unit tests with coverage
+        if: matrix.os == 'ubuntu-latest'
+        run: bashcov tests/test-runner.sh
       - name: Run unit tests without coverage
         if: matrix.os != 'ubuntu-latest'
         run: bash tests/test-runner.sh
+      - name: Upload to Codecov
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage/coverage.xml
+          flags: unit
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   test-integration:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    outputs:
-      coverage: ${{ steps.coverage-integration.outputs.coverage }}
     steps:
       - uses: actions/checkout@v6
       - name: Set up Git
@@ -79,29 +88,25 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install pre-commit
-      - name: Run integration tests with coverage
-        id: coverage-integration
+      - name: Set up Ruby
         if: matrix.os == 'ubuntu-latest'
-        run: |
-          mkdir -p integration
-          .github/scripts/run-kcov.sh integration tests/test-integration.sh
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - name: Install bashcov
+        if: matrix.os == 'ubuntu-latest'
+        run: gem install bashcov
+      - name: Run integration tests with coverage
+        if: matrix.os == 'ubuntu-latest'
+        run: bashcov tests/test-integration.sh
       - name: Run integration tests without coverage
         if: matrix.os != 'ubuntu-latest'
         run: bash tests/test-integration.sh
-
-  merge-coverage-reports:
-    runs-on: ubuntu-latest
-    needs: [test-unit, test-integration]
-    steps:
-      - name: Merge coverage reports
-        run: |
-          mkdir -p unit integration
-          echo ${{ needs.test-unit.outputs.coverage }} >> unit/coverage.json
-          echo ${{ needs.test-integration.outputs.coverage }} >> integration/coverage.json
-          kcov --merge coverage-merged unit integration
       - name: Upload to Codecov
+        if: matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@v5
         with:
-          directory: coverage-merged
+          files: coverage/coverage.xml
+          flags: integration
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
