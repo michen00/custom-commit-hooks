@@ -69,6 +69,7 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
 
           # Switch to branch, create if it doesn't exist
+          git fetch origin "${{ env.BRANCH_NAME }}" || true
           if git show-ref --verify --quiet refs/heads/"${{ env.BRANCH_NAME }}"; then
             git switch "${{ env.BRANCH_NAME }}"
           else
