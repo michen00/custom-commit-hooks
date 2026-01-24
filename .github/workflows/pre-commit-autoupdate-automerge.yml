@@ -1,8 +1,8 @@
 ---
 name: pre-commit autoupdate auto-merge
 on:
-  pull_request:
-    branches: [main]
+  # pull_request:
+  #   branches: [main]
   workflow_call:
   workflow_run:
     workflows: [pre-commit-autoupdate]
@@ -19,7 +19,8 @@ jobs:
   pre-commit-automerge:
     runs-on: ubuntu-latest
     if: |
-      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.workflow_run.repository.full_name == github.repository &&
+      github.event.workflow_run.event == 'pull_request' &&
       github.event.workflow_run.conclusion == 'success' &&
       (github.actor == 'github-actions[bot]' || github.actor == 'pre-commit-ci[bot]')
     timeout-minutes: 30
