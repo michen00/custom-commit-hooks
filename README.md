@@ -1,7 +1,7 @@
 # custom-commit-hooks
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/michen00/custom-commit-hooks/CI.yml?style=plastic)](https://github.com/michen00/custom-commit-hooks/actions)
-[![codecov](https://codecov.io/gh/michen00/custom-commit-hooks/graph/badge.svg?token=Q8ARBR98TT)](https://codecov.io/gh/michen00/custom-commit-hooks)
+[![Coverage](https://img.shields.io/codecov/c/github/michen00/custom-commit-hooks?style=plastic)](https://codecov.io/gh/michen00/custom-commit-hooks)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=plastic)](CONTRIBUTING.md)
 [![License](https://img.shields.io/github/license/michen00/custom-commit-hooks?style=plastic)](LICENSE)
 
