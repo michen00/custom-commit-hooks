@@ -100,6 +100,7 @@ jobs:
     steps:
       - name: Merge coverage reports
         run: |
+          mkdir -p unit integration
           echo ${{ needs.test-unit.outputs.coverage }} >> unit/coverage.json
           echo ${{ needs.test-integration.outputs.coverage }} >> integration/coverage.json
           kcov --merge coverage-merged unit integration
