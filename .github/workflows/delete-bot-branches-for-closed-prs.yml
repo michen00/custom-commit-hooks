@@ -17,13 +17,34 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       github.event.pull_request.head.repo.full_name == github.repository &&
-      github.event.pull_request.merged == false &&
-      contains(
-        fromJson('["dependabot[bot]","github-actions[bot]","pre-commit-ci[bot]"]'),
-        github.event.pull_request.user.login
-      )
+      github.event.pull_request.merged == false
     steps:
+      - name: detect bot author
+        id: bot-author-check
+        uses: actions/github-script@v8
+        with:
+          result-encoding: string
+          script: |
+            let user;
+            if (context.eventName === 'issues') {
+              user = context.payload.issue?.user;
+            } else if (context.eventName === 'pull_request') {
+              user = context.payload.pull_request?.user;
+            }
+
+            if (
+              user &&
+              (user.type === 'Bot' ||
+                (typeof user.login === 'string' && user.login.endsWith('[bot]')))
+            ) {
+              console.log('Bot user detected:', user.login);
+              core.setOutput('result', 'true');
+              return;
+            }
+
+            return 'false';
       - name: Delete PR head branch
+        if: steps.bot-author-check.outputs.result == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
