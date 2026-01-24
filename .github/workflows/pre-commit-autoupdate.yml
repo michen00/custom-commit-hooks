@@ -10,6 +10,10 @@ permissions:
   pull-requests: write
   id-token: write
 
+concurrency:
+  group: pre-commit-autoupdate
+  cancel-in-progress: true
+
 env:
   BRANCH_NAME: chore/pre-commit-autoupdate-workflow
 
