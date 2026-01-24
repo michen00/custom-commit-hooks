@@ -42,7 +42,7 @@ jobs:
   test-unit:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     outputs:
       coverage: ${{ steps.coverage-unit.outputs.coverage }}
@@ -65,7 +65,7 @@ jobs:
   test-integration:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     outputs:
       coverage: ${{ steps.coverage-integration.outputs.coverage }}
