@@ -5,6 +5,7 @@ changelog:
       - Copilot
       - copilot-swe-agent[bot]
       - dependabot[bot]
+      - gemini-code-assist[bot]
       - github-actions[bot]
       - pre-commit-ci[bot]
       - renovate[bot]
