@@ -33,10 +33,10 @@ runs:
       if: inputs.coverage == 'true'
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: head
+        ruby-version: ruby
     - name: Install coverage tools
       if: inputs.coverage == 'true'
       shell: bash
       run: |
-        sudo apt-get update && sudo apt-get install -y libxml2-utils
+        sudo apt-get install -y libxml2-utils
         gem install bashcov
