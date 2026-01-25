@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yamllint:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(actionlint:*)",
+      "Bash(echo:*)"
+    ]
+  }
+}

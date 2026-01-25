@@ -15,6 +15,10 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   pre-commit:
     strategy:
@@ -23,10 +27,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
+      - name: Set up Python
+        id: setup-python
+        uses: actions/setup-python@v6
+        with:
+          check-latest: true
+          cache: pip
       - name: Install pre-commit
         run: |
-          pip install --upgrade pip
-          pip install --upgrade pre-commit
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade pre-commit
       - name: Cache pre-commit hooks
         id: cache-pre-commit-hooks
         uses: actions/cache@v5
@@ -34,7 +44,11 @@ jobs:
           CACHE_NUMBER: 0
         with:
           path: ~/.cache/pre-commit
-          key: ${{ runner.os }}-precommit-${{ hashFiles('.pre-commit-config.yaml') }}-${{ env.CACHE_NUMBER }} # yamllint disable-line rule:line-length
+          key: >
+            ${{ runner.os }}-precommit-
+            py${{ steps.setup-python.outputs.python-version }}-
+            ${{ hashFiles('.pre-commit-config.yaml') }}-
+            ${{ env.CACHE_NUMBER }}
       - name: Install pre-commit hooks
         if: steps.cache-pre-commit-hooks.outputs.cache-hit != 'true'
         run: |
@@ -43,86 +57,85 @@ jobs:
         run: |
           pre-commit run --all-files
 
-  test-unit:
+  tests:
     strategy:
       matrix:
         include:
+          # Ubuntu: latest Git with coverage (both suites)
           - os: ubuntu-latest
-            coverage: true
+            git-version: latest
+            suite: unit
+          - os: ubuntu-latest
+            git-version: latest
+            suite: integration
+          # Ubuntu: floor Git version (unit only)
+          - os: ubuntu-latest
+            git-version: "2.30.0"
+            suite: unit
+          # OS compatibility: macOS and Windows (unit only, latest Git)
           - os: macos-latest
-            coverage: false
+            git-version: latest
+            suite: unit
+          - os: windows-latest
+            git-version: latest
+            suite: unit
     runs-on: ${{ matrix.os }}
+    env:
+      # bashcov with simplecov-cobertura generates coverage/coverage.xml
+      COVERAGE_REPORT: coverage/coverage.xml
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Git
-        run: |
-          git config --global user.name 'Test User'
-          git config --global user.email 'test@example.com'
-      - name: Set up Ruby
-        if: matrix.coverage
-        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "4.0"
-      - name: Run unit tests
+          fetch-depth: 2 # fetch-depth of 2 enables diff coverage
+      - name: Install Git ${{ matrix.git-version }}
+        if: matrix.git-version != 'latest' && matrix.os == 'ubuntu-latest'
         run: |
           set -euo pipefail
-          if [ "${{ matrix.coverage }}" = "true" ]; then
-            gem install bashcov
-            bashcov tests/test-runner.sh
-            sudo apt-get update && sudo apt-get install -y libxml2-utils
-            xmllint --html coverage/coverage.html > coverage.xml
-          else
-            bash tests/test-runner.sh
-          fi
-      - name: Upload to Codecov
-        if: matrix.coverage
-        uses: codecov/codecov-action@v5
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev
+          curl -sL "https://github.com/git/git/archive/v${{ matrix.git-version }}.tar.gz" \
+            | tar xz
+          cd "git-${{ matrix.git-version }}"
+          make prefix=/usr/local all -j"$(nproc)"
+          sudo make prefix=/usr/local install
+      - name: Verify Git
+        run: git --version
+      - uses: ruby/setup-ruby@v1
+        if: matrix.os == 'ubuntu-latest' && matrix.git-version == 'latest'
         with:
-          files: coverage.xml
-          flags: unit
-          fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-  test-integration:
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            coverage: true
-          - os: macos-latest
-            coverage: false
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v6
-      - name: Set up Git
-        run: |
-          git config --global user.name 'Test User'
-          git config --global user.email 'test@example.com'
-      - name: Install pre-commit
-        run: |
-          pip install --upgrade pip
-          pip install pre-commit
-      - name: Set up Ruby
-        if: matrix.coverage
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "4.0"
-      - name: Run integration tests
+          ruby-version: ruby
+      - name: "Run ${{ matrix.suite }} tests"
+        id: test
         run: |
           set -euo pipefail
-          if [ "${{ matrix.coverage }}" = "true" ]; then
-            gem install bashcov
-            bashcov tests/test-integration.sh
-            sudo apt-get update && sudo apt-get install -y libxml2-utils
-            xmllint --html coverage/coverage.html > coverage.xml
+          TEST_SCRIPT="tests/test-${{ matrix.suite }}.sh"
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ] &&
+             [ "${{ matrix.git-version }}" = "latest" ]; then
+            gem install bashcov simplecov-cobertura
+            set +e
+            bashcov "$TEST_SCRIPT"
+            echo "test_exit=$?" >> "$GITHUB_OUTPUT"
+            if [ -f "$COVERAGE_REPORT" ]; then
+              echo "coverage_created=true" >> "$GITHUB_OUTPUT"
+            fi
+            set -e
           else
-            bash tests/test-integration.sh
+            set +e
+            bash "$TEST_SCRIPT"
+            echo "test_exit=$?" >> "$GITHUB_OUTPUT"
+            set -e
           fi
       - name: Upload to Codecov
-        if: matrix.coverage
+        if: ${{ steps.test.outputs.coverage_created == 'true' }}
         uses: codecov/codecov-action@v5
         with:
-          files: coverage.xml
-          flags: integration
+          files: ${{ env.COVERAGE_REPORT }}
+          flags: ${{ matrix.suite }}
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Fail if tests failed
+        if: ${{ steps.test.outputs.test_exit != '0' }}
+        run: |
+          exit_code=${{ steps.test.outputs.test_exit }}
+          exit "$exit_code"

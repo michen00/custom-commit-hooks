@@ -95,7 +95,7 @@ yamllint .pre-commit-config.yaml .github/workflows/*.yml
 # Use toml-sort or python -c "import tomli; tomli.load(open('cliff.toml', 'rb'))"
 
 # Run tests (if test framework present)
-tests/test-runner.sh
+tests/test-unit.sh
 
 # Generate changelog for release
 git cliff --tag v1.0.0 --output CHANGELOG.md

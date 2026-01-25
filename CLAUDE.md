@@ -5,7 +5,7 @@ Custom commit hooks for use with [pre-commit](https://pre-commit.com/) that enha
 ## Development Commands
 
 - Install pre-commit hooks: `pre-commit install --hook-type commit-msg --hook-type prepare-commit-msg`
-- Run tests: `tests/test-runner.sh` or `make test`
+- Run tests: `tests/test-unit.sh` or `make test`
 - Lint shell scripts: `find scripts -type f -exec shellcheck --shell=sh {} +`
 - Format YAML: Check YAML syntax with your editor or `yamllint .pre-commit-config.yaml`
 - Generate changelog: `git cliff --tag <version> --output CHANGELOG.md`
@@ -19,7 +19,7 @@ See @README.md for project overview and features.
 - `scripts/lib/commit-msg.sh` - Shared library for commit message parsing and writing
 - `.pre-commit-hooks.yaml` - Hook definitions for pre-commit framework
 - `cliff.toml` - Configuration for git-cliff changelog generation
-- `tests/` - Hook tests and test utilities (including `tests/test-runner.sh`)
+- `tests/` - Hook tests and test utilities (including `tests/test-unit.sh`)
 
 ## Code Style
 
