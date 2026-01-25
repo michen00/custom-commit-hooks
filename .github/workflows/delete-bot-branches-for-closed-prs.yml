@@ -44,7 +44,7 @@ jobs:
 
             return 'false';
       - name: Delete PR head branch
-        if: steps.bot-author-check.outputs.result == 'false'
+        if: steps.bot-author-check.outputs.result == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
