@@ -93,7 +93,7 @@ develop: ## Set up the project for development (WITH_HOOKS={true|false}, default
 
 .PHONY: test-hooks
 test-hooks: ## Run hook unit tests
-	@bash tests/test-runner.sh
+	@bash tests/test-unit.sh
 
 .PHONY: test-integration
 test-integration: ## Run pre-commit integration tests

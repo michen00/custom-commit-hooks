@@ -13,7 +13,7 @@ Custom commit hooks for [pre-commit](https://pre-commit.com/) that enhance conve
 pre-commit install --hook-type commit-msg --hook-type prepare-commit-msg
 
 # Run automated tests
-tests/test-runner.sh
+tests/test-unit.sh
 
 # Test hooks manually
 git commit -m "test: sample commit"

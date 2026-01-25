@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yamllint:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(actionlint:*)",
+      "Bash(echo:*)",
+      "Bash(python3:*)",
+      "Bash(python3 -c \"import yaml; yaml.safe_load\\(open\\(''.github/actions/setup-test-env/action.yml''\\)\\); print\\(''action.yml: valid''\\)\")"
+    ]
+  }
+}

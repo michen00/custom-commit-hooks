@@ -70,7 +70,7 @@ exit 0
 # Run automated test suite
 make test
 # or
-tests/test-runner.sh
+tests/test-unit.sh
 
 # Manual testing: Install hooks and test with actual commits
 pre-commit install --hook-type commit-msg --hook-type prepare-commit-msg
