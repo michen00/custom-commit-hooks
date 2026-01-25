@@ -19,14 +19,14 @@ jobs:
         id: filter
         with:
           filters: |
-            workflows:
-              - .github/workflows/*.ya?ml
-            addedOrModified:
-              - added|modified: '**'
+            addedOrModifiedWorkflows:
+              - added|modified:
+                - .github/workflows/*.yaml
+                - .github/workflows/*.yml
       - uses: actions/checkout@v6
-        if: steps.filter.outputs.workflows == 'true'
+        if: steps.filter.outputs.addedOrModifiedWorkflows == 'true'
       - name: Check workflow files
-        if: steps.filter.outputs.workflows == 'true'
+        if: steps.filter.outputs.addedOrModifiedWorkflows == 'true'
         uses: docker://rhysd/actionlint:latest
         with:
           args: -color
