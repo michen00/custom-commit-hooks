@@ -111,6 +111,15 @@ jobs:
             set +e
             bashcov "$TEST_SCRIPT"
             echo "test_exit=$?" >> "$GITHUB_OUTPUT"
+            ls -la coverage
+            ls -la coverage/coverage.html
+            ls -la coverage/coverage.xml
+            ls -la coverage/coverage.json
+            ls -la coverage/coverage.lcov
+            ls -la coverage/coverage.lcov.info
+            ls -la coverage/coverage.lcov.info.json
+            ls -la coverage/coverage.lcov.info.json.html
+            ls -la coverage/coverage.lcov.info.json.html.xml
             if [ -f coverage/coverage.html ]; then
               xmllint --html coverage/coverage.html --xmlout > coverage.xml
               echo "coverage_created=true" >> "$GITHUB_OUTPUT"
