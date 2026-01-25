@@ -19,7 +19,7 @@ concurrency:
 jobs:
   bot-automerge:
     runs-on: ubuntu-latest
-    if: |
+    if: >-
       github.event.pull_request.head.repo.full_name == github.repository &&
       (github.actor == 'dependabot[bot]' || github.actor == 'pre-commit-ci[bot]')
     timeout-minutes: 30
