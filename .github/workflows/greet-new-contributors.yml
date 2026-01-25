@@ -33,8 +33,7 @@ jobs:
                 (typeof user.login === 'string' && user.login.endsWith('[bot]')))
             ) {
               console.log('Bot user detected:', user.login);
-              core.setOutput('result', 'true');
-              return;
+              return 'true';
             }
 
             return 'false';
