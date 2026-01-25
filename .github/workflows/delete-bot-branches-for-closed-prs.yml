@@ -15,7 +15,7 @@ concurrency:
 jobs:
   delete-branch:
     runs-on: ubuntu-latest
-    if: |
+    if: >-
       github.event.pull_request.head.repo.full_name == github.repository &&
       github.event.pull_request.merged == false
     steps:

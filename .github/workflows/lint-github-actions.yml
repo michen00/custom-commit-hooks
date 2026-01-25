@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: dorny/paths-filter@v3
         id: filter
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
         with:
           filters: |
             addedOrModifiedWorkflows:
@@ -24,9 +27,15 @@ jobs:
                 - .github/workflows/*.yaml
                 - .github/workflows/*.yml
       - uses: actions/checkout@v6
-        if: steps.filter.outputs.addedOrModifiedWorkflows == 'true'
+        if: >-
+          github.event_name == 'push' ||
+          github.event_name == 'workflow_dispatch' ||
+          steps.filter.outputs.addedOrModifiedWorkflows == 'true'
       - name: Check workflow files
-        if: steps.filter.outputs.addedOrModifiedWorkflows == 'true'
+        if: >-
+          github.event_name == 'push' ||
+          github.event_name == 'workflow_dispatch' ||
+          steps.filter.outputs.addedOrModifiedWorkflows == 'true'
         uses: docker://rhysd/actionlint:latest
         with:
           args: -color
