@@ -80,8 +80,13 @@ jobs:
             git-version: latest
             suite: unit
     runs-on: ${{ matrix.os }}
+    env:
+      # bashcov with simplecov-cobertura generates coverage/coverage.xml
+      COVERAGE_REPORT: coverage/coverage.xml
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2 # fetch-depth of 2 enables diff coverage
       - name: Install Git ${{ matrix.git-version }}
         if: matrix.git-version != 'latest' && matrix.os == 'ubuntu-latest'
         run: |
@@ -107,12 +112,13 @@ jobs:
           TEST_SCRIPT="tests/test-${{ matrix.suite }}.sh"
           if [ "${{ matrix.os }}" = "ubuntu-latest" ] &&
              [ "${{ matrix.git-version }}" = "latest" ]; then
-            gem install bashcov
+            gem install bashcov simplecov-cobertura
             set +e
             bashcov "$TEST_SCRIPT"
             echo "test_exit=$?" >> "$GITHUB_OUTPUT"
-            xmllint --html coverage/index.html --xmlout > coverage.xml
-            echo "coverage_created=true" >> "$GITHUB_OUTPUT"
+            if [ -f "$COVERAGE_REPORT" ]; then
+              echo "coverage_created=true" >> "$GITHUB_OUTPUT"
+            fi
             set -e
           else
             set +e
@@ -124,7 +130,7 @@ jobs:
         if: ${{ steps.test.outputs.coverage_created == 'true' }}
         uses: codecov/codecov-action@v5
         with:
-          files: coverage.xml
+          files: ${{ env.COVERAGE_REPORT }}
           flags: ${{ matrix.suite }}
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
