@@ -46,7 +46,11 @@ jobs:
   test-unit:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            coverage: true
+          - os: macos-latest
+            coverage: false
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -55,21 +59,21 @@ jobs:
           git config --global user.name 'Test User'
           git config --global user.email 'test@example.com'
       - name: Set up Ruby
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.coverage
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.3"
-      - name: Install bashcov
-        if: matrix.os == 'ubuntu-latest'
-        run: gem install bashcov
-      - name: Run unit tests with coverage
-        if: matrix.os == 'ubuntu-latest'
-        run: bashcov tests/test-runner.sh
-      - name: Run unit tests without coverage
-        if: matrix.os != 'ubuntu-latest'
-        run: bash tests/test-runner.sh
+          ruby-version: "4.0"
+      - name: Run unit tests
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.coverage }}" = "true" ]; then
+            gem install bashcov
+            bashcov tests/test-runner.sh
+          else
+            bash tests/test-runner.sh
+          fi
       - name: Upload to Codecov
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.coverage
         uses: codecov/codecov-action@v5
         with:
           files: coverage/coverage.xml
@@ -80,7 +84,11 @@ jobs:
   test-integration:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            coverage: true
+          - os: macos-latest
+            coverage: false
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -93,22 +101,21 @@ jobs:
           pip install --upgrade pip
           pip install pre-commit
       - name: Set up Ruby
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.coverage
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ruby-head
-          bundler-cache: true
-      - name: Install bashcov
-        if: matrix.os == 'ubuntu-latest'
-        run: gem install bashcov
-      - name: Run integration tests with coverage
-        if: matrix.os == 'ubuntu-latest'
-        run: bashcov tests/test-integration.sh
-      - name: Run integration tests without coverage
-        if: matrix.os != 'ubuntu-latest'
-        run: bash tests/test-integration.sh
+          ruby-version: "4.0"
+      - name: Run integration tests
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.coverage }}" = "true" ]; then
+            gem install bashcov
+            bashcov tests/test-integration.sh
+          else
+            bash tests/test-integration.sh
+          fi
       - name: Upload to Codecov
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.coverage
         uses: codecov/codecov-action@v5
         with:
           files: coverage/coverage.xml
