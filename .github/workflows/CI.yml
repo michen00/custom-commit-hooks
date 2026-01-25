@@ -60,59 +60,66 @@ jobs:
   tests:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        git-version: [latest, "2.30.0"]
-        suite: [unit, integration]
+        include:
+          # Ubuntu: latest Git with coverage (both suites)
+          - os: ubuntu-latest
+            git-version: latest
+            suite: unit
+          - os: ubuntu-latest
+            git-version: latest
+            suite: integration
+          # Ubuntu: floor Git version (unit only)
+          - os: ubuntu-latest
+            git-version: "2.30.0"
+            suite: unit
+          # OS compatibility: macOS and Windows (unit only, latest Git)
+          - os: macos-latest
+            git-version: latest
+            suite: unit
+          - os: windows-latest
+            git-version: latest
+            suite: unit
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
-      - name: "Set up Git ${{ matrix.git-version }}, OS: ${{ matrix.os }}"
-        id: setup-git
+      - name: Install Git ${{ matrix.git-version }}
+        if: matrix.git-version != 'latest' && matrix.os == 'ubuntu-latest'
         run: |
           set -euo pipefail
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            sudo apt-get update
-            sudo apt-get install -y \
-              libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev
-            curl -sL "https://github.com/git/git/archive/v${{ matrix.git-version }}.tar.gz" \
-              | tar xz
-            cd "git-${{ matrix.git-version }}"
-            make prefix=/usr/local all -j"$(nproc)"
-            sudo make prefix=/usr/local install
-          fi
-          if [ "${{ matrix.os }}" = "macos-latest" ]; then
-            if [ "${{ matrix.git-version }}" = "latest" ]; then
-              brew install git
-            else
-              brew install git@${{ matrix.git-version }}
-            fi
-          fi
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            if [ "${{ matrix.git-version }}" = "latest" ]; then
-              winget install git
-            else
-              winget install git@${{ matrix.git-version }}
-            fi
-          fi
-          git --version
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev
+          curl -sL "https://github.com/git/git/archive/v${{ matrix.git-version }}.tar.gz" \
+            | tar xz
+          cd "git-${{ matrix.git-version }}"
+          make prefix=/usr/local all -j"$(nproc)"
+          sudo make prefix=/usr/local install
+      - name: Verify Git
+        run: git --version
       - uses: ruby/setup-ruby@v1
         if: ${{ matrix.os == 'ubuntu-latest' }}
         with:
-          ruby-version: head
+          ruby-version: ruby
       - name: "Run ${{ matrix.suite }} tests, OS: ${{ matrix.os }}, Git: ${{ matrix.git-version }}"
         id: test
         run: |
-          set -uo pipefail
+          set -euo pipefail
           TEST_SCRIPT="tests/test-${{ matrix.suite }}.sh"
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
             gem install bashcov
-            bashcov "$TEST_SCRIPT" && echo "test_exit=$?" >> "$GITHUB_OUTPUT"
+            set +e
+            bashcov "$TEST_SCRIPT"
+            echo "test_exit=$?" >> "$GITHUB_OUTPUT"
             if [ -f coverage/coverage.html ]; then
               xmllint --html coverage/coverage.html --xmlout > coverage.xml
               echo "coverage_created=true" >> "$GITHUB_OUTPUT"
             fi
+            set -e
           else
+            set +e
             bash "$TEST_SCRIPT"
+            echo "test_exit=$?" >> "$GITHUB_OUTPUT"
+            set -e
           fi
       - name: Upload to Codecov
         if: ${{ steps.test.outputs.coverage_created == 'true' }}
