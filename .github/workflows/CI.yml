@@ -97,15 +97,16 @@ jobs:
       - name: Verify Git
         run: git --version
       - uses: ruby/setup-ruby@v1
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: matrix.os == 'ubuntu-latest' && matrix.git-version == 'latest'
         with:
           ruby-version: ruby
-      - name: "Run ${{ matrix.suite }} tests, OS: ${{ matrix.os }}, Git: ${{ matrix.git-version }}"
+      - name: "Run ${{ matrix.suite }} tests"
         id: test
         run: |
           set -euo pipefail
           TEST_SCRIPT="tests/test-${{ matrix.suite }}.sh"
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ] &&
+             [ "${{ matrix.git-version }}" = "latest" ]; then
             gem install bashcov
             set +e
             bashcov "$TEST_SCRIPT"
