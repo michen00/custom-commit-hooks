@@ -8,10 +8,19 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  ci:
-    name: CI
-    runs-on: ubuntu-latest
+  pre-commit:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
       - name: Install pre-commit
@@ -34,30 +43,75 @@ jobs:
         run: |
           pre-commit run --all-files
 
-  test:
-    runs-on: ubuntu-latest
+  test-unit:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
       - name: Set up Git
         run: |
-          git config --global user.name "Test User"
-          git config --global user.email "test@example.com"
-      - name: Run test suite
-        run: |
-          bash tests/test-runner.sh
+          git config --global user.name 'Test User'
+          git config --global user.email 'test@example.com'
+      - name: Set up Ruby
+        if: matrix.os == 'ubuntu-latest'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - name: Install bashcov
+        if: matrix.os == 'ubuntu-latest'
+        run: gem install bashcov
+      - name: Run unit tests with coverage
+        if: matrix.os == 'ubuntu-latest'
+        run: bashcov tests/test-runner.sh
+      - name: Run unit tests without coverage
+        if: matrix.os != 'ubuntu-latest'
+        run: bash tests/test-runner.sh
+      - name: Upload to Codecov
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage/coverage.xml
+          flags: unit
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   test-integration:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
       - name: Set up Git
         run: |
-          git config --global user.name "Test User"
-          git config --global user.email "test@example.com"
+          git config --global user.name 'Test User'
+          git config --global user.email 'test@example.com'
       - name: Install pre-commit
         run: |
           pip install --upgrade pip
           pip install pre-commit
-      - name: Run pre-commit integration tests
-        run: |
-          bash tests/test-integration.sh
+      - name: Set up Ruby
+        if: matrix.os == 'ubuntu-latest'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ruby-head
+          bundler-cache: true
+      - name: Install bashcov
+        if: matrix.os == 'ubuntu-latest'
+        run: gem install bashcov
+      - name: Run integration tests with coverage
+        if: matrix.os == 'ubuntu-latest'
+        run: bashcov tests/test-integration.sh
+      - name: Run integration tests without coverage
+        if: matrix.os != 'ubuntu-latest'
+        run: bash tests/test-integration.sh
+      - name: Upload to Codecov
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage/coverage.xml
+          flags: integration
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
