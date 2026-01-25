@@ -69,6 +69,8 @@ jobs:
           if [ "${{ matrix.coverage }}" = "true" ]; then
             gem install bashcov
             bashcov tests/test-runner.sh
+            sudo apt-get update && sudo apt-get install -y libxml2-utils
+            xmllint --html coverage/coverage.html > coverage.xml
           else
             bash tests/test-runner.sh
           fi
@@ -76,7 +78,7 @@ jobs:
         if: matrix.coverage
         uses: codecov/codecov-action@v5
         with:
-          files: coverage/index.html
+          files: coverage.xml
           flags: unit
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -111,6 +113,8 @@ jobs:
           if [ "${{ matrix.coverage }}" = "true" ]; then
             gem install bashcov
             bashcov tests/test-integration.sh
+            sudo apt-get update && sudo apt-get install -y libxml2-utils
+            xmllint --html coverage/coverage.html > coverage.xml
           else
             bash tests/test-integration.sh
           fi
@@ -118,7 +122,7 @@ jobs:
         if: matrix.coverage
         uses: codecov/codecov-action@v5
         with:
-          files: coverage/index.html
+          files: coverage.xml
           flags: integration
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
