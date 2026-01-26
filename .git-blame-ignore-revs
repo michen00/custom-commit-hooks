@@ -1,2 +1,3 @@
 8a73c2979a9c7d0e1b7a9ae993ee136393641e29  # style(tests/colors.sh): sort colors
 22f7987e55fd07b0e7ebfdaaf146d89c6b541c1a  # style: conform quote usage
+cb607016a33a3b72cbcce6fcf949836fc855d681  # style(_typos.toml): prefer single quotes
