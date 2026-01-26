@@ -70,7 +70,7 @@ jobs:
             suite: integration
           # Ubuntu: floor Git version (unit only)
           - os: ubuntu-latest
-            git-version: "2.30.0"
+            git-version: '2.30.0'
             suite: unit
           # OS compatibility: macOS and Windows (unit only, latest Git)
           - os: macos-latest
@@ -105,7 +105,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.git-version == 'latest'
         with:
           ruby-version: ruby
-      - name: "Run ${{ matrix.suite }} tests"
+      - name: 'Run ${{ matrix.suite }} tests'
         id: test
         run: |
           set -euo pipefail
