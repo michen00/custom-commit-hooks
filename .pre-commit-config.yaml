@@ -50,7 +50,7 @@ repos:
     rev: v6.0.0
     hooks:
       - id: check-added-large-files
-        args: ["--maxkb=1024"]
+        args: ['--maxkb=1024']
       - id: check-case-conflict
       - id: check-executables-have-shebangs
       - id: check-merge-conflict
@@ -78,7 +78,7 @@ repos:
     rev: v0.47.0
     hooks:
       - id: markdownlint
-        args: ["--fix"]
+        args: ['--fix']
 
   # linting
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -103,13 +103,13 @@ repos:
     rev: v0.11.0.1
     hooks:
       - id: shellcheck
-        args: ["--shell=sh"]
+        args: ['--shell=sh']
         files: ^scripts/
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.11.0.1
     hooks:
       - id: shellcheck
-        args: ["--shell=bash"]
+        args: ['--shell=bash']
         exclude: ^scripts/
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.10
