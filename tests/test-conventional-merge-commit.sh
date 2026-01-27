@@ -173,7 +173,7 @@ test_conventional_merge_commit \
 	"reapplying .+"
 
 test_conventional_merge_commit \
-	"Non-merge commit source unchanged" \
+	"Non-merge commit source short-circuits (no message read)" \
 	"Merge branch" \
 	"commit" \
 	"Merge branch"
@@ -226,6 +226,19 @@ test_conventional_merge_commit \
 	"Reapply commit source transforms message" \
 	"revert: reapply commit abc123" \
 	"revert" \
+	"Reapply commit abc123"
+
+# === Git revert --no-edit case (commit_source="message") ===
+test_conventional_merge_commit \
+	"Revert with 'message' source transforms (git revert --no-edit)" \
+	"revert: revert commit abc123" \
+	"message" \
+	"Revert commit abc123"
+
+test_conventional_merge_commit \
+	"Reapply with 'message' source transforms (git revert --no-edit)" \
+	"revert: reapply commit abc123" \
+	"message" \
 	"Reapply commit abc123"
 
 # === Body preservation tests ===

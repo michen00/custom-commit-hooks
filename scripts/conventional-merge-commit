@@ -8,6 +8,13 @@
 commit_msg_file="$1"
 commit_source=${2-}
 
+# Short-circuit: if git explicitly tells us it's not a merge/squash/revert, exit early
+# This avoids reading/parsing the message for regular commits
+case "$commit_source" in
+merge | squash | revert | message | "") ;;
+*) exit 0 ;;
+esac
+
 # Read and parse commit message
 read_commit_msg "$commit_msg_file"
 
@@ -30,20 +37,7 @@ case "$stripped" in
 [Rr]evert | [Rr]evert[![:alnum:]_]*) msg_type="revert" ;;
 esac
 
-# If commit_source not provided (e.g., pre-commit), use detected type
-# This allows the hook to work both as a native git hook and via pre-commit
-if [ -z "$commit_source" ]; then
-	commit_source="$msg_type"
-fi
-
-# Only process merge/squash/revert commits
-case "$commit_source" in
-merge | squash | revert) ;;
-*) exit 0 ;;
-esac
-
-# Verify message matches trigger pattern (required for native git hooks where
-# $2 is provided but message may have been edited)
+# Only process if we detected a merge/squash/revert pattern
 if [ -z "$msg_type" ]; then
 	exit 0
 fi
