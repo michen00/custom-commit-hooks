@@ -29,6 +29,9 @@ setup_test_repo() {
 	git config user.name "Test User"
 	git config user.email "test@example.com"
 
+	# Get the hook path before heredoc to avoid Windows path issues
+	HOOK_ENTRY_PATH="$(cd "$TEST_SCRIPT_DIR/.." && pwd)/scripts/conventional-merge-commit"
+
 	# Create pre-commit config pointing to local hooks
 	cat >.pre-commit-config.yaml <<EOF
 repos:
@@ -36,7 +39,7 @@ repos:
     hooks:
       - id: conventional-merge-commit
         name: conventional-merge-commit
-        entry: $(cd "$TEST_SCRIPT_DIR/.." && pwd)/scripts/conventional-merge-commit
+        entry: $HOOK_ENTRY_PATH
         language: script
         stages: [prepare-commit-msg]
 EOF
