@@ -149,6 +149,30 @@ test_conventional_merge_commit \
 	"squashing .+"
 
 test_conventional_merge_commit \
+	"'Reverting' unchanged (not a revert keyword)" \
+	"Reverting .+" \
+	"revert" \
+	"Reverting .+"
+
+test_conventional_merge_commit \
+	"'reverting' unchanged (not a revert keyword)" \
+	"reverting .+" \
+	"revert" \
+	"reverting .+"
+
+test_conventional_merge_commit \
+	"'Reapplying' unchanged (not a reapply keyword)" \
+	"Reapplying .+" \
+	"revert" \
+	"Reapplying .+"
+
+test_conventional_merge_commit \
+	"'reapplying' unchanged (not a reapply keyword)" \
+	"reapplying .+" \
+	"revert" \
+	"reapplying .+"
+
+test_conventional_merge_commit \
 	"Non-merge commit source unchanged" \
 	"Merge branch" \
 	"commit" \
@@ -167,6 +191,18 @@ test_conventional_merge_commit \
 	"Squash commits"
 
 test_conventional_merge_commit \
+	"Auto-detect: 'Revert commit' transforms" \
+	"revert: revert commit" \
+	"" \
+	"Revert commit"
+
+test_conventional_merge_commit \
+	"Auto-detect: 'Reapply commit' transforms" \
+	"revert: reapply commit" \
+	"" \
+	"Reapply commit"
+
+test_conventional_merge_commit \
 	"Auto-detect: non-trigger word unchanged" \
 	"Regular commit message" \
 	"" \
@@ -178,6 +214,19 @@ test_conventional_merge_commit \
 	"chore: squashed commits" \
 	"squash" \
 	"Squashed commits"
+
+# === Revert commit source ===
+test_conventional_merge_commit \
+	"Revert commit source transforms message" \
+	"revert: revert commit abc123" \
+	"revert" \
+	"Revert commit abc123"
+
+test_conventional_merge_commit \
+	"Reapply commit source transforms message" \
+	"revert: reapply commit abc123" \
+	"revert" \
+	"Reapply commit abc123"
 
 # === Body preservation tests ===
 test_conventional_merge_commit \
@@ -200,6 +249,24 @@ test_conventional_merge_commit \
 	"* commit 1
 * commit 2"
 
+test_conventional_merge_commit \
+	"Multi-line revert preserves body" \
+	"revert: revert commit abc123" \
+	"revert" \
+	"Revert commit abc123
+
+This reverts commit abc123 which introduced a bug." \
+	"This reverts commit abc123 which introduced a bug."
+
+test_conventional_merge_commit \
+	"Multi-line reapply preserves body" \
+	"revert: reapply commit abc123" \
+	"revert" \
+	"Reapply commit abc123
+
+This reapplies commit abc123 after fixing the issue." \
+	"This reapplies commit abc123 after fixing the issue."
+
 # === Word boundary tests ===
 test_conventional_merge_commit \
 	"'Merge_branch' unchanged (underscore is word char)" \
@@ -212,6 +279,18 @@ test_conventional_merge_commit \
 	"Squash_commits" \
 	"squash" \
 	"Squash_commits"
+
+test_conventional_merge_commit \
+	"'Revert_commit' unchanged (underscore is word char)" \
+	"Revert_commit" \
+	"revert" \
+	"Revert_commit"
+
+test_conventional_merge_commit \
+	"'Reapply_commit' unchanged (underscore is word char)" \
+	"Reapply_commit" \
+	"revert" \
+	"Reapply_commit"
 
 echo ""
 echo -e "Results: ${GREEN}${PASSED} passed${NC}, ${RED}${FAILED} failed${NC}"
