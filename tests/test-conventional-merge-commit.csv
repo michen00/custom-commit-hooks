@@ -47,6 +47,38 @@ merges:,chore: merges:
 merges:.,chore: merges:.
 merges!,chore: merges!
 merges!.,chore: merges!.
+Reapply,revert: reapply
+Reapply.,revert: reapply.
+Reapply ,revert: reapply 
+Reapply .,revert: reapply .
+Reapply:,revert: reapply:
+Reapply:.,revert: reapply:.
+Reapply!,revert: reapply!
+Reapply!.,revert: reapply!.
+reapply,revert: reapply
+reapply.,revert: reapply.
+reapply ,revert: reapply 
+reapply .,revert: reapply .
+reapply:,revert: reapply:
+reapply:.,revert: reapply:.
+reapply!,revert: reapply!
+reapply!.,revert: reapply!.
+Revert,revert: revert
+Revert.,revert: revert.
+Revert ,revert: revert 
+Revert .,revert: revert .
+Revert:,revert: revert:
+Revert:.,revert: revert:.
+Revert!,revert: revert!
+Revert!.,revert: revert!.
+revert,revert: revert
+revert.,revert: revert.
+revert ,revert: revert 
+revert .,revert: revert .
+revert:,revert: revert:
+revert:.,revert: revert:.
+revert!,revert: revert!
+revert!.,revert: revert!.
 Squash,chore: squash
 Squash.,chore: squash.
 Squash ,chore: squash 
@@ -143,6 +175,38 @@ squashes!.,chore: squashes!.
  merges:.,chore: merges:.
  merges!,chore: merges!
  merges!.,chore: merges!.
+ Reapply,revert: reapply
+ Reapply.,revert: reapply.
+ Reapply ,revert: reapply 
+ Reapply .,revert: reapply .
+ Reapply:,revert: reapply:
+ Reapply:.,revert: reapply:.
+ Reapply!,revert: reapply!
+ Reapply!.,revert: reapply!.
+ reapply,revert: reapply
+ reapply.,revert: reapply.
+ reapply ,revert: reapply 
+ reapply .,revert: reapply .
+ reapply:,revert: reapply:
+ reapply:.,revert: reapply:.
+ reapply!,revert: reapply!
+ reapply!.,revert: reapply!.
+ Revert,revert: revert
+ Revert.,revert: revert.
+ Revert ,revert: revert 
+ Revert .,revert: revert .
+ Revert:,revert: revert:
+ Revert:.,revert: revert:.
+ Revert!,revert: revert!
+ Revert!.,revert: revert!.
+ revert,revert: revert
+ revert.,revert: revert.
+ revert ,revert: revert 
+ revert .,revert: revert .
+ revert:,revert: revert:
+ revert:.,revert: revert:.
+ revert!,revert: revert!
+ revert!.,revert: revert!.
  Squash,chore: squash
  Squash.,chore: squash.
  Squash ,chore: squash 
@@ -239,6 +303,38 @@ squashes!.,chore: squashes!.
   merges:.,chore: merges:.
   merges!,chore: merges!
   merges!.,chore: merges!.
+  Reapply,revert: reapply
+  Reapply.,revert: reapply.
+  Reapply ,revert: reapply 
+  Reapply .,revert: reapply .
+  Reapply:,revert: reapply:
+  Reapply:.,revert: reapply:.
+  Reapply!,revert: reapply!
+  Reapply!.,revert: reapply!.
+  reapply,revert: reapply
+  reapply.,revert: reapply.
+  reapply ,revert: reapply 
+  reapply .,revert: reapply .
+  reapply:,revert: reapply:
+  reapply:.,revert: reapply:.
+  reapply!,revert: reapply!
+  reapply!.,revert: reapply!.
+  Revert,revert: revert
+  Revert.,revert: revert.
+  Revert ,revert: revert 
+  Revert .,revert: revert .
+  Revert:,revert: revert:
+  Revert:.,revert: revert:.
+  Revert!,revert: revert!
+  Revert!.,revert: revert!.
+  revert,revert: revert
+  revert.,revert: revert.
+  revert ,revert: revert 
+  revert .,revert: revert .
+  revert:,revert: revert:
+  revert:.,revert: revert:.
+  revert!,revert: revert!
+  revert!.,revert: revert!.
   Squash,chore: squash
   Squash.,chore: squash.
   Squash ,chore: squash 
