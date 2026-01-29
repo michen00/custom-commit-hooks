@@ -45,19 +45,10 @@ fi
 # Transform based on message type
 if [ "$msg_type" = "revert" ]; then
 	# For revert/reapply: "revert: revert <rest>" or "revert: reapply <rest>"
-	# Note: Detection ensures this matches Revert/revert/Reapply/reapply, so case will always match
-	case "$stripped" in
-	[Rr]evert*)
-		# "revert" is 6 characters
-		rest="${stripped#??????}"
-		new_first_line="revert: revert$rest"
-		;;
-	[Rr]eapply*)
-		# "reapply" is 7 characters
-		rest="${stripped#???????}"
-		new_first_line="revert: reapply$rest"
-		;;
-	esac
+	# This reuses the same logic as for merge/squash: lowercase the first letter.
+	# e.g. "Revert" -> "r" + "evert", "Reapply" -> "r" + "eapply"
+	rest="${stripped#?}"
+	new_first_line="revert: r$rest"
 else
 	# For merge/squash: "chore: " + lowercase first char + rest
 	# Note: Detection ensures first char is M/m (merge) or S/s (squash)
