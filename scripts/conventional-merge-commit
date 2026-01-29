@@ -47,20 +47,14 @@ if [ "$msg_type" = "revert" ]; then
 	# For revert/reapply: "revert: revert <rest>" or "revert: reapply <rest>"
 	# Note: Detection ensures this matches Revert/revert/Reapply/reapply, so case will always match
 	case "$stripped" in
-	Revert*)
-		rest="${stripped#Revert}"
+	[Rr]evert*)
+		# "revert" is 6 characters
+		rest="${stripped#??????}"
 		new_first_line="revert: revert$rest"
 		;;
-	revert*)
-		rest="${stripped#revert}"
-		new_first_line="revert: revert$rest"
-		;;
-	Reapply*)
-		rest="${stripped#Reapply}"
-		new_first_line="revert: reapply$rest"
-		;;
-	reapply*)
-		rest="${stripped#reapply}"
+	[Rr]eapply*)
+		# "reapply" is 7 characters
+		rest="${stripped#???????}"
 		new_first_line="revert: reapply$rest"
 		;;
 	esac
