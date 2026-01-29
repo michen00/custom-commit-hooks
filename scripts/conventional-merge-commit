@@ -23,18 +23,18 @@ stripped="${COMMIT_FIRST_LINE#"${COMMIT_FIRST_LINE%%[![:space:]]*}"}"
 
 # Detect message type from content (single source of truth for trigger patterns)
 # Word boundary: keyword alone or followed by non-word character
-# Order matters: longest keywords first to prevent partial matches
+# Ordered by frequency: most common patterns first (Git defaults: "Merge", "Revert", "Squash")
 #   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?|[Rr]evert|[Rr]eapply)\b.*$
 msg_type=""
 case "$stripped" in
-[Mm]erges | [Mm]erges[![:alnum:]_]*) msg_type="merge" ;;
-[Mm]erged | [Mm]erged[![:alnum:]_]*) msg_type="merge" ;;
 [Mm]erge | [Mm]erge[![:alnum:]_]*) msg_type="merge" ;;
-[Ss]quashes | [Ss]quashes[![:alnum:]_]*) msg_type="squash" ;;
-[Ss]quashed | [Ss]quashed[![:alnum:]_]*) msg_type="squash" ;;
-[Ss]quash | [Ss]quash[![:alnum:]_]*) msg_type="squash" ;;
-[Rr]eapply | [Rr]eapply[![:alnum:]_]*) msg_type="revert" ;;
 [Rr]evert | [Rr]evert[![:alnum:]_]*) msg_type="revert" ;;
+[Rr]eapply | [Rr]eapply[![:alnum:]_]*) msg_type="revert" ;;
+[Ss]quash | [Ss]quash[![:alnum:]_]*) msg_type="squash" ;;
+[Mm]erged | [Mm]erged[![:alnum:]_]*) msg_type="merge" ;;
+[Mm]erges | [Mm]erges[![:alnum:]_]*) msg_type="merge" ;;
+[Ss]quashed | [Ss]quashed[![:alnum:]_]*) msg_type="squash" ;;
+[Ss]quashes | [Ss]quashes[![:alnum:]_]*) msg_type="squash" ;;
 esac
 
 # Only process if we detected a merge/squash/revert pattern
