@@ -2,3 +2,4 @@
 22f7987e55fd07b0e7ebfdaaf146d89c6b541c1a  # style: conform quote usage
 cb607016a33a3b72cbcce6fcf949836fc855d681  # style(_typos.toml): prefer single quotes
 de2a4dc3cda7909ad49092c65c7689d6aaba923c  # style(.github/dependabot.yml): use fewer quotes
+809abbe8a8a19a7cd467577a72345244698f3650  # style: normalize quote use in YAML files

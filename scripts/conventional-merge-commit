@@ -8,6 +8,13 @@
 commit_msg_file="$1"
 commit_source=${2-}
 
+# Short-circuit: if git explicitly tells us it's not a merge/squash/revert, exit early
+# This avoids reading/parsing the message for regular commits
+case "$commit_source" in
+merge | squash | revert | message | "") ;;
+*) exit 0 ;;
+esac
+
 # Read and parse commit message
 read_commit_msg "$commit_msg_file"
 
@@ -17,7 +24,7 @@ stripped="${COMMIT_FIRST_LINE#"${COMMIT_FIRST_LINE%%[![:space:]]*}"}"
 # Detect message type from content (single source of truth for trigger patterns)
 # Word boundary: keyword alone or followed by non-word character
 # Order matters: longest keywords first to prevent partial matches
-#   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?)\b.*$
+#   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?|[Rr]evert|[Rr]eapply)\b.*$
 msg_type=""
 case "$stripped" in
 [Mm]erges | [Mm]erges[![:alnum:]_]*) msg_type="merge" ;;
@@ -26,33 +33,40 @@ case "$stripped" in
 [Ss]quashes | [Ss]quashes[![:alnum:]_]*) msg_type="squash" ;;
 [Ss]quashed | [Ss]quashed[![:alnum:]_]*) msg_type="squash" ;;
 [Ss]quash | [Ss]quash[![:alnum:]_]*) msg_type="squash" ;;
+[Rr]eapply | [Rr]eapply[![:alnum:]_]*) msg_type="revert" ;;
+[Rr]evert | [Rr]evert[![:alnum:]_]*) msg_type="revert" ;;
 esac
 
-# If commit_source not provided (e.g., pre-commit), use detected type
-# This allows the hook to work both as a native git hook and via pre-commit
-if [ -z "$commit_source" ]; then
-	commit_source="$msg_type"
-fi
-
-# Only process merge/squash commits
-case "$commit_source" in
-merge | squash) ;;
-*) exit 0 ;;
-esac
-
-# Verify message matches trigger pattern (required for native git hooks where
-# $2 is provided but message may have been edited)
+# Only process if we detected a merge/squash/revert pattern
 if [ -z "$msg_type" ]; then
 	exit 0
 fi
 
-# Transform: "chore: " + lowercase first char + rest
-first_char="${stripped%"${stripped#?}"}"
-rest="${stripped#?}"
-
-case "$first_char" in
-[Mm]) new_first_line="chore: m$rest" ;;
-*) new_first_line="chore: s$rest" ;; # Default: S/s (squash)
-esac
+# Transform based on message type
+if [ "$msg_type" = "revert" ]; then
+	# For revert/reapply: "revert: revert <rest>" or "revert: reapply <rest>"
+	# Note: Detection ensures this matches Revert/revert/Reapply/reapply, so case will always match
+	case "$stripped" in
+	[Rr]evert*)
+		# "revert" is 6 characters
+		rest="${stripped#??????}"
+		new_first_line="revert: revert$rest"
+		;;
+	[Rr]eapply*)
+		# "reapply" is 7 characters
+		rest="${stripped#???????}"
+		new_first_line="revert: reapply$rest"
+		;;
+	esac
+else
+	# For merge/squash: "chore: " + lowercase first char + rest
+	# Note: Detection ensures first char is M/m (merge) or S/s (squash)
+	first_char="${stripped%"${stripped#?}"}"
+	rest="${stripped#?}"
+	case "$first_char" in
+	[Mm]) new_first_line="chore: m$rest" ;;
+	*) new_first_line="chore: s$rest" ;; # Default: S/s (squash)
+	esac
+fi
 
 write_commit_msg "$commit_msg_file" "$new_first_line" "$COMMIT_REST"
