@@ -27,11 +27,9 @@ stripped="${COMMIT_FIRST_LINE#"${COMMIT_FIRST_LINE%%[![:space:]]*}"}"
 #   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?|[Rr]evert|[Rr]eapply)\b.*$
 msg_type=""
 case "$stripped" in
-[Mm]erge | [Mm]erge[![:alnum:]_]*) msg_type="merge" ;;
+[Mm]erge | [Mm]erge[ds] | [Mm]erge[![:alnum:]_]* | [Mm]erge[ds][![:alnum:]_]*) msg_type="merge" ;;
 [Rr]evert | [Rr]evert[![:alnum:]_]* | [Rr]eapply | [Rr]eapply[![:alnum:]_]*) msg_type="revert" ;;
-[Ss]quash | [Ss]quash[![:alnum:]_]*) msg_type="squash" ;;
-[Mm]erged | [Mm]erged[![:alnum:]_]* | [Mm]erges | [Mm]erges[![:alnum:]_]*) msg_type="merge" ;;
-[Ss]quashed | [Ss]quashed[![:alnum:]_]* | [Ss]quashes | [Ss]quashes[![:alnum:]_]*) msg_type="squash" ;;
+[Ss]quash | [Ss]quashe[ds] | [Ss]quash[![:alnum:]_]* | [Ss]quashe[ds][![:alnum:]_]*) msg_type="squash" ;;
 esac
 
 # Only process if we detected a merge/squash/revert pattern
