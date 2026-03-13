@@ -25,6 +25,13 @@ find scripts -type f -exec shellcheck --shell=sh {} +
 git cliff --tag v1.0.0 --output CHANGELOG.md
 ```
 
+## Release automation
+
+- **Release PR** (`.github/workflows/release-pr.yml`): dispatch with version to refresh changelog and open release-prep PR.
+- **Release Publish** (`.github/workflows/release-publish.yml`): runs on `v*.*.*` tag push (or manual dispatch) to build, sign (Sigstore + GPG), and upload assets.
+- Scripts: `scripts/release/build-artifacts.sh`, `scripts/release/sign-artifacts.sh`, `scripts/update-unreleased.sh`.
+- Full steps and verification commands: see [CONTRIBUTING](CONTRIBUTING.md#creating-a-release).
+
 ## Testing
 
 - Test with actual git commits - this is a hooks project

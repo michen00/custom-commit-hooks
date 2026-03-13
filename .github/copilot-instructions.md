@@ -85,6 +85,11 @@ git merge --no-ff feature-branch
 # Result: "chore: merge branch 'feature-branch' into main"
 ```
 
+## Release
+
+- Releases use **Release PR** then **Release Publish** workflows; artifacts are signed with Sigstore and GPG.
+- See [CONTRIBUTING](CONTRIBUTING.md#creating-a-release) for steps and verification. Do not change `scripts/release/` or release workflows without checking CONTRIBUTING.
+
 ## Boundaries
 
 **Always:**

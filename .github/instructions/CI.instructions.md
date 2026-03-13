@@ -31,20 +31,26 @@ test:
   - Run test suite (bash test scripts)
 ```
 
-### Release Workflow (future)
+### Release Workflows
 
 **Triggers:**
 
-- Tags matching `v*.*.*` pattern
-- Manual release creation
+- `release-pr.yml`: manual `workflow_dispatch` with `version`
+- `release-publish.yml`: tag pushes matching `v*.*.*`
+- `release-publish.yml`: manual `workflow_dispatch` with existing `tag`
 
 **Jobs:**
 
 ```yaml
-release:
-  - Generate changelog: git cliff --tag $TAG --output CHANGELOG.md
-  - Create GitHub release with changelog
-  - Upload hook scripts as release artifacts
+release-pr:
+  - Update unreleased changelog via scripts/update-unreleased.sh
+  - Validate changelog formatting and test suite
+  - Open signed release preparation PR
+
+release-publish:
+  - Build deterministic release artifacts
+  - Sign artifacts with Sigstore keyless + GPG detached signatures
+  - Upload artifacts and signatures to GitHub Release
 ```
 
 ## Quality Gates
@@ -97,8 +103,8 @@ yamllint .pre-commit-config.yaml .github/workflows/*.yml
 # Run tests (if test framework present)
 tests/test-unit.sh
 
-# Generate changelog for release
-git cliff --tag v1.0.0 --output CHANGELOG.md
+# Update unreleased changelog section
+scripts/update-unreleased.sh
 ```
 
 ## Troubleshooting
@@ -125,8 +131,9 @@ git cliff --tag v1.0.0 --output CHANGELOG.md
 
 1. **On every commit**: Run shellcheck + YAML validation
 2. **On PR**: Run full test suite, validate commit messages
-3. **On tag**: Generate changelog, create release
-4. **Scheduled**: Weekly dependency audit (if applicable)
+3. **On release dispatch**: Open release PR with changelog updates
+4. **On tag**: Build, sign, and publish release artifacts
+5. **Scheduled**: Weekly changelog and dependency automation
 
 ## Monitoring
 

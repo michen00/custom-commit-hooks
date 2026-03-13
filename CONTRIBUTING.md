@@ -69,14 +69,37 @@ Using the web-based interface to make changes is fine too, and will help you by 
 
 #### Creating a release
 
-1. Prepare a release branch: `git switch main && git pull && git switch -c release/vX.Y.Z`
-1. Update `CHANGELOG.md` with unreleased changes: `git cliff --unreleased --prepend CHANGELOG.md`
-1. Commit the changes (`git commit -am "chore: release vX.Y.Z"`).
-1. Push to your fork and open a PR.
-1. After the PR is merged, get the latest main: `git switch main && git pull`
-1. Create a signed tag: `git tag -a vX.Y.Z -m vX.Y.Z -s`
-1. Push with tags: `git push --follow-tags`
-1. Create a release on GitHub: `gh release create vX.Y.Z --generate-notes`
+Default flow (automated):
+
+1. Run **Release PR** workflow (`.github/workflows/release-pr.yml`) with `version` (`X.Y.Z` or `vX.Y.Z`).
+1. Review and merge the generated PR (`chore(release): prepare vX.Y.Z`).
+1. Tag and push the release from `main`:
+   - `git switch main && git pull`
+   - `git tag -a vX.Y.Z -m vX.Y.Z -s`
+   - `git push origin vX.Y.Z`
+1. **Release Publish** workflow (`.github/workflows/release-publish.yml`) runs automatically on tag push and uploads signed artifacts to the GitHub release.
+
+Manual fallback:
+
+1. If needed, run **Release Publish** via `workflow_dispatch` with an existing `tag`.
+
+Signing model:
+
+- Sigstore keyless signatures are generated in CI for every release artifact.
+- GPG detached signatures are also generated for compatibility.
+- Required repository secrets for GPG signing in CI:
+  - `RELEASE_GPG_PRIVATE_KEY` (ASCII-armored private key)
+  - `RELEASE_GPG_PASSPHRASE` (passphrase for the private key)
+
+Verification examples:
+
+```bash
+# Sigstore
+cosign verify-blob --signature artifact.sig --certificate artifact.pem --certificate-oidc-issuer https://token.actions.githubusercontent.com --certificate-identity-regexp 'https://github.com/.+' artifact
+
+# GPG
+gpg --verify artifact.asc artifact
+```
 
 ### Recommended VSCode extensions
 
