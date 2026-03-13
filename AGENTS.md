@@ -41,6 +41,7 @@ scripts/
   conventional-merge-commit       # Hook: transforms merge commits
   lib/
     commit-msg.sh                 # Shared library for commit message parsing/writing
+  benchmark/                      # Benchmark scripts; run.sh to run all or by name
 .pre-commit-hooks.yaml            # Hook definitions
 cliff.toml                        # Changelog generation config
 README.md                         # User documentation

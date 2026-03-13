@@ -105,6 +105,10 @@ test: test-hooks test-integration ## Run all tests
 .PHONY: check
 check: run-pre-commit test ## Run all code quality checks and tests
 
+.PHONY: benchmark
+benchmark: ## Run all benchmark scripts (see scripts/benchmark/run.sh --list)
+	@sh scripts/benchmark/run.sh
+
 .PHONY: enable-pre-commit
 enable-pre-commit: ## Enable pre-commit hooks (along with commit-msg and pre-push hooks)
 	@if command -v pre-commit >/dev/null 2>&1; then \
