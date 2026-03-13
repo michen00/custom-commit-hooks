@@ -109,6 +109,15 @@ check: run-pre-commit test ## Run all code quality checks and tests
 benchmark: ## Run all benchmark scripts (see scripts/benchmark/run.sh --list)
 	@sh scripts/benchmark/run.sh
 
+.PHONY: release-pr
+release-pr: ## Trigger Release PR workflow (usage: make release-pr VERSION=1.2.3 or VERSION=v1.2.3)
+	@test -n "$(VERSION)" || (echo "$(RED)Error: VERSION is required (e.g. 1.2.3 or v1.2.3)$(_COLOR)"; exit 1)
+	@gh workflow run release-pr.yml --ref main -f version=$(VERSION)
+
+.PHONY: release-pr-watch
+release-pr-watch: ## Watch the latest workflow run (run after make release-pr)
+	@gh run watch
+
 .PHONY: enable-pre-commit
 enable-pre-commit: ## Enable pre-commit hooks (along with commit-msg and pre-push hooks)
 	@if command -v pre-commit >/dev/null 2>&1; then \
