@@ -1,0 +1,90 @@
+---
+name: Release Publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing git tag to publish (for example: v0.1.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release-publish
+  cancel-in-progress: false
+
+jobs:
+  release-publish:
+    runs-on: ubuntu-latest
+    env:
+      DIST_DIR: dist
+    steps:
+      - name: Resolve release tag
+        id: release-tag
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+          REF_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            tag="$INPUT_TAG"
+          else
+            tag="$REF_TAG"
+          fi
+
+          case "$tag" in
+            v[0-9]*.[0-9]*.[0-9]*) ;;
+            *)
+              echo "::error::Invalid release tag '$tag'. Expected vX.Y.Z."
+              exit 1
+              ;;
+          esac
+
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: refs/tags/${{ steps.release-tag.outputs.tag }}
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Import release GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.RELEASE_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.RELEASE_GPG_PASSPHRASE }}
+
+      - name: Build release artifacts
+        env:
+          RELEASE_TAG: ${{ steps.release-tag.outputs.tag }}
+        run: scripts/release/build-artifacts.sh "$RELEASE_TAG" "$DIST_DIR"
+
+      - name: Sign artifacts
+        env:
+          RELEASE_TAG: ${{ steps.release-tag.outputs.tag }}
+          GPG_PASSPHRASE: ${{ secrets.RELEASE_GPG_PASSPHRASE }}
+        run: scripts/release/sign-artifacts.sh "$DIST_DIR" "$RELEASE_TAG"
+
+      - name: Publish GitHub release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release-tag.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "$DIST_DIR"/* --clobber
+          else
+            gh release create "$RELEASE_TAG" "$DIST_DIR"/* \
+              --title "$RELEASE_TAG" \
+              --generate-notes
+          fi

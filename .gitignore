@@ -948,3 +948,7 @@ Backup of *.doc*
 
 coverage/**
 !.gitkeep
+
+# Keep release automation scripts tracked.
+!scripts/release/
+!scripts/release/*.sh
