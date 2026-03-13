@@ -66,7 +66,7 @@ has_wait_n() {
 			trap 'rm -f "$tmp_file"' EXIT
 
 			printf '%s' "$original" >"$tmp_file"
-			"$HOOK_MERGE" "$tmp_file" "merge" >/dev/null 2>&1 || true
+			"$HOOK_MERGE" "$tmp_file" "" >/dev/null 2>&1 || true
 
 			actual=$(head -n 1 "$tmp_file")
 

@@ -8,6 +8,12 @@
 commit_msg_file="$1"
 commit_source=${2-}
 
+# pre-commit passes prepare-commit-msg source via environment variable
+# instead of positional args (it only forwards file paths as args).
+if [ -z "$commit_source" ] && [ -n "${PRE_COMMIT_COMMIT_MSG_SOURCE-}" ]; then
+	commit_source="$PRE_COMMIT_COMMIT_MSG_SOURCE"
+fi
+
 # Short-circuit: if git explicitly tells us it's not a merge/squash/revert, exit early
 # This avoids reading/parsing the message for regular commits
 case "$commit_source" in
