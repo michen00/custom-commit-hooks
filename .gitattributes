@@ -19,7 +19,7 @@
 *.php           text diff=php
 *.properties    text
 *.py            text diff=python
-*.sh            text diff=bash
+*.sh            text eol=lf diff=bash
 *.sql           text
 *.tf            text
 *.ts            text
@@ -29,6 +29,8 @@
 *.yml           text
 CODEOWNERS      text
 Dockerfile      text
+scripts/enhance-scope            text eol=lf
+scripts/conventional-merge-commit text eol=lf
 
 *.gif  filter=lfs diff=lfs merge=lfs -text
 *.jpeg filter=lfs diff=lfs merge=lfs -text
