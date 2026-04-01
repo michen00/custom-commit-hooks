@@ -128,7 +128,7 @@ jobs:
           fi
       - name: Upload to Codecov
         if: ${{ steps.test.outputs.coverage_created == 'true' }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: ${{ env.COVERAGE_REPORT }}
           flags: ${{ matrix.suite }}
