@@ -19,5 +19,29 @@ if ! command -v git-cliff >/dev/null 2>&1; then
 	exit 1
 fi
 
-git cliff --unreleased --prepend "$changelog_file"
+tmp_sections="$(mktemp)"
+trap 'rm -f "$tmp_sections"' EXIT INT TERM HUP
+
+# Keep only released sections (and footer), dropping any stale unreleased block.
+awk '
+BEGIN {
+	in_sections = 0
+	skip_unreleased = 0
+}
+/^## \[/ {
+	in_sections = 1
+	if ($0 ~ /^## \[Unreleased\]/) {
+		skip_unreleased = 1
+		next
+	}
+	skip_unreleased = 0
+}
+in_sections && !skip_unreleased {
+	print
+}
+' "$changelog_file" >"$tmp_sections"
+
+mv "$tmp_sections" "$changelog_file"
+# Prepend header + unreleased content, but keep a single footer at the end.
+git cliff --unreleased --strip footer --prepend "$changelog_file"
 echo "Updated unreleased changelog entries in $changelog_file"
