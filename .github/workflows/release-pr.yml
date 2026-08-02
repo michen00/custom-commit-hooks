@@ -5,8 +5,8 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (for example: 0.1.0 or v0.1.0)'
-        required: true
+        description: 'Version (0.1.0 or v0.1.0); leave empty to infer'
+        required: false
         type: string
 
 permissions:
@@ -26,13 +26,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate version input
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
+        with:
+          tool: git-cliff
+
+      - name: Resolve release version
         id: version
         env:
           RELEASE_VERSION_INPUT: ${{ inputs.version }}
         run: |
           set -euo pipefail
           raw="$RELEASE_VERSION_INPUT"
+
+          if [ -z "$raw" ]; then
+            # Derive the next semver from conventional commits since the latest tag.
+            raw="$(git cliff --bumped-version)"
+            echo "Inferred version from conventional commits: $raw"
+          fi
 
           case "$raw" in
             v*) tag="$raw" ;;
@@ -47,6 +58,12 @@ jobs:
               ;;
           esac
 
+          # With no releasable commits, --bumped-version echoes the current tag.
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "::error::Tag $tag already exists. Nothing to release."
+            exit 1
+          fi
+
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "branch=release/$tag" >> "$GITHUB_OUTPUT"
 
@@ -60,11 +77,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install --upgrade pre-commit
-
-      - name: Install git-cliff
-        uses: taiki-e/install-action@v2
-        with:
-          tool: git-cliff
 
       - name: Update unreleased changelog
         run: scripts/update-unreleased.sh
@@ -96,6 +108,6 @@ jobs:
             - Refreshes `CHANGELOG.md` unreleased section
             - Validates tests before proposing release prep
 
-            After merge, publish by creating/pushing
-            tag `${{ steps.version.outputs.tag }}`.
-            You can also run the manual release publish workflow.
+            Merging this PR creates and pushes the signed tag
+            `${{ steps.version.outputs.tag }}` and publishes the release.
+            No local tagging step is needed.
