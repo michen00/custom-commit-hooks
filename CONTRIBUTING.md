@@ -71,22 +71,38 @@ Using the web-based interface to make changes is fine too, and will help you by 
 
 Default flow (automated):
 
-1. Run **Release PR** workflow (`.github/workflows/release-pr.yml`) with `version` (`X.Y.Z` or `vX.Y.Z`).
+1. Run **Release PR** workflow (`.github/workflows/release-pr.yml`), or `make release-pr`.
+   Leave `version` empty to derive the next version from conventional commits via
+   `git cliff --bumped-version`, or pass `X.Y.Z` / `vX.Y.Z` to pin it.
 1. Review and merge the generated PR (`chore(release): prepare vX.Y.Z`).
-1. Tag and push the release from `main`:
-   - `git switch main && git pull`
-   - `git tag -a vX.Y.Z -m vX.Y.Z -s`
-   - `git push origin vX.Y.Z`
-1. **Release Publish** workflow (`.github/workflows/release-publish.yml`) runs automatically on tag push and uploads signed artifacts to the GitHub release.
+1. **Release Tag** workflow (`.github/workflows/release-tag.yml`) runs on merge of a
+   `release/*` branch. It creates a GPG-signed annotated tag, pushes it, and dispatches
+   **Release Publish**.
+1. **Release Publish** workflow (`.github/workflows/release-publish.yml`) builds and
+   uploads signed artifacts to the GitHub release.
+
+Merging the release PR is therefore the point of no return — no local step is required.
 
 Manual fallback:
 
+1. Tag and push by hand from `main`:
+   - `git switch main && git pull`
+   - `git tag -a vX.Y.Z -m vX.Y.Z -s`
+   - `git push origin vX.Y.Z`
+     A tag pushed this way triggers **Release Publish** directly on tag push.
 1. If needed, run **Release Publish** via `workflow_dispatch` with an existing `tag`.
+
+> **Note:** Release Tag dispatches Release Publish explicitly rather than relying on the
+> tag push, because a tag pushed with `GITHUB_TOKEN` does not trigger `on: push: tags`.
 
 Signing model:
 
 - Sigstore keyless signatures are generated in CI for every release artifact.
 - GPG detached signatures are also generated for compatibility.
+- Release tags are annotated and GPG-signed. When **Release Tag** creates the tag, it is
+  signed with the CI release key rather than a maintainer's personal key, so anyone able
+  to merge a `release/*` PR can mint a release. Restrict who can merge those PRs
+  accordingly, or tag by hand using the manual fallback above.
 - Required repository secrets for GPG signing in CI:
   - `RELEASE_GPG_PRIVATE_KEY` (ASCII-armored private key)
   - `RELEASE_GPG_PASSPHRASE` (passphrase for the private key)
