@@ -40,15 +40,31 @@ jobs:
             tag="$REF_TAG"
           fi
 
-          case "$tag" in
-            v[0-9]*.[0-9]*.[0-9]*) ;;
-            *)
-              echo "::error::Invalid release tag '$tag'. Expected vX.Y.Z."
-              exit 1
-              ;;
-          esac
+          # Strict vMAJOR.MINOR.PATCH parse. A glob such as v[0-9]*.[0-9]*.[0-9]*
+          # also accepts "v1.0.0; rm -rf /", since * matches separators too.
+          invalid() {
+            echo "::error::Invalid release tag '$tag'. Expected vX.Y.Z."
+            exit 1
+          }
 
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          rest="${tag#v}"
+          [ "$rest" != "$tag" ] || invalid
+
+          major="${rest%%.*}"
+          after_major="${rest#*.}"
+          [ "$after_major" != "$rest" ] || invalid
+
+          minor="${after_major%%.*}"
+          patch="${after_major#*.}"
+          [ "$patch" != "$after_major" ] || invalid
+
+          for part in "$major" "$minor" "$patch"; do
+            case "$part" in
+              '' | *[!0-9]*) invalid ;;
+            esac
+          done
+
+          echo "tag=v$major.$minor.$patch" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@v6
         with:
