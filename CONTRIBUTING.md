@@ -107,6 +107,43 @@ Signing model:
   - `RELEASE_GPG_PRIVATE_KEY` (ASCII-armored private key)
   - `RELEASE_GPG_PASSPHRASE` (passphrase for the private key)
 
+Without both secrets, **Release Tag** and **Release Publish** fail at the GPG import step,
+so no tag is created and no artifacts are published. A GitHub App token does not substitute
+for them: a token authenticates git and API calls but cannot produce a GPG signature, and
+GitHub signs only commits it creates via the API, never annotated tag objects.
+
+##### One-time release key setup
+
+Run these locally as a maintainer; never paste private key material into an issue, a PR, or
+a chat transcript.
+
+```bash
+# 1. Pick a passphrase and generate a dedicated release key (not your personal key).
+PASSPHRASE='<choose-a-strong-passphrase>'
+gpg --batch --passphrase "$PASSPHRASE" \
+    --quick-generate-key 'custom-commit-hooks release <you@example.com>' rsa4096 sign 2y
+
+# 2. Note the fingerprint of the key you just made.
+gpg --list-secret-keys --keyid-format=long
+
+# 3. Export the private key, ASCII-armored.
+gpg --armor --export-secret-keys <FINGERPRINT> >release-key.asc
+
+# 4. Store both secrets on the repository.
+gh secret set RELEASE_GPG_PRIVATE_KEY <release-key.asc
+gh secret set RELEASE_GPG_PASSPHRASE --body "$PASSPHRASE"
+
+# 5. Remove the local export.
+rm -P release-key.asc   # GNU coreutils: shred -u release-key.asc
+
+# 6. Optional: register the public key so signed tags display as Verified on GitHub.
+#    Paste the output at https://github.com/settings/gpg/new
+gpg --armor --export <FINGERPRINT>
+```
+
+Confirm both secrets landed with `gh secret list`. The key expires in two years; rotate by
+repeating these steps.
+
 Verification examples:
 
 ```bash
