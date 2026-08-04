@@ -32,36 +32,28 @@ jobs:
           tag="${HEAD_REF#release/}"
 
           # Strict vMAJOR.MINOR.PATCH parse. A glob such as v[0-9]*.[0-9]*.[0-9]*
-          # would also accept "v1.0.0; rm -rf /", so each part is checked for
-          # digits explicitly before the value is used anywhere.
-          rest="${tag#v}"
-          if [ "$rest" = "$tag" ]; then
+          # also accepts "v1.0.0; rm -rf /", since * matches separators too.
+          # Each separator is confirmed present because "${x#*.}" is a no-op when
+          # x has no dot, which would otherwise let "v1.2" parse as 1.2.2.
+          invalid() {
             echo "::error::Branch '$HEAD_REF' does not encode a vX.Y.Z tag."
             exit 1
-          fi
+          }
 
-          # Each separator is confirmed present: "${x#*.}" is a no-op when x has
-          # no dot, which would otherwise let "v1.2" parse as major/minor/minor.
+          rest="${tag#v}"
+          [ "$rest" != "$tag" ] || invalid
+
           major="${rest%%.*}"
           after_major="${rest#*.}"
-          if [ "$after_major" = "$rest" ]; then
-            echo "::error::Branch '$HEAD_REF' does not encode a vX.Y.Z tag."
-            exit 1
-          fi
+          [ "$after_major" != "$rest" ] || invalid
 
           minor="${after_major%%.*}"
           patch="${after_major#*.}"
-          if [ "$patch" = "$after_major" ]; then
-            echo "::error::Branch '$HEAD_REF' does not encode a vX.Y.Z tag."
-            exit 1
-          fi
+          [ "$patch" != "$after_major" ] || invalid
 
           for part in "$major" "$minor" "$patch"; do
             case "$part" in
-              '' | *[!0-9]*)
-                echo "::error::Branch '$HEAD_REF' does not encode a vX.Y.Z tag."
-                exit 1
-                ;;
+              '' | *[!0-9]*) invalid ;;
             esac
           done
 
