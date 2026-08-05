@@ -240,6 +240,11 @@ jobs:
         id: eligible
         if: steps.provenance.outputs.trusted == 'true'
         env:
+          # This step shells out to `gh api` for the actions-major file test below, and
+          # the job sets no token at its own level, so it has to be supplied here. Without
+          # it `gh` is unauthenticated, the query fails, and `set -euo pipefail` kills the
+          # step -- which would have held every actions major rather than evaluating it.
+          GH_TOKEN: ${{ github.token }}
           AUTHOR: ${{ github.event.pull_request.user.login }}
           UPDATE_TYPE: ${{ steps.meta.outputs.update-type }}
           ECOSYSTEM: ${{ steps.meta.outputs.package-ecosystem }}
@@ -263,8 +268,9 @@ jobs:
               # The actions here are pinned to floating major tags, so Dependabot raises an
               # actions pull request only when a major moves -- which made a blanket major
               # hold a blanket hold on every actions pull request there will ever be. That
-              # is not a policy but an outage. The 30-day major cooldown in dependabot.yml
-              # is the soak period that replaces the hold.
+              # is not a policy but an outage. The cooldown in dependabot.yml is the soak
+              # period that replaces the hold -- and it covers every actions update rather
+              # than only majors, because that ecosystem accepts no major-specific key.
               #
               # A hold list earns its keep here, unlike in the siblings that publish nothing:
               # this repository releases, and the release path is driven by workflows no pull
@@ -273,9 +279,19 @@ jobs:
               # here in a way it would not be for a language ecosystem, whose packages can be
               # imported anywhere.
               #
-              # The four held paths are listed rather than inferred, and that is this branch's
-              # known weakness: a workflow's triggers can change without this file noticing,
-              # and a stale list fails by arming. Re-derive it when a trigger changes.
+              # The criterion is "does a pull request *execute* this workflow before the
+              # merge", which is narrower than "does it have a pull_request trigger" -- and
+              # getting that wrong is how three of these paths were missed at first.
+              # release-tag.yml and delete-bot-branches-for-closed-prs.yml both trigger on
+              # `pull_request` with `types: [closed]`, so they run only *after* the merge
+              # they would need to gate. bot-automerge-disarm.yml triggers on `labeled` and
+              # its job then skips unless the label is the kill switch, so it is not
+              # exercised either. release-tag.yml is the one that matters: it is part of the
+              # release path.
+              #
+              # Listed rather than inferred, and that is this branch's known weakness: a
+              # workflow's triggers can change without this file noticing, and a stale list
+              # fails by arming. Re-derive it when a trigger changes.
               #
               # Query and match are separate statements on purpose. As one pipeline the
               # trailing `|| true` -- needed because grep exits 1 when it matches nothing --
@@ -291,8 +307,11 @@ jobs:
                 held=$(printf '%s\n' "$changed" \
                   | grep -cFx -e '.github/workflows/release-publish.yml' \
                                -e '.github/workflows/release-pr.yml' \
+                               -e '.github/workflows/release-tag.yml' \
                                -e '.github/workflows/changelog-autoupdate.yml' \
                                -e '.github/workflows/pre-commit-autoupdate.yml' \
+                               -e '.github/workflows/delete-bot-branches-for-closed-prs.yml' \
+                               -e '.github/workflows/bot-automerge-disarm.yml' \
                   || true)
                 if [ "$held" -ne 0 ]; then
                   echo "::warning::actions major reaches a workflow no PR runs; holding."
