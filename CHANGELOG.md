@@ -38,6 +38,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com) and this p
 
 - **(.github/workflows/CI.yml)** fix coverage - ([5440ce8](https://github.com/michen00/custom-commit-hooks/commit/5440ce8c432785dc9e453286b784c6c17db2005d)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(.github/workflows/CI.yml)** update matrix - ([6259737](https://github.com/michen00/custom-commit-hooks/commit/6259737b130fae755e16ae1301ad4f6325aa66bf)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- bump the README rev pin on release (#61) - ([68ea779](https://github.com/michen00/custom-commit-hooks/commit/68ea77939796649ae1a7f982616742c5060c662c)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
 - gate releases on a protected environment (#58) - ([304e532](https://github.com/michen00/custom-commit-hooks/commit/304e532c34ef4f487156f9a66973f5985da90d7e)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
 - verify a reused tag is signed - ([f7e4301](https://github.com/michen00/custom-commit-hooks/commit/f7e4301e64b4b4963ab8cae82ba309c1134c2b61)) - [Michael I Chen](mailto:michen00.github@gmail.com)
 - verify an existing tag before publishing - ([ec58233](https://github.com/michen00/custom-commit-hooks/commit/ec58233761bf185521a01422d3e6a8013f2e9ccb)) - [Michael I Chen](mailto:michen00.github@gmail.com)
