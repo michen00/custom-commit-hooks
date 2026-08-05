@@ -25,6 +25,9 @@ jobs:
       github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'release/')
     runs-on: ubuntu-latest
+    # Gated on the protected `release` environment: minting a signed tag
+    # and publishing artifacts both pause for maintainer approval.
+    environment: release
     steps:
       # Checked out before the branch name is parsed so that the shared,
       # unit-tested parser can be used. The ref is the merge commit, never the

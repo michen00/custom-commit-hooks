@@ -81,7 +81,10 @@ Default flow (automated):
 1. **Release Publish** workflow (`.github/workflows/release-publish.yml`) builds and
    uploads signed artifacts to the GitHub release.
 
-Merging the release PR is therefore the point of no return — no local step is required.
+No local step is required after the release PR merges, but the release is not automatic:
+both **Release Tag** and **Release Publish** run in the protected `release` environment and
+wait for a maintainer to approve the run. Approve from the run page, or from the PR's checks
+tab, to mint the tag and publish. Rejecting the approval leaves no tag behind.
 
 Manual fallback:
 
@@ -100,9 +103,9 @@ Signing model:
 - Sigstore keyless signatures are generated in CI for every release artifact.
 - GPG detached signatures are also generated for compatibility.
 - Release tags are annotated and GPG-signed. When **Release Tag** creates the tag, it is
-  signed with the CI release key rather than a maintainer's personal key, so anyone able
-  to merge a `release/*` PR can mint a release. Restrict who can merge those PRs
-  accordingly, or tag by hand using the manual fallback above.
+  signed with the CI release key rather than a maintainer's personal key. The protected
+  `release` environment is what keeps that key from being usable by anyone who merges a
+  `release/*` PR: the tagging job waits for maintainer approval before it runs.
 - Required repository secrets for GPG signing in CI:
   - `RELEASE_GPG_PRIVATE_KEY` (ASCII-armored private key)
   - `RELEASE_GPG_PASSPHRASE` (passphrase for the private key)
