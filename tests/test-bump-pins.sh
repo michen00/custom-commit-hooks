@@ -83,6 +83,35 @@ else
 	fail "third-party pins untouched" "Expected 2 remaining v0.0.4, got $third"
 fi
 
+# --- armed state must not leak past a non-matching repo: line ---
+# A block for this repo carrying no rev: previously left the matcher armed, so the
+# NEXT repo's rev: got rewritten and the script still exited 0 — silently bumping a
+# third party while leaving the intended pin untouched.
+leak="$work/leak.yaml"
+cat >"$leak" <<'YAML'
+repos:
+  - repo: https://github.com/michen00/custom-commit-hooks
+    hooks:
+      - id: enhance-scope
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.19.1
+    hooks:
+      - id: gitlint
+YAML
+sh "$BUMP_PINS" v0.1.0 "$leak" >/dev/null 2>&1
+leak_status=$?
+if grep -q 'rev: v0\.19\.1' "$leak"; then
+	pass "third-party rev untouched when this repo's block has no rev"
+else
+	fail "third-party rev untouched when this repo's block has no rev" \
+		"Got: $(grep 'rev:' "$leak")"
+fi
+if [ "$leak_status" -eq 3 ]; then
+	pass "reports no-pin-found rather than a false success"
+else
+	fail "reports no-pin-found rather than a false success" "Exited $leak_status"
+fi
+
 # --- trailing comment and indentation survive ---
 rdm="$work/README.md"
 write_readme "$rdm"

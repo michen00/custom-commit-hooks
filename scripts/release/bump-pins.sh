@@ -65,10 +65,16 @@ for file in "$@"; do
 
 	# Rewriting only the `rev:` token leaves indentation and any trailing comment
 	# (README carries "# Use the latest version") exactly as they were.
-	if awk -v tag="$tag" -v slug="$REPO_SLUG" '
+	#
+	# Every `repo:` line re-arms or disarms, so a block for this repository that
+	# carries no `rev:` cannot leak the armed state into the next block and bump a
+	# third-party pin instead. Exit 3 means no pin was found, which the caller
+	# distinguishes from a genuine awk failure.
+	awk_status=0
+	awk -v tag="$tag" -v slug="$REPO_SLUG" '
 	BEGIN { armed = 0; changed = 0 }
-	index($0, "repo:") && index($0, slug) {
-		armed = 1
+	index($0, "repo:") {
+		armed = (index($0, slug) > 0)
 		print
 		next
 	}
@@ -81,17 +87,27 @@ for file in "$@"; do
 	}
 	{ print }
 	END { exit (changed > 0 ? 0 : 3) }
-	' "$file" >"$tmp"; then
+	' "$file" >"$tmp" || awk_status=$?
+
+	case "$awk_status" in
+	0)
 		if cmp -s "$tmp" "$file"; then
 			echo "Already at $tag: $file"
 		else
 			cat "$tmp" >"$file"
 			echo "Bumped to $tag: $file"
 		fi
-	else
+		;;
+	3)
 		echo "Error: no $REPO_SLUG pin found in $file" >&2
 		status=3
-	fi
+		;;
+	*)
+		echo "Error: awk failed with status $awk_status on $file" >&2
+		rm -f "$tmp"
+		exit 2
+		;;
+	esac
 
 	rm -f "$tmp"
 done
