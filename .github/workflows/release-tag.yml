@@ -15,10 +15,13 @@ concurrency:
 
 jobs:
   release-tag:
-    # Only same-repo release branches. Fork PRs never reach this job, so the
-    # branch name below cannot be chosen by an outside contributor.
+    # Only same-repo release branches merged into main. Fork PRs never reach
+    # this job, so the branch name below cannot be chosen by an outside
+    # contributor, and the base check keeps a release/* branch merged into some
+    # other branch from tagging and publishing that unrelated commit.
     if: >-
       github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'main' &&
       github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'release/')
     runs-on: ubuntu-latest
