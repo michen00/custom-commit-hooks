@@ -82,9 +82,16 @@ Default flow (automated):
    uploads signed artifacts to the GitHub release.
 
 No local step is required after the release PR merges, but the release is not automatic:
-both **Release Tag** and **Release Publish** run in the protected `release` environment and
-wait for a maintainer to approve the run. Approve from the run page, or from the PR's checks
-tab, to mint the tag and publish. Rejecting the approval leaves no tag behind.
+**Release Tag** runs in the protected `release` environment and waits for a maintainer to
+approve the run. Approve from the run page, or from the PR's checks tab, to mint the tag and
+publish. Rejecting the approval leaves no tag behind.
+
+That is the only approval a normal release needs. **Release Publish** also declares the
+`release` environment, but when **Release Tag** dispatches it the deployment is created by
+`github-actions[bot]` and the reviewer rule is skipped, so it proceeds without a second
+prompt. The declaration still gates a Release Publish run dispatched by hand, which is the
+manual fallback path. Treat the Release Tag approval as the release decision — no tag means
+no publish.
 
 Manual fallback:
 
