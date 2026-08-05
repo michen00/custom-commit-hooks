@@ -37,6 +37,10 @@ See @README.md for project overview and features.
 - Common types: `feat`, `fix`, `docs`, `chore`, `test`, `refactor`
 - Merge commits should be prefixed with `chore: merge`
 - Keep commit messages clear and descriptive
+- **Land PRs with squash merge only** — the repo allows no other method. Rebase merge
+  replays commits unsigned, which loses the signature the `main-protect` ruleset asks for;
+  GitHub signs the commit it creates for a squash. Write PR titles squash-ready, since the
+  title becomes the squash subject and the branch's commit messages become its body.
 
 ## Testing Requirements
 
