@@ -23,46 +23,26 @@ jobs:
       startsWith(github.event.pull_request.head.ref, 'release/')
     runs-on: ubuntu-latest
     steps:
+      # Checked out before the branch name is parsed so that the shared,
+      # unit-tested parser can be used. The ref is the merge commit, never the
+      # attacker-influenced branch name.
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
       - name: Resolve release tag
         id: release-tag
         env:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
-          tag="${HEAD_REF#release/}"
-
-          # Strict vMAJOR.MINOR.PATCH parse. A glob such as v[0-9]*.[0-9]*.[0-9]*
-          # also accepts "v1.0.0; rm -rf /", since * matches separators too.
-          # Each separator is confirmed present because "${x#*.}" is a no-op when
-          # x has no dot, which would otherwise let "v1.2" parse as 1.2.2.
-          invalid() {
+          if ! tag="$(scripts/release/parse-version.sh "${HEAD_REF#release/}" --require-v)"; then
             echo "::error::Branch '$HEAD_REF' does not encode a vX.Y.Z tag."
             exit 1
-          }
+          fi
 
-          rest="${tag#v}"
-          [ "$rest" != "$tag" ] || invalid
-
-          major="${rest%%.*}"
-          after_major="${rest#*.}"
-          [ "$after_major" != "$rest" ] || invalid
-
-          minor="${after_major%%.*}"
-          patch="${after_major#*.}"
-          [ "$patch" != "$after_major" ] || invalid
-
-          for part in "$major" "$minor" "$patch"; do
-            case "$part" in
-              '' | *[!0-9]*) invalid ;;
-            esac
-          done
-
-          echo "tag=v$major.$minor.$patch" >> "$GITHUB_OUTPUT"
-
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
       - name: Import release GPG key
         uses: crazy-max/ghaction-import-gpg@v7

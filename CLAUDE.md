@@ -20,7 +20,7 @@ See @README.md for project overview and features.
 - `.pre-commit-hooks.yaml` - Hook definitions for pre-commit framework
 - `cliff.toml` - Configuration for git-cliff changelog generation
 - `tests/` - Hook tests and test utilities (including `tests/test-unit.sh`)
-- `scripts/release/` - Release artifact build and signing; `scripts/update-unreleased.sh` for changelog. Release process and verification: see CONTRIBUTING.
+- `scripts/release/` - Release artifact build and signing, plus `parse-version.sh` (shared strict `vX.Y.Z` validation used by all release workflows); `scripts/update-unreleased.sh` for changelog. Release process and verification: see CONTRIBUTING.
 
 ## Code Style
 
