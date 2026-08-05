@@ -79,6 +79,20 @@ jobs:
       - name: Validate changelog formatting
         run: pre-commit run --files CHANGELOG.md
 
+      # Consumers copy the README snippet verbatim, so it has to name the version
+      # being released. The self-pin in .pre-commit-config.yaml is left alone on
+      # purpose: pre-commit checks a rev out to resolve it, and the tag does not
+      # exist until this PR merges, so pinning it here would fail these very
+      # checks. The weekly pre-commit-autoupdate workflow moves it forward after
+      # the tag lands.
+      - name: Bump the README rev pin
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: scripts/release/bump-pins.sh "$RELEASE_TAG" README.md
+
+      - name: Validate the bumped README
+        run: pre-commit run --files README.md
+
       - name: Run tests
         run: make test
 
@@ -93,12 +107,19 @@ jobs:
           commit-message: 'chore(release): prepare ${{ steps.version.outputs.tag }}'
           add-paths: |
             CHANGELOG.md
+            README.md
           body: |
             This PR prepares release `${{ steps.version.outputs.tag }}`.
 
             ## Included
             - Refreshes `CHANGELOG.md` unreleased section
+            - Points the `README.md` install snippet at
+              `${{ steps.version.outputs.tag }}`
             - Validates tests before proposing release prep
+
+            The `.pre-commit-config.yaml` self-pin is not touched here — the tag
+            does not exist yet, so pinning it would fail this PR's own checks.
+            The weekly pre-commit autoupdate moves it forward after the tag lands.
 
             Merging this PR creates and pushes the signed tag
             `${{ steps.version.outputs.tag }}` and publishes the release.
