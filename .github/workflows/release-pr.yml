@@ -62,8 +62,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
+          # No cache: pip here. It keys off a hashed requirements.txt or
+          # pyproject.toml, and this repository ships neither, so it only ever
+          # warned "Cache paths are empty" without caching anything. pre-commit
+          # hook environments are cached separately where that matters.
+          python-version: '3.x'
           check-latest: true
-          cache: pip
 
       - name: Install pre-commit
         run: |
