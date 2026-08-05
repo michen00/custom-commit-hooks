@@ -27,9 +27,11 @@ git cliff --tag v1.0.0 --output CHANGELOG.md
 
 ## Release automation
 
-- **Release PR** (`.github/workflows/release-pr.yml`): dispatch with version to refresh changelog and open release-prep PR.
+- **Release PR** (`.github/workflows/release-pr.yml`): dispatch to refresh changelog and open release-prep PR. Version is optional; when omitted it comes from `git cliff --bumped-version`.
+- **Release Tag** (`.github/workflows/release-tag.yml`): runs when a `release/*` PR merges, creates a GPG-signed tag, and dispatches Release Publish.
 - **Release Publish** (`.github/workflows/release-publish.yml`): runs on `v*.*.*` tag push (or manual dispatch) to build, sign (Sigstore + GPG), and upload assets.
-- Scripts: `scripts/release/build-artifacts.sh`, `scripts/release/sign-artifacts.sh`, `scripts/update-unreleased.sh`.
+- Scripts: `scripts/release/build-artifacts.sh`, `scripts/release/sign-artifacts.sh`, `scripts/release/parse-version.sh`, `scripts/update-unreleased.sh`.
+- All three workflows validate versions through `scripts/release/parse-version.sh`; it is covered by `tests/test-parse-version.sh`. Do not replace it with a `case` glob such as `v[0-9]*.[0-9]*.[0-9]*`, which also matches `v1.0.0; rm -rf /`.
 - Full steps and verification commands: see [CONTRIBUTING](CONTRIBUTING.md#creating-a-release).
 
 ## Testing

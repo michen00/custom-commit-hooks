@@ -26,6 +26,14 @@ jobs:
     env:
       DIST_DIR: dist
     steps:
+      # Checked out before the tag is parsed so that the shared, unit-tested
+      # parser can be used. A tag push already lands on the tag; a manual
+      # dispatch lands on the default branch. The explicit checkout below moves
+      # to the requested tag in both cases.
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
       - name: Resolve release tag
         id: release-tag
         env:
@@ -35,41 +43,22 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            tag="$INPUT_TAG"
+            raw="$INPUT_TAG"
           else
-            tag="$REF_TAG"
+            raw="$REF_TAG"
           fi
 
-          # Strict vMAJOR.MINOR.PATCH parse. A glob such as v[0-9]*.[0-9]*.[0-9]*
-          # also accepts "v1.0.0; rm -rf /", since * matches separators too.
-          invalid() {
-            echo "::error::Invalid release tag '$tag'. Expected vX.Y.Z."
+          if ! tag="$(scripts/release/parse-version.sh "$raw" --require-v)"; then
+            echo "::error::Invalid release tag '$raw'. Expected vX.Y.Z."
             exit 1
-          }
+          fi
 
-          rest="${tag#v}"
-          [ "$rest" != "$tag" ] || invalid
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
-          major="${rest%%.*}"
-          after_major="${rest#*.}"
-          [ "$after_major" != "$rest" ] || invalid
-
-          minor="${after_major%%.*}"
-          patch="${after_major#*.}"
-          [ "$patch" != "$after_major" ] || invalid
-
-          for part in "$major" "$minor" "$patch"; do
-            case "$part" in
-              '' | *[!0-9]*) invalid ;;
-            esac
-          done
-
-          echo "tag=v$major.$minor.$patch" >> "$GITHUB_OUTPUT"
-
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          ref: refs/tags/${{ steps.release-tag.outputs.tag }}
+      - name: Check out the release tag
+        env:
+          RELEASE_TAG: ${{ steps.release-tag.outputs.tag }}
+        run: git checkout --detach "refs/tags/$RELEASE_TAG"
 
       - name: Install cosign
         uses: sigstore/cosign-installer@v3

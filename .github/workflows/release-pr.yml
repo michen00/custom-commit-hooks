@@ -45,30 +45,10 @@ jobs:
             echo "Inferred version from conventional commits: $raw"
           fi
 
-          # Strict vMAJOR.MINOR.PATCH parse. A glob such as v[0-9]*.[0-9]*.[0-9]*
-          # also accepts "v1.0.0; rm -rf /", since * matches separators too.
-          invalid() {
+          if ! tag="$(scripts/release/parse-version.sh "$raw")"; then
             echo "::error::Invalid version '$raw'. Use X.Y.Z or vX.Y.Z."
             exit 1
-          }
-
-          rest="${raw#v}"
-
-          major="${rest%%.*}"
-          after_major="${rest#*.}"
-          [ "$after_major" != "$rest" ] || invalid
-
-          minor="${after_major%%.*}"
-          patch="${after_major#*.}"
-          [ "$patch" != "$after_major" ] || invalid
-
-          for part in "$major" "$minor" "$patch"; do
-            case "$part" in
-              '' | *[!0-9]*) invalid ;;
-            esac
-          done
-
-          tag="v$major.$minor.$patch"
+          fi
 
           # With no releasable commits, --bumped-version echoes the current tag.
           if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
