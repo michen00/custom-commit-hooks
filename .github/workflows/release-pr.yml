@@ -62,6 +62,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
+          # cache: pip cannot build a cache key without a resolved version,
+          # which is what emits "Cache paths are empty" when this is omitted.
+          python-version: '3.x'
           check-latest: true
           cache: pip
 
