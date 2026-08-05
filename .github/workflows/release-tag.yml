@@ -75,7 +75,19 @@ jobs:
               exit 1
             fi
 
-            echo "Tag $RELEASE_TAG already points at $head_sha; skipping tag creation."
+            # Reuse has to clear the same bar as creation below. verify-tag
+            # rejects lightweight tags, which are commit objects rather than tag
+            # objects, as well as annotated tags carrying no valid signature, so
+            # it is the only check needed to keep an accidentally pre-pushed tag
+            # from being published as though CI had signed it.
+            if ! git verify-tag "$RELEASE_TAG"; then
+              echo "::error::Tag $RELEASE_TAG exists at the merge commit but is" \
+                "not a validly signed annotated tag. Refusing to publish."
+              exit 1
+            fi
+
+            echo "Tag $RELEASE_TAG already points at $head_sha and is signed;" \
+              "skipping tag creation."
             exit 0
           fi
 
