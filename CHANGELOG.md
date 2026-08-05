@@ -16,7 +16,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com) and this p
 
 ### 🐛 Fixes
 
-- make changelog regeneration idempotent - ([47be72e](https://github.com/michen00/custom-commit-hooks/commit/47be72e95336ec126935e4c67229d039a1eadf72)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- **(cliff.toml)** skip release prep commits (#59) - ([3b4482c](https://github.com/michen00/custom-commit-hooks/commit/3b4482c669ddf94906d92e1d7700e5e8966eb110)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
+- rewrite the changelog atomically - ([878fa9f](https://github.com/michen00/custom-commit-hooks/commit/878fa9fb1590bbd2acc738f62701f9e7100e2461)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- keep the changelog footer without releases - ([3c7770c](https://github.com/michen00/custom-commit-hooks/commit/3c7770c16ef676a5702308cbb31b066154979232)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- make changelog regeneration idempotent - ([012f0fa](https://github.com/michen00/custom-commit-hooks/commit/012f0fa11762e97e4efbc9ba23b6a1d7a250a0fd)) - [Michael I Chen](mailto:michen00.github@gmail.com)
 - read pre-commit merge source env - ([0bc1af6](https://github.com/michen00/custom-commit-hooks/commit/0bc1af6fced527b7036ce4684220e3b82e860a41)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - restore short-circuit - ([11a3c95](https://github.com/michen00/custom-commit-hooks/commit/11a3c9528b1fe6fb308f99da8666e0c6516ad564)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 
@@ -35,8 +38,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com) and this p
 
 - **(.github/workflows/CI.yml)** fix coverage - ([5440ce8](https://github.com/michen00/custom-commit-hooks/commit/5440ce8c432785dc9e453286b784c6c17db2005d)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(.github/workflows/CI.yml)** update matrix - ([6259737](https://github.com/michen00/custom-commit-hooks/commit/6259737b130fae755e16ae1301ad4f6325aa66bf)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- auto-tag and publish on release merge - ([7da30f7](https://github.com/michen00/custom-commit-hooks/commit/7da30f7ef4db7138fafa09679aa7fde6c69b1b39)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- infer release version from commits - ([a5a1f26](https://github.com/michen00/custom-commit-hooks/commit/a5a1f264d4649ea7c94cb1f1bdde22eba116c491)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- gate releases on a protected environment (#58) - ([304e532](https://github.com/michen00/custom-commit-hooks/commit/304e532c34ef4f487156f9a66973f5985da90d7e)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
+- verify a reused tag is signed - ([f7e4301](https://github.com/michen00/custom-commit-hooks/commit/f7e4301e64b4b4963ab8cae82ba309c1134c2b61)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- verify an existing tag before publishing - ([ec58233](https://github.com/michen00/custom-commit-hooks/commit/ec58233761bf185521a01422d3e6a8013f2e9ccb)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- restrict release tagging to main merges - ([ef20365](https://github.com/michen00/custom-commit-hooks/commit/ef20365f89f62215621fbc1466427801be921706)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- validate versions via shared parser - ([51ca773](https://github.com/michen00/custom-commit-hooks/commit/51ca77363a6ec8e2b193347ca1b29f1de04f3154)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- reject malformed release versions strictly - ([4664237](https://github.com/michen00/custom-commit-hooks/commit/4664237dc657b87889973af974b1b1bb47249f09)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- auto-tag and publish on release merge - ([a0784f1](https://github.com/michen00/custom-commit-hooks/commit/a0784f16b1ecccd3711ea14d8ea3f1b7a58afa5d)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- infer release version from commits - ([dbe0dfc](https://github.com/michen00/custom-commit-hooks/commit/dbe0dfcb83d07dfb50b1a1bdc2fcd0d62f54f0b5)) - [Michael I Chen](mailto:michen00.github@gmail.com)
 - add prettier formatting step for CHANGELOG.md - ([ca14a28](https://github.com/michen00/custom-commit-hooks/commit/ca14a28d9568bbd297427fee87103502d7437add)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - add signed release workflows - ([d4d90e2](https://github.com/michen00/custom-commit-hooks/commit/d4d90e23f1fe37629f210ec7a764e03d33a0864e)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - fold to lowercase - ([923d99c](https://github.com/michen00/custom-commit-hooks/commit/923d99c68269b16e361b5c147f4cc5a4e565f12b)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
@@ -69,8 +78,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com) and this p
 - **(.github/release.yml)** filter gemini bot - ([aecdafd](https://github.com/michen00/custom-commit-hooks/commit/aecdafd1a0a24198ad1eb9084c3c474ec00832df)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(.github/release.yml)** exclude more bots - ([32da690](https://github.com/michen00/custom-commit-hooks/commit/32da69046300200121638dc597ea944cae636940)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(.github/release.yml)** add release.yml - ([b1373c8](https://github.com/michen00/custom-commit-hooks/commit/b1373c895c95cbf117b69d4c65f4ab6c6b12f81d)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- **(CHANGELOG.md)** backfill released versions - ([cd4b10a](https://github.com/michen00/custom-commit-hooks/commit/cd4b10ad5f1ce7929b6d944615ed61601132cc9f)) - [Michael I Chen](mailto:michen00.github@gmail.com)
 - **(README.md)** update badges - ([3fda222](https://github.com/michen00/custom-commit-hooks/commit/3fda222d46f6f78685ba6656be2f80f0456518c0)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - **(README.md)** add DeepWiki badge - ([51bb7b6](https://github.com/michen00/custom-commit-hooks/commit/51bb7b61a8d0643b1178d9881ed0bfaf3aa7d37b)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- use a portable key removal command - ([b887f7e](https://github.com/michen00/custom-commit-hooks/commit/b887f7e42c70537af7250c070bdb4a0f1a73c126)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- add release key setup instructions - ([296525b](https://github.com/michen00/custom-commit-hooks/commit/296525bced5a5e8b540405d01598cc9c15fc0e8b)) - [Michael I Chen](mailto:michen00.github@gmail.com)
 - add atomic commits cursor skill - ([da224ef](https://github.com/michen00/custom-commit-hooks/commit/da224ef36188d2e697ae1b61f56df1b111f9e29d)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - document release automation - ([231d733](https://github.com/michen00/custom-commit-hooks/commit/231d733b83d419b78022f50c0c201a30e7ff796e)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - update issue templates - ([c162dba](https://github.com/michen00/custom-commit-hooks/commit/c162dbac824245859e77c9c6295a5b2076b7c4ed)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
@@ -79,6 +91,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com) and this p
 
 ### ♻️ Refactor
 
+- extract shared release version parser - ([23d932f](https://github.com/michen00/custom-commit-hooks/commit/23d932f613d9e27900023be079b11c55952ea4df)) - [Michael I Chen](mailto:michen00.github@gmail.com)
 - simplify the patterns - ([39e52ee](https://github.com/michen00/custom-commit-hooks/commit/39e52ee8bc94d8e5f54b20f6afc9bbc632dfe1f0)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - enhance pattern matching - ([ee59b7d](https://github.com/michen00/custom-commit-hooks/commit/ee59b7db5e6d52ed556e5b45a56e2206941d48e6)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
 - accept simplicity - ([dd2187f](https://github.com/michen00/custom-commit-hooks/commit/dd2187f6ca86a82dd6c06c7db750ef3c75c8c402)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
