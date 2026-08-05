@@ -133,8 +133,13 @@ gpg --armor --export-secret-keys <FINGERPRINT> >release-key.asc
 gh secret set RELEASE_GPG_PRIVATE_KEY <release-key.asc
 gh secret set RELEASE_GPG_PASSPHRASE --body "$PASSPHRASE"
 
-# 5. Remove the local export.
-rm -P release-key.asc   # GNU coreutils: shred -u release-key.asc
+# 5. Remove the local export. shred is GNU coreutils and absent on macOS;
+#    BSD rm -P is rejected by GNU rm, so branch instead of assuming either.
+if command -v shred >/dev/null 2>&1; then
+  shred -u release-key.asc
+else
+  rm -f release-key.asc
+fi
 
 # 6. Optional: register the public key so signed tags display as Verified on GitHub.
 #    Paste the output at https://github.com/settings/gpg/new
@@ -143,6 +148,10 @@ gpg --armor --export <FINGERPRINT>
 
 Confirm both secrets landed with `gh secret list`. The key expires in two years; rotate by
 repeating these steps.
+
+Neither removal above guarantees the bytes are gone: copy-on-write filesystems and SSD wear
+levelling can leave the export recoverable. Treat the passphrase as the real protection for
+that file, and prefer a passphrase over an empty one for exactly this reason.
 
 Verification examples:
 
