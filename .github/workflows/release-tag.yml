@@ -63,7 +63,19 @@ jobs:
         run: |
           set -euo pipefail
           if git rev-parse -q --verify "refs/tags/$RELEASE_TAG" >/dev/null; then
-            echo "Tag $RELEASE_TAG already exists; skipping tag creation."
+            # An existing tag is only safe to reuse when it already points at
+            # the commit being released; otherwise the publish step below would
+            # build and upload assets from unrelated code.
+            existing="$(git rev-list -n 1 "$RELEASE_TAG")"
+            head_sha="$(git rev-parse HEAD)"
+
+            if [ "$existing" != "$head_sha" ]; then
+              echo "::error::Tag $RELEASE_TAG already exists at $existing," \
+                "not at the merge commit $head_sha. Refusing to publish."
+              exit 1
+            fi
+
+            echo "Tag $RELEASE_TAG already points at $head_sha; skipping tag creation."
             exit 0
           fi
 
