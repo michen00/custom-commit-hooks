@@ -93,7 +93,7 @@ commit_preprocessors = [
 
 commit_parsers = [
     { message = "^\\d+\\.\\d+\\.\\d+$", skip = true },
-    { message = "^chore\\(release\\): prepare for", skip = true },
+    { message = "^chore\\(release\\): prepare", skip = true },
     { message = "^chore\\(deps.*\\)", skip = true },
     { message = "^chore\\(pr\\)", skip = true },
     { message = "^chore\\(pull\\)", skip = true },
