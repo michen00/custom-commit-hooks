@@ -173,10 +173,11 @@ fi
 
 # Locating parse-version.sh became load-bearing when the tag started being
 # normalized through it, so pin where the lookup happens: next to the script,
-# never in the caller's working directory. Invoking through PATH from an
-# unrelated directory with a decoy planted there is the case that would tell
-# the two apart. The decoy answers v9.9.9, which no stub body contains, so if
-# it ever won the section guard would reject the regeneration.
+# never in the caller's working directory and never through PATH. Running from
+# the decoy's own directory with that directory on PATH covers both wrong
+# answers at once: a bare `parse-version.sh` finds it, and a `./` one does too.
+# The decoy answers v9.9.9, which no stub body contains, so whichever way it
+# won the section guard would reject the regeneration.
 write_changelog "$changelog"
 STUB_BODY="# Changelog
 
@@ -196,15 +197,14 @@ cat >"$decoy_dir/parse-version.sh" <<'DECOY'
 echo v9.9.9
 DECOY
 chmod +x "$decoy_dir/parse-version.sh"
-release_dir="$(cd "$TEST_SCRIPT_DIR/../scripts/release" && pwd)"
 if (
 	cd "$decoy_dir" &&
-		PATH="$release_dir:$PATH" stamp-changelog.sh v0.2.0 "$changelog" >/dev/null 2>&1
+		PATH="$decoy_dir:$PATH" "$STAMP" v0.2.0 "$changelog" >/dev/null 2>&1
 ) && grep -q '^## \[0.2.0\]' "$changelog"; then
-	pass "the helper is resolved next to the script, not in the caller's CWD"
+	pass "the helper is resolved next to the script, not via CWD or PATH"
 else
-	fail "the helper is resolved next to the script, not in the caller's CWD" \
-		"expected the real parse-version.sh to win over a decoy in the CWD"
+	fail "the helper is resolved next to the script, not via CWD or PATH" \
+		"expected the real parse-version.sh to win over a decoy in the CWD and on PATH"
 fi
 
 echo
