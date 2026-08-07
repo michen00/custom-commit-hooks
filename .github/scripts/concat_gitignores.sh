@@ -173,7 +173,25 @@ else
 	echo "Unknown OS: unable to ensure single trailing newline"
 fi
 
-echo -e "\ncoverage/**" >>"$OUTPUT_FILE"
-echo -e "!.gitkeep" >>"$OUTPUT_FILE"
+{
+	echo -e "\ncoverage/**"
+	echo -e "!.gitkeep"
+
+	# The VisualStudio template ignores a build-output directory named release/
+	# in either capitalization, which matches this repository's own
+	# scripts/release/ directory and would take the release
+	# automation out of version control on the next regeneration. Both lines are
+	# required and in this order: git will not re-include a file whose parent
+	# directory is excluded, so the directory has to be un-excluded before the
+	# scripts inside it can be.
+	echo -e "\n# Keep release automation scripts tracked."
+	echo -e "!scripts/release/"
+	echo -e "!scripts/release/*.sh"
+
+	# Claude Code writes machine-specific permission grants to settings.local.json.
+	# Only that file is ignored: a shared .claude/settings.json, or agent skills and
+	# commands kept under .claude/, are ordinary tracked project files.
+	echo -e "\n.claude/settings.local.json"
+} >>"$OUTPUT_FILE"
 
 echo "Combined .gitignore created as $OUTPUT_FILE"

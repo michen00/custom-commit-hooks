@@ -952,3 +952,5 @@ coverage/**
 # Keep release automation scripts tracked.
 !scripts/release/
 !scripts/release/*.sh
+
+.claude/settings.local.json
