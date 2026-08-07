@@ -86,6 +86,19 @@ else
 	fail "a missing changelog is rejected" "expected a non-zero exit"
 fi
 
+# The version reaches git-cliff as a tag and the section guard as a grep
+# pattern, so a malformed one has to be refused before either sees it. Matching
+# the message keeps this honest on machines where git-cliff is absent and the
+# script would have exited non-zero anyway.
+malformed="$work/malformed.md"
+write_changelog "$malformed"
+if ! err="$("$STAMP" 1.2 "$malformed" 2>&1)" &&
+	printf '%s' "$err" | grep -q 'invalid version'; then
+	pass "a malformed version is rejected"
+else
+	fail "a malformed version is rejected" "expected a non-zero exit and an invalid-version message"
+fi
+
 make_stub
 
 # -- what the script does with git-cliff's output --

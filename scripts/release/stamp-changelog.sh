@@ -27,7 +27,16 @@ if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
 	exit 1
 fi
 
-tag="$1"
+# The release workflows validate the tag before they get here, but this script
+# is also run by hand, and everything below treats the version as trusted: it
+# reaches git-cliff as a tag and the guard below as a grep pattern. Normalize it
+# through the same strict parser the workflows use so a standalone run cannot
+# smuggle anything but three dot-separated runs of digits past this point.
+script_dir="$(dirname "$0")"
+if ! tag="$("$script_dir/parse-version.sh" "$1")"; then
+	exit 1
+fi
+
 changelog_file="${2:-CHANGELOG.md}"
 
 if [ ! -f "$changelog_file" ]; then
@@ -60,7 +69,11 @@ fi
 # whole point of this script is that a silent shrink already cost this
 # repository its v0.1.0 entries once.
 version="${tag#v}"
-if ! grep -q "^## \[${version}\]" "$tmp_changelog"; then
+# Dots are wildcards to grep, so a bare ${version} would also accept a
+# `## [1x2x3]` header. Validation above leaves dots as the only metacharacter
+# that can still reach this pattern.
+version_pattern="$(printf '%s' "$version" | sed 's/\./\\./g')"
+if ! grep -q "^## \[${version_pattern}\]" "$tmp_changelog"; then
 	echo "Error: no '## [${version}]' section in the regenerated changelog." >&2
 	exit 1
 fi
