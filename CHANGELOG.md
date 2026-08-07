@@ -8,137 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com) and this p
 
 ## [Unreleased]
 
-### ✨ Features
-
-- **(Makefile)** add release PR and watch commands - ([491c179](https://github.com/michen00/custom-commit-hooks/commit/491c17949efb20d77a0acab3db06cafdbb2e0cdc)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(conventional-merge-commits)** support revert - ([5b7e150](https://github.com/michen00/custom-commit-hooks/commit/5b7e150fb1d7b6f36a2155cff780bd6c7869cb1c)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- update boilerplate - ([f8aeda3](https://github.com/michen00/custom-commit-hooks/commit/f8aeda3c0da14c386c3eba5fe4c55692a1c7ce35)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-
-### 🐛 Fixes
-
-- **(cliff.toml)** skip release prep commits (#59) - ([3b4482c](https://github.com/michen00/custom-commit-hooks/commit/3b4482c669ddf94906d92e1d7700e5e8966eb110)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
-- rewrite the changelog atomically - ([878fa9f](https://github.com/michen00/custom-commit-hooks/commit/878fa9fb1590bbd2acc738f62701f9e7100e2461)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- keep the changelog footer without releases - ([3c7770c](https://github.com/michen00/custom-commit-hooks/commit/3c7770c16ef676a5702308cbb31b066154979232)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- make changelog regeneration idempotent - ([012f0fa](https://github.com/michen00/custom-commit-hooks/commit/012f0fa11762e97e4efbc9ba23b6a1d7a250a0fd)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- read pre-commit merge source env - ([0bc1af6](https://github.com/michen00/custom-commit-hooks/commit/0bc1af6fced527b7036ce4684220e3b82e860a41)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- restore short-circuit - ([11a3c95](https://github.com/michen00/custom-commit-hooks/commit/11a3c9528b1fe6fb308f99da8666e0c6516ad564)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-
-### ⚡ Performance
-
-- check frequent patterns first - ([77f9913](https://github.com/michen00/custom-commit-hooks/commit/77f9913855bf12b385ee8455106f53c3807d4962)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- streamline pattern matching - ([d8c9c24](https://github.com/michen00/custom-commit-hooks/commit/d8c9c2495c807dd21990d017196bab33d52c625b)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- streamlint a script - ([c138d2d](https://github.com/michen00/custom-commit-hooks/commit/c138d2db80352d760f00e65d3431dc360fa27dde)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-
-### 🧪 Testing
-
-- **(tests/test-integration.sh)** reduce flakiness - ([669eb9a](https://github.com/michen00/custom-commit-hooks/commit/669eb9ab351db4979162cf552aa4846bf48daa2c)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- test cross-platform with coverage on ubuntu (#17) - ([d2f0d05](https://github.com/michen00/custom-commit-hooks/commit/d2f0d055ef502beda7a073023ff974b0e2e51f80)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
-
 ### 💚 Continuous Integration
 
-- **(.github/workflows/CI.yml)** fix coverage - ([5440ce8](https://github.com/michen00/custom-commit-hooks/commit/5440ce8c432785dc9e453286b784c6c17db2005d)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(.github/workflows/CI.yml)** update matrix - ([6259737](https://github.com/michen00/custom-commit-hooks/commit/6259737b130fae755e16ae1301ad4f6325aa66bf)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- bump the README rev pin on release (#61) - ([68ea779](https://github.com/michen00/custom-commit-hooks/commit/68ea77939796649ae1a7f982616742c5060c662c)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
-- gate releases on a protected environment (#58) - ([304e532](https://github.com/michen00/custom-commit-hooks/commit/304e532c34ef4f487156f9a66973f5985da90d7e)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
-- verify a reused tag is signed - ([f7e4301](https://github.com/michen00/custom-commit-hooks/commit/f7e4301e64b4b4963ab8cae82ba309c1134c2b61)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- verify an existing tag before publishing - ([ec58233](https://github.com/michen00/custom-commit-hooks/commit/ec58233761bf185521a01422d3e6a8013f2e9ccb)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- restrict release tagging to main merges - ([ef20365](https://github.com/michen00/custom-commit-hooks/commit/ef20365f89f62215621fbc1466427801be921706)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- validate versions via shared parser - ([51ca773](https://github.com/michen00/custom-commit-hooks/commit/51ca77363a6ec8e2b193347ca1b29f1de04f3154)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- reject malformed release versions strictly - ([4664237](https://github.com/michen00/custom-commit-hooks/commit/4664237dc657b87889973af974b1b1bb47249f09)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- auto-tag and publish on release merge - ([a0784f1](https://github.com/michen00/custom-commit-hooks/commit/a0784f16b1ecccd3711ea14d8ea3f1b7a58afa5d)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- infer release version from commits - ([dbe0dfc](https://github.com/michen00/custom-commit-hooks/commit/dbe0dfcb83d07dfb50b1a1bdc2fcd0d62f54f0b5)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- add prettier formatting step for CHANGELOG.md - ([ca14a28](https://github.com/michen00/custom-commit-hooks/commit/ca14a28d9568bbd297427fee87103502d7437add)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- add signed release workflows - ([d4d90e2](https://github.com/michen00/custom-commit-hooks/commit/d4d90e23f1fe37629f210ec7a764e03d33a0864e)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- fold to lowercase - ([923d99c](https://github.com/michen00/custom-commit-hooks/commit/923d99c68269b16e361b5c147f4cc5a4e565f12b)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- fix and improve coverage (#27) - ([e08b366](https://github.com/michen00/custom-commit-hooks/commit/e08b36695b3c47f440c6855de0b9a43ec2baeac0)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
-- use xmllint to convert coverage report to xml - ([d8e9c4c](https://github.com/michen00/custom-commit-hooks/commit/d8e9c4cd950b75e7fde0992d4ddb1d26ab0f8f84)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- improve reuse - ([b427dfc](https://github.com/michen00/custom-commit-hooks/commit/b427dfc2f4a00125536a2a62c98b9646108dc681)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- fix a return value - ([750fd65](https://github.com/michen00/custom-commit-hooks/commit/750fd65c905c8f402b8ab4a3cff532b7e6c239eb)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- return true - ([4a86d5b](https://github.com/michen00/custom-commit-hooks/commit/4a86d5b2d13a5e439dc8e3b799d4b5dd3bd7a14d)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- add concurrency settings - ([111635e](https://github.com/michen00/custom-commit-hooks/commit/111635eef10050307fdadbad5e68206a7a902b38)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- refactor multiline conditionals - ([d459f83](https://github.com/michen00/custom-commit-hooks/commit/d459f838a4a6a88b150646e6d5425a3f3744a6f5)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- update maintenance flows (#25) - ([263f63d](https://github.com/michen00/custom-commit-hooks/commit/263f63d91fe6e136f54f233c5af6698f60b30788)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
-- refine triggers - ([ad968fa](https://github.com/michen00/custom-commit-hooks/commit/ad968fae710ed95ce297ffb6b46e16226df1e7d9)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- simplify conditionals - ([0c6a657](https://github.com/michen00/custom-commit-hooks/commit/0c6a6576b0cb710edb9ac02e68182da879943e18)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- add signing - ([685d36f](https://github.com/michen00/custom-commit-hooks/commit/685d36f9cc77ceeae327048094824112c9d63ab6)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- clean up old bot branches - ([f16d68f](https://github.com/michen00/custom-commit-hooks/commit/f16d68f2bb3dc35526a3ea6680c356bb90c52162)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- add triggers - ([3f0a5a4](https://github.com/michen00/custom-commit-hooks/commit/3f0a5a47f6f9d632b90ab06759c8a96692f254f8)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- update maintenance workflows - ([66a40cc](https://github.com/michen00/custom-commit-hooks/commit/66a40cc72d0db17584d9301ff1f97d936c656b7d)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- fetch before switch - ([656b301](https://github.com/michen00/custom-commit-hooks/commit/656b3018098efe047035b3d835230a185fbc9335)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- configure concurrency settings - ([f97f8da](https://github.com/michen00/custom-commit-hooks/commit/f97f8da370a9f1ba33a32bbea6c60a83649fc4ed)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- update ruby installation - ([1ab6c42](https://github.com/michen00/custom-commit-hooks/commit/1ab6c42641a73f37e921accb0e211b24074a5a20)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- standardize bot auto-merge (#63) - ([587ed7e](https://github.com/michen00/custom-commit-hooks/commit/587ed7e11de5cfed71b0f517bb5e8f24f2e3e1c9)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
+- pin the Python version for pip caching (#64) - ([6c9ae7c](https://github.com/michen00/custom-commit-hooks/commit/6c9ae7cd13390603487bc2092afc6a30493a3717)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
 
 ### 👷 Build
 
-- **(deps)** bump the actions group across 1 directory with 3 updates - ([0cd5060](https://github.com/michen00/custom-commit-hooks/commit/0cd50607870310e82a52c1c4d4103974c041705d)) - [dependabot[bot]](mailto:49699333+dependabot[bot]@users.noreply.github.com)
-- **(deps)** bump the actions group with 2 updates - ([99d3388](https://github.com/michen00/custom-commit-hooks/commit/99d33884fcc9f77798407c8a3c528781d822e1e7)) - [dependabot[bot]](mailto:49699333+dependabot[bot]@users.noreply.github.com)
-- add benchmark runner scripts - ([4100bc6](https://github.com/michen00/custom-commit-hooks/commit/4100bc66c3aa2c53c67c26b0a076140d3dc965c8)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-
-### 📝 Documentation
-
-- **(.github/release.yml)** filter gemini bot - ([aecdafd](https://github.com/michen00/custom-commit-hooks/commit/aecdafd1a0a24198ad1eb9084c3c474ec00832df)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(.github/release.yml)** exclude more bots - ([32da690](https://github.com/michen00/custom-commit-hooks/commit/32da69046300200121638dc597ea944cae636940)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(.github/release.yml)** add release.yml - ([b1373c8](https://github.com/michen00/custom-commit-hooks/commit/b1373c895c95cbf117b69d4c65f4ab6c6b12f81d)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(CHANGELOG.md)** backfill released versions - ([cd4b10a](https://github.com/michen00/custom-commit-hooks/commit/cd4b10ad5f1ce7929b6d944615ed61601132cc9f)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- **(README.md)** update badges - ([3fda222](https://github.com/michen00/custom-commit-hooks/commit/3fda222d46f6f78685ba6656be2f80f0456518c0)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(README.md)** add DeepWiki badge - ([51bb7b6](https://github.com/michen00/custom-commit-hooks/commit/51bb7b61a8d0643b1178d9881ed0bfaf3aa7d37b)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- use a portable key removal command - ([b887f7e](https://github.com/michen00/custom-commit-hooks/commit/b887f7e42c70537af7250c070bdb4a0f1a73c126)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- add release key setup instructions - ([296525b](https://github.com/michen00/custom-commit-hooks/commit/296525bced5a5e8b540405d01598cc9c15fc0e8b)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- add atomic commits cursor skill - ([da224ef](https://github.com/michen00/custom-commit-hooks/commit/da224ef36188d2e697ae1b61f56df1b111f9e29d)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- document release automation - ([231d733](https://github.com/michen00/custom-commit-hooks/commit/231d733b83d419b78022f50c0c201a30e7ff796e)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- update issue templates - ([c162dba](https://github.com/michen00/custom-commit-hooks/commit/c162dbac824245859e77c9c6295a5b2076b7c4ed)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- add issue templates - ([ccbb35b](https://github.com/michen00/custom-commit-hooks/commit/ccbb35b58cfb1572575608ab4d91b72ec7d71ede)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- filter more bots - ([2ac8666](https://github.com/michen00/custom-commit-hooks/commit/2ac866693b145c2051aa3afee2385bafdea12b66)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
-
-### ♻️ Refactor
-
-- extract shared release version parser - ([23d932f](https://github.com/michen00/custom-commit-hooks/commit/23d932f613d9e27900023be079b11c55952ea4df)) - [Michael I Chen](mailto:michen00.github@gmail.com)
-- simplify the patterns - ([39e52ee](https://github.com/michen00/custom-commit-hooks/commit/39e52ee8bc94d8e5f54b20f6afc9bbc632dfe1f0)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- enhance pattern matching - ([ee59b7d](https://github.com/michen00/custom-commit-hooks/commit/ee59b7db5e6d52ed556e5b45a56e2206941d48e6)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- accept simplicity - ([dd2187f](https://github.com/michen00/custom-commit-hooks/commit/dd2187f6ca86a82dd6c06c7db750ef3c75c8c402)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- simplify a composite action - ([98deefd](https://github.com/michen00/custom-commit-hooks/commit/98deefd84e0d2fdd81042c051881c9a4926c04a3)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-
-### 🎨 Styling
-
-- **(.github/dependabot.yml)** use fewer quotes - ([de2a4dc](https://github.com/michen00/custom-commit-hooks/commit/de2a4dc3cda7909ad49092c65c7689d6aaba923c)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(\_typos.toml)** prefer single quotes - ([cb60701](https://github.com/michen00/custom-commit-hooks/commit/cb607016a33a3b72cbcce6fcf949836fc855d681)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- don't overspecify defaults - ([957c544](https://github.com/michen00/custom-commit-hooks/commit/957c54486e24ec4c6e6810dbca6e5a0bfe17678a)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- **(deps)** bump actions/cache from 5 to 6 in the actions group (#65) - ([7f16bf3](https://github.com/michen00/custom-commit-hooks/commit/7f16bf31c6a4b9bc162087e51675c346753959df)) - [dependabot[bot]](mailto:49699333+dependabot[bot]@users.noreply.github.com)
 
 ### ⚙️ Miscellaneous Tasks
 
-- **(.gitattributes)** fix Windows line endings - ([98848f4](https://github.com/michen00/custom-commit-hooks/commit/98848f48fa1d5674ace819f142f7172ab850eaf7)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(.yamllint)** remove an unused ignore - ([2a7aed2](https://github.com/michen00/custom-commit-hooks/commit/2a7aed227a74054e5fe4b8bd1add8af2f5f99ed0)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- **(\_typos.toml)** fix a pattern - ([ff41d83](https://github.com/michen00/custom-commit-hooks/commit/ff41d83750947cd2918aa6ef3ee8cb8f12037b44)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- autoupdate pre-commit hooks (#56) - ([a431446](https://github.com/michen00/custom-commit-hooks/commit/a4314467ba9b52480baf3f4003ac195dab8f9705)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#55) - ([3881f1f](https://github.com/michen00/custom-commit-hooks/commit/3881f1f2ce79fa2d104f3f96f6bebcbcc899f009)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#54) - ([623d6fd](https://github.com/michen00/custom-commit-hooks/commit/623d6fd88a3785a97e11a6fef86e0fa924390a13)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#53) - ([60f79ec](https://github.com/michen00/custom-commit-hooks/commit/60f79ec7e16fca212fff41ce42eeb3a77ff2f70f)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#52) - ([0615d6e](https://github.com/michen00/custom-commit-hooks/commit/0615d6ec3526bccb301a1f2db3fa520e23a662f4)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#51) - ([ad9cc37](https://github.com/michen00/custom-commit-hooks/commit/ad9cc3782ddb7cee6bd930d570d8a084c0c5d89b)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#50) - ([d1e0aa8](https://github.com/michen00/custom-commit-hooks/commit/d1e0aa8e12d52e4166ba31860e584c81fc82e85e)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#49) - ([6d75e53](https://github.com/michen00/custom-commit-hooks/commit/6d75e537d95ecfb32a22f7e49f90e7f41d297ad0)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#48) - ([dfae247](https://github.com/michen00/custom-commit-hooks/commit/dfae247a5c6f65ee694f2462d7efe42d9d0d0d3e)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#47) - ([7bbb877](https://github.com/michen00/custom-commit-hooks/commit/7bbb877e10b286840515836d4ae3ccfbdce0f699)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#46) - ([ffbd3b9](https://github.com/michen00/custom-commit-hooks/commit/ffbd3b966321d46f0db51033999d21274e006741)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#45) - ([9b99388](https://github.com/michen00/custom-commit-hooks/commit/9b993889f2ed839012e6f66795a342c37ab3bb92)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#44) - ([47b599a](https://github.com/michen00/custom-commit-hooks/commit/47b599ad46821ba428667704e8a7fa60eba407b5)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#43) - ([c1142cb](https://github.com/michen00/custom-commit-hooks/commit/c1142cb771f1b15cd2907954c424dc1dc97abb64)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#41) - ([9ada54a](https://github.com/michen00/custom-commit-hooks/commit/9ada54a4027b6d805cfefede7f27138d1a9d8ad6)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#40) - ([849f700](https://github.com/michen00/custom-commit-hooks/commit/849f700bcff2cc529eaacd363e0503462e28eb59)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#38) - ([f5fa614](https://github.com/michen00/custom-commit-hooks/commit/f5fa614f6ca4531cbf1c7c78eb51548d6e4273b2)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#37) - ([824161c](https://github.com/michen00/custom-commit-hooks/commit/824161c30671ad448250a6babb075915af5ab80b)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#36) - ([33fae67](https://github.com/michen00/custom-commit-hooks/commit/33fae67ce6276661b57d10e8a80b94ff445e2464)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#34) - ([c7e7fc2](https://github.com/michen00/custom-commit-hooks/commit/c7e7fc203132bc688c73c951ba155da15bf346eb)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#33) - ([7575e01](https://github.com/michen00/custom-commit-hooks/commit/7575e01c1baa8cffa75222d449ad3757e62baedd)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#32) - ([a620f62](https://github.com/michen00/custom-commit-hooks/commit/a620f629f5bd8f382267d75cffd6df07eb4b1aa1)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks (#31) - ([ab95952](https://github.com/michen00/custom-commit-hooks/commit/ab95952c09c24cb3dd2a57105fa8dcfe1a019e01)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autoupdate pre-commit hooks - ([0b52086](https://github.com/michen00/custom-commit-hooks/commit/0b52086fe0ea1852ca1c9f520db4793f191bcfbb)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- autofix via pre-commit hooks - ([54f683e](https://github.com/michen00/custom-commit-hooks/commit/54f683e217649c1733e020c8ce327041a90995bc)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- sync boilerplate - ([bd710e8](https://github.com/michen00/custom-commit-hooks/commit/bd710e88950318b6578ad576758a14223c01a801)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- update .gitattributes - ([b7274ff](https://github.com/michen00/custom-commit-hooks/commit/b7274ff6241bfe67734c728013a71c7b37ccc4fb)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- autoupdate pre-commit hooks (#16) - ([f8c083c](https://github.com/michen00/custom-commit-hooks/commit/f8c083c3e5fe23711da1d6938a575fabf219e051)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
-- improve PR creation logic - ([3326407](https://github.com/michen00/custom-commit-hooks/commit/33264074176521ffe9f4f281b7184a00d2799c42)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
-- use v0.0.4 of self - ([7fdbf0d](https://github.com/michen00/custom-commit-hooks/commit/7fdbf0d2738f45ef1fa992c0c6f5abec78c3c381)) - [Michael I Chen](mailto:michael.chen@aicadium.ai)
+- correct what this repository tracks (#66) - ([7312def](https://github.com/michen00/custom-commit-hooks/commit/7312def49422b1e049e0bf700248bb8e26175ef4)) - [Michael I Chen](mailto:michen00.github@gmail.com)
 
 ## [0.0.4](https://github.com/michen00/custom-commit-hooks/compare/v0.0.3..v0.0.4) - 2026-01-14
 
