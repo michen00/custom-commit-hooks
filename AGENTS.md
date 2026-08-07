@@ -72,16 +72,8 @@ tests/                            # Test files
 - Conventional commits: `type(scope): description`
 - Types: feat, fix, docs, chore, test, refactor, perf, ci, build, revert
 - This repo's commits should follow its own conventions (dogfooding)
-- **Every commit must be signed.** The `main-protect` ruleset asks for a
-  signature and the remote rejects unsigned commits, so never pass
-  `--no-gpg-sign` or turn off `commit.gpgsign` — not to get a commit through, and
-  not to work around a signing prompt. A commit that will not sign is a signing
-  problem to solve, not a flag to remove. This is also why the repository squash
-  merges: rebase replays commits unsigned, while GitHub signs the commit it
-  creates for a squash.
-- `.gitlint` is the authority on message shape (title 5–50 characters, body
-  wrapped at 72, `chore: merge`/`squash` titles exempted). Read it rather than a
-  summary of it, which is what a copy elsewhere would become.
+- **Every commit must be signed.** The `main-protect` ruleset asks for a signature and the remote rejects unsigned commits, so never pass `--no-gpg-sign` or turn off `commit.gpgsign` — not to get a commit through, and not to work around a signing prompt. A commit that will not sign is a signing problem to solve, not a flag to remove. This is also why the repository squash merges: rebase replays commits unsigned, while GitHub signs the commit it creates for a squash.
+- `.gitlint` is the authority on message shape (title 5–50 characters, body wrapped at 72, `chore: merge`/`squash` titles exempted). Read it rather than a summary of it, which is what a copy elsewhere would become.
 
 ## Boundaries
 
