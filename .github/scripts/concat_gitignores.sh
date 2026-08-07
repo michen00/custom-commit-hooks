@@ -173,7 +173,14 @@ else
 	echo "Unknown OS: unable to ensure single trailing newline"
 fi
 
-echo -e "\ncoverage/**" >>"$OUTPUT_FILE"
-echo -e "!.gitkeep" >>"$OUTPUT_FILE"
+{
+	echo -e "\ncoverage/**"
+	echo -e "!.gitkeep"
+
+	# Claude Code writes machine-specific permission grants to settings.local.json.
+	# Only that file is ignored: a shared .claude/settings.json, or agent skills and
+	# commands kept under .claude/, are ordinary tracked project files.
+	echo -e "\n.claude/settings.local.json"
+} >>"$OUTPUT_FILE"
 
 echo "Combined .gitignore created as $OUTPUT_FILE"
