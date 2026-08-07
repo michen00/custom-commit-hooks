@@ -171,6 +171,42 @@ else
 	fail "an empty regeneration is refused" "expected a non-zero exit and an unchanged file"
 fi
 
+# Locating parse-version.sh became load-bearing when the tag started being
+# normalized through it, so pin where the lookup happens: next to the script,
+# never in the caller's working directory. Invoking through PATH from an
+# unrelated directory with a decoy planted there is the case that would tell
+# the two apart. The decoy answers v9.9.9, which no stub body contains, so if
+# it ever won the section guard would reject the regeneration.
+write_changelog "$changelog"
+STUB_BODY="# Changelog
+
+## [0.2.0] - 2026-08-07
+
+- the new thing
+
+## [0.1.0] - 2026-08-05
+
+- something shipped
+"
+export STUB_BODY
+decoy_dir="$work/decoy"
+mkdir -p "$decoy_dir"
+cat >"$decoy_dir/parse-version.sh" <<'DECOY'
+#!/bin/sh
+echo v9.9.9
+DECOY
+chmod +x "$decoy_dir/parse-version.sh"
+release_dir="$(cd "$TEST_SCRIPT_DIR/../scripts/release" && pwd)"
+if (
+	cd "$decoy_dir" &&
+		PATH="$release_dir:$PATH" stamp-changelog.sh v0.2.0 "$changelog" >/dev/null 2>&1
+) && grep -q '^## \[0.2.0\]' "$changelog"; then
+	pass "the helper is resolved next to the script, not in the caller's CWD"
+else
+	fail "the helper is resolved next to the script, not in the caller's CWD" \
+		"expected the real parse-version.sh to win over a decoy in the CWD"
+fi
+
 echo
 echo -e "Results: ${GREEN}$PASSED passed${NC}, ${RED}$FAILED failed${NC}"
 [ "$FAILED" -eq 0 ]
