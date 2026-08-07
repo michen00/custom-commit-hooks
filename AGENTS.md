@@ -32,7 +32,8 @@ git cliff --tag v1.0.0 --output CHANGELOG.md
 - **Release Publish** (`.github/workflows/release-publish.yml`): runs on `v*.*.*` tag push (or manual dispatch) to build, sign (Sigstore + GPG), and upload assets.
 - Both release workflows declare the protected `release` environment, but only **Release Tag** actually prompts: when it dispatches Release Publish the deployment is bot-created and the reviewer rule is skipped. One approval per release, on Release Tag. A merged `release/*` PR therefore does not release on its own.
 - Land PRs with squash merge only; rebase merge replays commits unsigned. See the Git Workflow section of `CLAUDE.md`.
-- Scripts: `scripts/release/build-artifacts.sh`, `scripts/release/sign-artifacts.sh`, `scripts/release/parse-version.sh`, `scripts/update-unreleased.sh`.
+- Scripts: `scripts/release/build-artifacts.sh`, `scripts/release/sign-artifacts.sh`, `scripts/release/parse-version.sh`, `scripts/release/stamp-changelog.sh`, `scripts/update-unreleased.sh`.
+- Two changelog scripts, and they are not interchangeable. `update-unreleased.sh` refreshes the Unreleased section and belongs to the weekly autoupdate. `release/stamp-changelog.sh` writes the pending version as its own `## [X.Y.Z]` section and is what a release must use: once the tag exists, `git cliff --unreleased` no longer reports the commits it covers, so anything that only ever lived under Unreleased is dropped by the next refresh. That is how v0.1.0 shipped without a changelog section and nearly took 134 lines of history with it.
 - All three workflows validate versions through `scripts/release/parse-version.sh`; it is covered by `tests/test-parse-version.sh`. Do not replace it with a `case` glob such as `v[0-9]*.[0-9]*.[0-9]*`, which also matches `v1.0.0; rm -rf /`.
 - Full steps and verification commands: see [CONTRIBUTING](CONTRIBUTING.md#creating-a-release).
 

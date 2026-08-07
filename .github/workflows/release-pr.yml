@@ -74,8 +74,16 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install --upgrade pre-commit
 
-      - name: Update unreleased changelog
-        run: scripts/update-unreleased.sh
+      # Stamps the pending version as its own section rather than refreshing
+      # Unreleased. Refreshing is what the weekly changelog-autoupdate workflow
+      # does and is right there, but it is wrong during a release: the moment
+      # the tag exists, `git cliff --unreleased` stops reporting the commits it
+      # covers, and any entry that only ever lived under Unreleased is dropped
+      # by the next run with nowhere to go.
+      - name: Stamp the release into the changelog
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: scripts/release/stamp-changelog.sh "$RELEASE_TAG"
 
       - name: Run prettier on CHANGELOG.md
         run: npx prettier --write CHANGELOG.md
