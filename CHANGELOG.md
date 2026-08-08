@@ -6,7 +6,28 @@ All notable changes will be documented in this file. See [conventional commits](
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## [0.1.1](https://github.com/michen00/custom-commit-hooks/compare/v0.1.0..v0.1.1) - 2026-08-08
+
+### 🐛 Fixes
+
+- **(release)** stamp the version into the changelog (#69) - ([03c6133](https://github.com/michen00/custom-commit-hooks/commit/03c61338bb61a3f2262018701ae870528e02a3c6)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### 💚 Continuous Integration
+
+- make actionlint workflow dispatch-only (#71) - ([6936c0e](https://github.com/michen00/custom-commit-hooks/commit/6936c0e9c710e0bc164db03df590c6cb6b089dbc)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- standardize bot auto-merge (#63) - ([587ed7e](https://github.com/michen00/custom-commit-hooks/commit/587ed7e11de5cfed71b0f517bb5e8f24f2e3e1c9)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
+- pin the Python version for pip caching (#64) - ([6c9ae7c](https://github.com/michen00/custom-commit-hooks/commit/6c9ae7cd13390603487bc2092afc6a30493a3717)) - [Michael I Chen](mailto:michael.chen.0@gmail.com)
+
+### 👷 Build
+
+- **(deps)** bump actions/cache from 5 to 6 in the actions group (#65) - ([7f16bf3](https://github.com/michen00/custom-commit-hooks/commit/7f16bf31c6a4b9bc162087e51675c346753959df)) - [dependabot[bot]](mailto:49699333+dependabot[bot]@users.noreply.github.com)
+
+### ⚙️ Miscellaneous Tasks
+
+- **(.gitignore)** regenerate from upstream (#68) - ([e4fe9d2](https://github.com/michen00/custom-commit-hooks/commit/e4fe9d23d0775469253d7f52a5c773eedc1313ed)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- correct what this repository tracks (#66) - ([7312def](https://github.com/michen00/custom-commit-hooks/commit/7312def49422b1e049e0bf700248bb8e26175ef4)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+## [0.1.0](https://github.com/michen00/custom-commit-hooks/compare/v0.0.4..v0.1.0) - 2026-08-05
 
 ### ✨ Features
 
