@@ -3,19 +3,19 @@ name: Bot auto-merge
 
 # Arms GitHub's native auto-merge (squash) on Dependabot and pre-commit-ci pull requests
 # that pass the eligibility rules below. GitHub performs the merge only once the pull
-# request is mergeable -- all nine required contexts green, no unresolved review threads --
+# request is mergeable -- all eight required contexts green, no unresolved review threads --
 # so a review comment pauses it until that thread is resolved.
 #
 # There is deliberately no in-workflow check polling. The previous version of this file
 # called `gh pr checks --required --watch`, which races check registration: it reports "no
 # required checks reported" before CI has posted and fails the job on a pull request that
 # was never unhealthy. Native auto-merge gates on the ruleset server-side, which is both
-# correct and free. `main-protect` requires nine contexts here -- `actionlint`, three
-# `pre-commit` platforms and five `tests` matrix legs -- and those are what auto-merge waits
+# correct and free. `main-protect` requires eight contexts here -- three `pre-commit`
+# platforms and five `tests` matrix legs -- and those are what auto-merge waits
 # on; without at least one required check GitHub rejects `--auto` outright, so removing them
 # would break this workflow rather than relax it.
 #
-# Nine contexts is the widest required base of any of these repositories, which is what
+# Eight contexts is the widest required base of any of these repositories, which is what
 # makes arming an actions major defensible below even though this repository publishes.
 #
 # The author guard reads `pull_request.user.login` and not `github.actor`. `github.actor`

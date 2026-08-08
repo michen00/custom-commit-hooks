@@ -1,11 +1,6 @@
 ---
 name: lint GitHub Actions workflows
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
-    paths: ['.github/workflows/*.ya?ml']
   workflow_dispatch:
 
 permissions:
@@ -15,27 +10,8 @@ jobs:
   actionlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: dorny/paths-filter@v4
-        id: filter
-        if: >-
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        with:
-          filters: |
-            addedOrModifiedWorkflows:
-              - added|modified:
-                - .github/workflows/*.yaml
-                - .github/workflows/*.yml
       - uses: actions/checkout@v6
-        if: >-
-          github.event_name == 'push' ||
-          github.event_name == 'workflow_dispatch' ||
-          steps.filter.outputs.addedOrModifiedWorkflows == 'true'
       - name: Check workflow files
-        if: >-
-          github.event_name == 'push' ||
-          github.event_name == 'workflow_dispatch' ||
-          steps.filter.outputs.addedOrModifiedWorkflows == 'true'
-        uses: docker://rhysd/actionlint:latest
+        uses: docker://rhysd/actionlint:v1.7.12
         with:
           args: -color

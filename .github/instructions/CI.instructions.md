@@ -31,6 +31,14 @@ test:
   - Run test suite (bash test scripts)
 ```
 
+### lint GitHub Actions workflows (.github/workflows/lint-github-actions.yml)
+
+**Purpose**: Optional manual actionlint run in Actions (same tool as the pre-commit hook)
+
+**Triggers:**
+
+- `workflow_dispatch` only (not required for merge; enforcement is via pre-commit in CI)
+
 ### Release Workflows
 
 **Triggers:**
