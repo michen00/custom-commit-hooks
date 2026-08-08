@@ -42,6 +42,7 @@ run_test "$TEST_SCRIPT_DIR/test-enhance-scope.sh" "enhance-scope tests"
 run_test "$TEST_SCRIPT_DIR/test-conventional-merge-commit.sh" "conventional-merge-commit tests"
 run_test "$TEST_SCRIPT_DIR/test-parse-version.sh" "release/parse-version.sh tests"
 run_test "$TEST_SCRIPT_DIR/test-bump-pins.sh" "release/bump-pins.sh tests"
+run_test "$TEST_SCRIPT_DIR/test-stamp-changelog.sh" "release/stamp-changelog.sh tests"
 
 # Summary
 echo "=========================================="
