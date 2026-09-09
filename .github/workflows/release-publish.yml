@@ -33,7 +33,7 @@ jobs:
       # parser can be used. A tag push already lands on the tag; a manual
       # dispatch lands on the default branch. The explicit checkout below moves
       # to the requested tag in both cases.
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 

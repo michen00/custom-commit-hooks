@@ -20,10 +20,10 @@ jobs:
       BRANCH_NAME: chore/pre-commit-autoupdate
       PRECOMMIT_CONFIG_FILE: .pre-commit-config.yaml
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python
         id: setup-python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           # No cache: pip here. It keys off a hashed requirements.txt or
           # pyproject.toml, and this repository ships neither, so it only ever
