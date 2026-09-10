@@ -26,10 +26,10 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python
         id: setup-python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           # No cache: pip here. It keys off a hashed requirements.txt or
           # pyproject.toml, and this repository ships neither, so it only ever
@@ -88,7 +88,7 @@ jobs:
       # bashcov with simplecov-cobertura generates coverage/coverage.xml
       COVERAGE_REPORT: coverage/coverage.xml
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2 # fetch-depth of 2 enables diff coverage
       - name: Install Git ${{ matrix.git-version }}

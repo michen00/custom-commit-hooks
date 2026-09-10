@@ -32,7 +32,7 @@ jobs:
       # Checked out before the branch name is parsed so that the shared,
       # unit-tested parser can be used. The ref is the merge commit, never the
       # attacker-influenced branch name.
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.merge_commit_sha }}
