@@ -11,10 +11,30 @@
 # to replace. `edited` is not in the default type set and is the one that
 # matters -- editing a body fires it alone, so without it a report would stand
 # on a body the author has already fixed.
+#
+# `pull_request_target`, not `pull_request`, and the difference is who the
+# report reaches. A fork's token is read-only whatever a caller's
+# `permissions:` block asks for, so under `pull_request` the comment is refused
+# for every outside contributor -- the people least likely to know this
+# repository's prose convention, and the ones the report exists for. The run
+# does not fail there and the report is not lost: the reusable workflow falls
+# back to the job summary. But a summary is something you have to open a check
+# to find, and a comment is not.
+#
+# What makes that safe here is that the reusable workflow checks out nothing --
+# it has no `actions/checkout` step at all. It reads the body from the event
+# payload and posts a comment, so the usual `pull_request_target` hazard, a
+# writable token handed to unreviewed code, has nothing to attach to. Keep it
+# that way: adding a checkout of the pull request head under this trigger is
+# what would turn it into the vulnerability the pattern is known for.
+#
+# The cost is the same one prose-body-write.yml pays. `pull_request_target`
+# reads the workflow from the default branch, so a pull request cannot test a
+# change to this file; it takes effect once merged.
 name: Prose body
 
 on:
-  pull_request:
+  pull_request_target:
     types: [synchronize, edited]
 
 jobs:

@@ -290,12 +290,10 @@ jobs:
               # release path.
               #
               # The two prose-body workflows are held for the same reason, re-derived
-              # when they were added. prose-body-write.yml triggers on
-              # `pull_request_target`, so it runs from the default branch and a pull
-              # request never executes the version it proposes. prose-body.yml triggers
-              # on `pull_request` but only for `synchronize` and `edited`, neither of
-              # which a freshly opened bot pull request fires, so green says nothing
-              # about it either.
+              # when they were added and again when the report moved to
+              # `pull_request_target`. Both now trigger on that event, so both run
+              # from the default branch and a pull request never executes the version
+              # it proposes -- green here would say nothing about either.
               #
               # Listed rather than inferred, and that is this branch's known weakness: a
               # workflow's triggers can change without this file noticing, and a stale list
