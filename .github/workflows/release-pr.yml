@@ -100,7 +100,13 @@ jobs:
           # on top of it. The way out is the manual fallback already documented
           # in CONTRIBUTING: tag main by hand, which both publishes that
           # release and clears this check.
-          prep="$(git log -1 --format=%s --grep='^chore(release): prepare v' || true)"
+          #
+          # No `|| true` on the lookup. Finding nothing already exits 0 and
+          # prints nothing, so suppression would only ever catch a real
+          # failure -- and a failed lookup reads as "no release in flight",
+          # skipping the guard below and preparing a second PR for the
+          # release already on its way out. Let `set -e` stop the step.
+          prep="$(git log -1 --format=%s --grep='^chore(release): prepare v')"
           if [ -n "$prep" ]; then
             pending_raw="$(printf '%s\n' "$prep" |
               sed -n 's/^chore(release): prepare \([^ ]*\).*/\1/p')"
