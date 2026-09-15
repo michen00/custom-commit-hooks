@@ -58,22 +58,26 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Pinned, and it has to be pinned by hand. `taiki-e/install-action`
-      # resolves a bare `git-cliff` to the newest release, and Dependabot
-      # cannot correct for that: its github-actions ecosystem reads `uses:`
-      # references, so it bumps the action on the line above and treats this
-      # `tool:` value as an opaque string it has never heard of.
+      # A stopgap, not a policy, and worth reading before it is treated as one.
       #
-      # Left floating, the changelog is not reproducible. stamp-changelog.sh
-      # regenerates the whole file from tags and commits, so whatever git-cliff
-      # reports today becomes released history -- and 2.14.0 changed what it
-      # reports, dropping the commit that created .git-blame-ignore-revs from a
-      # section released months earlier. The entry guard in that script is what
-      # catches such a loss; this pin is what keeps it from happening at the
-      # moment someone is trying to cut a release.
+      # 2.14.x drops any commit whose whole diff is .git-blame-ignore-revs --
+      # orhun/git-cliff#1643 -- and stamp-changelog.sh regenerates the entire
+      # changelog from tags and commits, so unpinned that deletion reaches a
+      # section released months ago. The entry guard in that script already
+      # refuses such a regeneration, so floating would not lose the entry; it
+      # would fail the release instead. This pin is only what keeps a broken
+      # upstream from blocking a release someone is trying to cut today.
       #
-      # Moving it is a deliberate edit. Bump it, run `make test`, and read the
-      # CHANGELOG.md diff -- an unchanged diff is the result to expect.
+      # The guard is the durable protection, not this line. Once #1643 ships,
+      # prefer dropping the pin to bumping it: floating picks up fixes, the
+      # guard refuses anything that loses released history, and a change it
+      # permits -- reformatting at the same entry count -- shows up in the
+      # release PR's own diff, which is read before it merges. Reproducibility
+      # for its own sake is not what this is buying.
+      #
+      # Until then it is a hand edit. Dependabot's github-actions ecosystem
+      # reads `uses:` references, so it maintains the action on the line above
+      # and treats this `tool:` value as an opaque string.
       - name: Install git-cliff
         uses: taiki-e/install-action@v2
         with:
@@ -201,10 +205,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Pinned by hand; see the note in the step above. Dependabot reads
-      # `uses:` references and cannot see this `tool:` value, so a bare
-      # `git-cliff` would float to the newest release and change what the
-      # changelog says without anyone choosing that.
+      # Temporary; see the note in the step above. Pinned only because 2.14.x
+      # drops commits that touch .git-blame-ignore-revs alone
+      # (orhun/git-cliff#1643). Drop the pin once that ships rather than
+      # bumping it.
       - name: Install git-cliff
         uses: taiki-e/install-action@v2
         with:
