@@ -20,10 +20,10 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # Full history needed for git cliff
-      # Temporary; see the note in release-pr.yml. Pinned only because 2.14.x
-      # drops commits that touch .git-blame-ignore-revs alone
-      # (orhun/git-cliff#1643). Drop the pin once that ships rather than
-      # bumping it.
+      # Temporary; see the note in release-pr.yml and tracking issue #87. Pinned
+      # only because 2.14.x drops commits that touch .git-blame-ignore-revs
+      # alone (orhun/git-cliff#1643). Drop the pin once that ships rather
+      # than bumping it.
       - name: Install git-cliff
         uses: taiki-e/install-action@v2
         with:

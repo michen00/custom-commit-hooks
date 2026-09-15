@@ -78,6 +78,10 @@ jobs:
       # Until then it is a hand edit. Dependabot's github-actions ecosystem
       # reads `uses:` references, so it maintains the action on the line above
       # and treats this `tool:` value as an opaque string.
+      #
+      # Tracked in #87, which is where the removal steps live. Nothing here
+      # fires when #1643 is fixed, so that issue is the part that surfaces on
+      # its own.
       - name: Install git-cliff
         uses: taiki-e/install-action@v2
         with:
@@ -205,10 +209,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Temporary; see the note in the step above. Pinned only because 2.14.x
-      # drops commits that touch .git-blame-ignore-revs alone
-      # (orhun/git-cliff#1643). Drop the pin once that ships rather than
-      # bumping it.
+      # Temporary; see the note in the step above and tracking issue #87. Pinned
+      # only because 2.14.x drops commits that touch .git-blame-ignore-revs
+      # alone (orhun/git-cliff#1643). Drop the pin once that ships rather
+      # than bumping it.
       - name: Install git-cliff
         uses: taiki-e/install-action@v2
         with:
