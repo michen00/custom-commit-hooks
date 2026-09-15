@@ -73,7 +73,11 @@ else
 	# MD012/no-multiple-blanks. markdownlint runs over the generated changelog
 	# in the changelog-autoupdate workflow, and a header that trips this rule
 	# fails that job every week without ever touching a commit.
-	offenders="$(awk 'BEGIN { run = 0 } { if ($0 == "") { run++; if (run > 1) print NR } else run = 0 }' "$rendered")"
+	#
+	# markdownlint counts a whitespace-only line as blank, so this check and
+	# the trailing-blank count below have to as well; testing for an empty
+	# line alone would pass a header that markdownlint still rejects.
+	offenders="$(awk 'BEGIN { run = 0 } { if ($0 ~ /^[[:space:]]*$/) { run++; if (run > 1) print NR } else run = 0 }' "$rendered")"
 	if [ -n "$offenders" ]; then
 		# shellcheck disable=SC2086 # Word splitting turns the line list into args
 		fail "header has no consecutive blank lines (MD012)" \
@@ -86,7 +90,7 @@ else
 
 	# The header has to end with exactly one blank line so the first '## ['
 	# section that follows it is separated by one blank line, not glued on.
-	trailing_blanks="$(awk '{ if ($0 == "") blanks++; else blanks = 0 } END { print blanks + 0 }' "$rendered")"
+	trailing_blanks="$(awk '{ if ($0 ~ /^[[:space:]]*$/) blanks++; else blanks = 0 } END { print blanks + 0 }' "$rendered")"
 	if [ "$trailing_blanks" -ne 1 ]; then
 		fail "header ends with a single blank line" \
 			"Header ends with $trailing_blanks trailing blank line(s), expected 1"
