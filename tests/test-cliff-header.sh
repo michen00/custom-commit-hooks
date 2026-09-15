@@ -56,7 +56,10 @@ render_header() {
 	' "$1"
 }
 
-work="$(mktemp -d)"
+if ! work="$(mktemp -d)"; then
+	echo "Error: could not create a temporary directory" >&2
+	exit 1
+fi
 trap 'rm -rf "$work"' EXIT INT TERM HUP
 rendered="$work/header.md"
 
