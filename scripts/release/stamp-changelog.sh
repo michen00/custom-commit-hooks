@@ -85,6 +85,80 @@ if [ "$new_sections" -lt "$old_sections" ]; then
 	exit 1
 fi
 
+# The section count above is a total, and a total cannot see inside a section.
+# git-cliff decides section membership from tags and commits, but *which
+# commits it reports at all* is its own behaviour, and that changes between
+# versions: 2.14.0 added an ignore rule keyed on .git-blame-ignore-revs that
+# also drops the commit which created that file, so upgrading silently deleted
+# one entry from a section released months earlier. Nothing above notices --
+# the section is still there, and so are all the others.
+#
+# So compare per section, not in aggregate. Every released section that exists
+# now must come back with at least as many entries as it has. Gaining entries
+# is fine: a commit parser can start matching something it used to skip, and
+# that is an addition, not a loss.
+#
+# Unreleased is excluded because emptying it is precisely what stamping does.
+# Its entries move into the new version's section, so a drop there is the
+# intended outcome rather than a regression.
+if ! entry_guard="$(awk '
+	function section_of(line,   s) {
+		if (match(line, /\[[^]]*\]/)) {
+			return substr(line, RSTART + 1, RLENGTH - 2)
+		}
+		return ""
+	}
+	NR == FNR {
+		if ($0 ~ /^## \[/) {
+			old_sec = section_of($0)
+			if (old_sec == "Unreleased") {
+				old_sec = ""
+			} else {
+				old_order[++old_n] = old_sec
+				old_count[old_sec] = 0
+			}
+			next
+		}
+		if (old_sec != "" && $0 ~ /^- /) {
+			old_count[old_sec]++
+		}
+		next
+	}
+	{
+		if ($0 ~ /^## \[/) {
+			new_sec = section_of($0)
+			if (new_sec == "Unreleased") {
+				new_sec = ""
+			} else {
+				new_count[new_sec] = 0
+			}
+			next
+		}
+		if (new_sec != "" && $0 ~ /^- /) {
+			new_count[new_sec]++
+		}
+	}
+	END {
+		for (i = 1; i <= old_n; i++) {
+			s = old_order[i]
+			if (!(s in new_count)) {
+				printf "section [%s] is missing from the regenerated changelog\n", s
+				bad = 1
+				continue
+			}
+			if (new_count[s] < old_count[s]) {
+				printf "section [%s] lost entries (%d -> %d)\n", s, old_count[s], new_count[s]
+				bad = 1
+			}
+		}
+		exit bad ? 1 : 0
+	}
+' "$changelog_file" "$tmp_changelog")"; then
+	printf 'Error: %s.\n' "$entry_guard" >&2
+	echo "Refusing to publish a regeneration that loses released history." >&2
+	exit 1
+fi
+
 # git-cliff succeeded and the result passed inspection, so publish it. Writing
 # through the existing file rather than renaming over it keeps the changelog's
 # permissions and inode.

@@ -58,10 +58,26 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Pinned, and it has to be pinned by hand. `taiki-e/install-action`
+      # resolves a bare `git-cliff` to the newest release, and Dependabot
+      # cannot correct for that: its github-actions ecosystem reads `uses:`
+      # references, so it bumps the action on the line above and treats this
+      # `tool:` value as an opaque string it has never heard of.
+      #
+      # Left floating, the changelog is not reproducible. stamp-changelog.sh
+      # regenerates the whole file from tags and commits, so whatever git-cliff
+      # reports today becomes released history -- and 2.14.0 changed what it
+      # reports, dropping the commit that created .git-blame-ignore-revs from a
+      # section released months earlier. The entry guard in that script is what
+      # catches such a loss; this pin is what keeps it from happening at the
+      # moment someone is trying to cut a release.
+      #
+      # Moving it is a deliberate edit. Bump it, run `make test`, and read the
+      # CHANGELOG.md diff -- an unchanged diff is the result to expect.
       - name: Install git-cliff
         uses: taiki-e/install-action@v2
         with:
-          tool: git-cliff
+          tool: git-cliff@2.13.1
 
       - name: Resolve release version
         id: version
@@ -185,10 +201,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Pinned by hand; see the note in the step above. Dependabot reads
+      # `uses:` references and cannot see this `tool:` value, so a bare
+      # `git-cliff` would float to the newest release and change what the
+      # changelog says without anyone choosing that.
       - name: Install git-cliff
         uses: taiki-e/install-action@v2
         with:
-          tool: git-cliff
+          tool: git-cliff@2.13.1
 
       - name: Set up Python
         uses: actions/setup-python@v7

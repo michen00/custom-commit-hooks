@@ -207,6 +207,119 @@ else
 		"expected the real parse-version.sh to win over a decoy in the CWD and on PATH"
 fi
 
+# -- per-section entry guard --
+
+# The regression this guard exists for: every section survives, so the count
+# above is satisfied, but one released section comes back an entry short.
+# git-cliff 2.14.0 did exactly this to [0.0.1] in this repository.
+write_changelog "$changelog"
+printf '\n## [0.0.9] - 2026-01-01\n\n- older\n- older still\n' >>"$changelog"
+STUB_BODY="# Changelog
+
+## [0.2.0] - 2026-08-07
+
+- the new thing
+
+## [0.1.0] - 2026-08-05
+
+- something shipped
+
+## [0.0.9] - 2026-01-01
+
+- older
+"
+export STUB_BODY
+before="$(cat "$changelog")"
+if ! err="$("$STAMP" v0.2.0 "$changelog" 2>&1)" &&
+	printf '%s' "$err" | grep -q 'lost entries (2 -> 1)' &&
+	[ "$(cat "$changelog")" = "$before" ]; then
+	pass "a released section losing an entry is refused"
+else
+	fail "a released section losing an entry is refused" \
+		"expected a non-zero exit naming the section, and an unchanged file"
+fi
+
+# A section swapped for another keeps the total identical, so only a per-section
+# comparison can see it.
+write_changelog "$changelog"
+STUB_BODY="# Changelog
+
+## [0.2.0] - 2026-08-07
+
+- the new thing
+
+## [0.1.5] - 2026-08-06
+
+- something shipped
+"
+export STUB_BODY
+before="$(cat "$changelog")"
+if ! err="$("$STAMP" v0.2.0 "$changelog" 2>&1)" &&
+	printf '%s' "$err" | grep -q 'section \[0.1.0\] is missing' &&
+	[ "$(cat "$changelog")" = "$before" ]; then
+	pass "a released section swapped for another is refused"
+else
+	fail "a released section swapped for another is refused" \
+		"expected a non-zero exit naming the missing section, and an unchanged file"
+fi
+
+# Gaining entries is not a loss. A commit parser that starts matching something
+# it used to skip adds to a released section, and that has to stay allowed or
+# the guard would block every such change.
+write_changelog "$changelog"
+STUB_BODY="# Changelog
+
+## [0.2.0] - 2026-08-07
+
+- the new thing
+
+## [0.1.0] - 2026-08-05
+
+- something shipped
+- something that used to be skipped
+"
+export STUB_BODY
+if "$STAMP" v0.2.0 "$changelog" >/dev/null 2>&1 &&
+	grep -q 'used to be skipped' "$changelog"; then
+	pass "a released section gaining an entry is published"
+else
+	fail "a released section gaining an entry is published" "expected a zero exit"
+fi
+
+# Unreleased is the one section stamping is supposed to empty: its entries move
+# into the new version's section. Counting it would refuse every release.
+changelog_unrel="$work/unreleased.md"
+cat >"$changelog_unrel" <<'MD'
+# Changelog
+
+## [Unreleased]
+
+- pending one
+- pending two
+
+## [0.1.0] - 2026-08-05
+
+- something shipped
+MD
+STUB_BODY="# Changelog
+
+## [0.2.0] - 2026-08-07
+
+- pending one
+- pending two
+
+## [0.1.0] - 2026-08-05
+
+- something shipped
+"
+export STUB_BODY
+if "$STAMP" v0.2.0 "$changelog_unrel" >/dev/null 2>&1 &&
+	grep -q '^## \[0.2.0\]' "$changelog_unrel"; then
+	pass "emptying Unreleased into the new section is published"
+else
+	fail "emptying Unreleased into the new section is published" "expected a zero exit"
+fi
+
 echo
 echo -e "Results: ${GREEN}$PASSED passed${NC}, ${RED}$FAILED failed${NC}"
 [ "$FAILED" -eq 0 ]
