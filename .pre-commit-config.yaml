@@ -65,6 +65,18 @@ repos:
     hooks:
       - id: trailing-whitespace
         exclude: ^tests/test-conventional-merge-commit\.csv$
+  # Before prettier, not after: this rewrites prose, and prettier is what
+  # normalizes the result. markdownlint's `line-length` is `false` here and
+  # prettier's `proseWrap` is left at `preserve`, so nothing downstream wraps
+  # the prose back -- which is the one thing that would make these fight.
+  #
+  # The `-py` mirror rather than `-rs`: a `language: rust` hook builds from
+  # source, so pre-commit would install a whole Rust toolchain before checking
+  # the first commit, and nothing here needs cargo otherwise.
+  - repo: https://github.com/michen00/markdown-prose-hooks-py
+    rev: v0.4.0
+    hooks:
+      - id: unwrap-markdown-prose-py
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.9.6
     hooks:

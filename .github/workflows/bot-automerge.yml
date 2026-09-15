@@ -289,6 +289,12 @@ jobs:
               # exercised either. release-tag.yml is the one that matters: it is part of the
               # release path.
               #
+              # The two prose-body workflows are held for the same reason, re-derived
+              # when they were added and again when the report moved to
+              # `pull_request_target`. Both now trigger on that event, so both run
+              # from the default branch and a pull request never executes the version
+              # it proposes -- green here would say nothing about either.
+              #
               # Listed rather than inferred, and that is this branch's known weakness: a
               # workflow's triggers can change without this file noticing, and a stale list
               # fails by arming. Re-derive it when a trigger changes.
@@ -312,6 +318,8 @@ jobs:
                                -e '.github/workflows/pre-commit-autoupdate.yml' \
                                -e '.github/workflows/delete-bot-branches-for-closed-prs.yml' \
                                -e '.github/workflows/bot-automerge-disarm.yml' \
+                               -e '.github/workflows/prose-body.yml' \
+                               -e '.github/workflows/prose-body-write.yml' \
                   || true)
                 if [ "$held" -ne 0 ]; then
                   echo "::warning::actions major reaches a workflow no PR runs; holding."
