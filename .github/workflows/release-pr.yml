@@ -58,10 +58,34 @@ jobs:
         with:
           fetch-depth: 0
 
+      # A stopgap, not a policy, and worth reading before it is treated as one.
+      #
+      # 2.14.x drops any commit whose whole diff is .git-blame-ignore-revs --
+      # orhun/git-cliff#1643 -- and stamp-changelog.sh regenerates the entire
+      # changelog from tags and commits, so unpinned that deletion reaches a
+      # section released months ago. The entry guard in that script already
+      # refuses such a regeneration, so floating would not lose the entry; it
+      # would fail the release instead. This pin is only what keeps a broken
+      # upstream from blocking a release someone is trying to cut today.
+      #
+      # The guard is the durable protection, not this line. Once #1643 ships,
+      # prefer dropping the pin to bumping it: floating picks up fixes, the
+      # guard refuses anything that loses released history, and a change it
+      # permits -- reformatting at the same entry count -- shows up in the
+      # release PR's own diff, which is read before it merges. Reproducibility
+      # for its own sake is not what this is buying.
+      #
+      # Until then it is a hand edit. Dependabot's github-actions ecosystem
+      # reads `uses:` references, so it maintains the action on the line above
+      # and treats this `tool:` value as an opaque string.
+      #
+      # Tracked in #87, which is where the removal steps live. Nothing here
+      # fires when #1643 is fixed, so that issue is the part that surfaces on
+      # its own.
       - name: Install git-cliff
         uses: taiki-e/install-action@v2
         with:
-          tool: git-cliff
+          tool: git-cliff@2.13.1
 
       - name: Resolve release version
         id: version
@@ -185,10 +209,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Temporary; see the note in the step above and tracking issue #87. Pinned
+      # only because 2.14.x drops commits that touch .git-blame-ignore-revs
+      # alone (orhun/git-cliff#1643). Drop the pin once that ships rather
+      # than bumping it.
       - name: Install git-cliff
         uses: taiki-e/install-action@v2
         with:
-          tool: git-cliff
+          tool: git-cliff@2.13.1
 
       - name: Set up Python
         uses: actions/setup-python@v7
