@@ -85,42 +85,65 @@ if [ "$new_sections" -lt "$old_sections" ]; then
 	exit 1
 fi
 
-# The section count above is a total, and a total cannot see inside a section.
-# git-cliff decides section membership from tags and commits, but *which
-# commits it reports at all* is its own behaviour, and that changes between
-# versions: 2.14.0 added an ignore rule keyed on .git-blame-ignore-revs that
-# also drops the commit which created that file, so upgrading silently deleted
-# one entry from a section released months earlier. Nothing above notices --
-# the section is still there, and so are all the others.
+# The section count above is a total, and a total cannot see inside a
+# section. git-cliff decides section membership from tags and commits, but
+# *which commits it reports at all* is its own behaviour, and that changes
+# between versions: 2.14.0 added an ignore rule keyed on .git-blame-ignore-revs
+# that also drops any commit whose whole diff is that file, so upgrading
+# silently deleted one entry from a section released months earlier.
 #
-# So compare per section, not in aggregate. Every released section that exists
-# now must come back with at least as many entries as it has. Gaining entries
-# is fine: a commit parser can start matching something it used to skip, and
-# that is an addition, not a loss.
+# Comparing per-section counts is not enough either. A parser change that stops
+# matching one commit and starts matching another in the same section leaves
+# the count identical while the released entry is gone. So compare identities:
+# every entry a released section has now must still be there afterwards.
 #
-# Unreleased is excluded because emptying it is precisely what stamping does.
-# Its entries move into the new version's section, so a drop there is the
-# intended outcome rather than a regression.
+# Identity is the commit SHA in the entry's link, which survives any rendering
+# change git-cliff might make to the line around it. Two entries in [0.0.0]
+# predate that template and carry no link; those fall back to their own text,
+# which is the strongest identity available and correct for a hand-written
+# entry -- if the text changes, something did happen to it.
+#
+# Gaining entries is fine: a parser that starts matching what it used to skip
+# is an addition, not a loss. Unreleased is excluded because emptying it into
+# the new version's section is precisely what stamping does.
 if ! entry_guard="$(awk '
-	function section_of(line,   s) {
+	function section_of(line) {
 		if (match(line, /\[[^]]*\]/)) {
 			return substr(line, RSTART + 1, RLENGTH - 2)
 		}
 		return ""
+	}
+	function identity_of(line) {
+		if (match(line, /[0-9a-f]{40}/)) {
+			return substr(line, RSTART, RLENGTH)
+		}
+		gsub(/^[ \t]+|[ \t]+$/, "", line)
+		sub(/^-[ \t]+/, "", line)
+		return "text:" line
+	}
+	function render(id) {
+		if (id ~ /^text:/) {
+			return substr(id, 6)
+		}
+		return substr(id, 1, 7)
 	}
 	NR == FNR {
 		if ($0 ~ /^## \[/) {
 			old_sec = section_of($0)
 			if (old_sec == "Unreleased") {
 				old_sec = ""
-			} else {
-				old_order[++old_n] = old_sec
-				old_count[old_sec] = 0
+			} else if (!(old_sec in old_seen)) {
+				old_seen[old_sec] = 1
+				section_order[++sections] = old_sec
 			}
 			next
 		}
 		if (old_sec != "" && $0 ~ /^- /) {
-			old_count[old_sec]++
+			key = old_sec SUBSEP identity_of($0)
+			if (!(key in old_count)) {
+				entry_order[++entries] = key
+			}
+			old_count[key]++
 		}
 		next
 	}
@@ -130,31 +153,41 @@ if ! entry_guard="$(awk '
 			if (new_sec == "Unreleased") {
 				new_sec = ""
 			} else {
-				new_count[new_sec] = 0
+				new_seen[new_sec] = 1
 			}
 			next
 		}
 		if (new_sec != "" && $0 ~ /^- /) {
-			new_count[new_sec]++
+			new_count[new_sec SUBSEP identity_of($0)]++
 		}
 	}
 	END {
-		for (i = 1; i <= old_n; i++) {
-			s = old_order[i]
-			if (!(s in new_count)) {
-				printf "section [%s] is missing from the regenerated changelog\n", s
+		for (i = 1; i <= sections; i++) {
+			if (!(section_order[i] in new_seen)) {
+				printf "section [%s] is missing from the regenerated changelog\n", section_order[i]
 				bad = 1
+			}
+		}
+		# Entries are reported in the order they appear in the existing file, so
+		# the output is stable across runs rather than following awk hash order.
+		for (i = 1; i <= entries; i++) {
+			key = entry_order[i]
+			split(key, part, SUBSEP)
+			if (!(part[1] in new_seen)) {
 				continue
 			}
-			if (new_count[s] < old_count[s]) {
-				printf "section [%s] lost entries (%d -> %d)\n", s, old_count[s], new_count[s]
+			if (new_count[key] < old_count[key]) {
+				printf "section [%s] lost a released entry: %s\n", part[1], render(part[2])
 				bad = 1
 			}
 		}
 		exit bad ? 1 : 0
 	}
 ' "$changelog_file" "$tmp_changelog")"; then
-	printf 'Error: %s.\n' "$entry_guard" >&2
+	# Every line gets the prefix, not just the first. The guard can report
+	# several sections at once, and a bare `printf "Error: %s"` would leave the
+	# rest unlabelled in a CI log someone is reading to find out what broke.
+	printf '%s\n' "$entry_guard" | sed 's/^/Error: /' >&2
 	echo "Refusing to publish a regeneration that loses released history." >&2
 	exit 1
 fi

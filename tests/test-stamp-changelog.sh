@@ -27,13 +27,22 @@ fail() {
 	((FAILED++))
 }
 
+# The suite runs under `set -uo pipefail` with no `errexit`, so a fixture write
+# that fails would otherwise fall through into the assertions. That is worse
+# than a crash here: an unwritten changelog makes the script refuse for the
+# wrong reason, and the negative cases below would pass while testing nothing.
+fatal() {
+	echo -e "${RED}✗${NC} fixture setup failed: $1" >&2
+	exit 1
+}
+
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 
 # A changelog with one released section, standing in for the real file. The
 # guards care only about `## [` section headers, so nothing else has to be real.
 write_changelog() {
-	cat >"$1" <<'MD'
+	cat >"$1" <<'MD' || fatal "could not write $1"
 # Changelog
 
 ## [0.1.0](https://example.com/compare/v0.0.9..v0.1.0) - 2026-08-05
@@ -145,7 +154,8 @@ fi
 
 # The shape of the clobber itself: fewer sections out than in.
 write_changelog "$changelog"
-printf '\n## [0.0.9] - 2026-01-01\n\n- older\n' >>"$changelog"
+printf '\n## [0.0.9] - 2026-01-01\n\n- older\n' >>"$changelog" ||
+	fatal "could not extend $changelog"
 STUB_BODY="# Changelog
 
 ## [0.2.0] - 2026-08-07
@@ -213,7 +223,8 @@ fi
 # above is satisfied, but one released section comes back an entry short.
 # git-cliff 2.14.0 did exactly this to [0.0.1] in this repository.
 write_changelog "$changelog"
-printf '\n## [0.0.9] - 2026-01-01\n\n- older\n- older still\n' >>"$changelog"
+printf '\n## [0.0.9] - 2026-01-01\n\n- older\n- older still\n' >>"$changelog" ||
+	fatal "could not extend $changelog"
 STUB_BODY="# Changelog
 
 ## [0.2.0] - 2026-08-07
@@ -231,7 +242,7 @@ STUB_BODY="# Changelog
 export STUB_BODY
 before="$(cat "$changelog")"
 if ! err="$("$STAMP" v0.2.0 "$changelog" 2>&1)" &&
-	printf '%s' "$err" | grep -q 'lost entries (2 -> 1)' &&
+	printf '%s' "$err" | grep -q 'lost a released entry: older still' &&
 	[ "$(cat "$changelog")" = "$before" ]; then
 	pass "a released section losing an entry is refused"
 else
@@ -263,6 +274,67 @@ else
 		"expected a non-zero exit naming the missing section, and an unchanged file"
 fi
 
+# The gap a count-only guard cannot see, and the reason identity is compared
+# rather than arithmetic: one released entry leaves the section while a
+# different one arrives, so the count is unchanged.
+write_changelog "$changelog"
+printf '\n## [0.0.9] - 2026-01-01\n\n- older\n' >>"$changelog" ||
+	fatal "could not extend $changelog"
+STUB_BODY="# Changelog
+
+## [0.2.0] - 2026-08-07
+
+- the new thing
+
+## [0.1.0] - 2026-08-05
+
+- something shipped
+
+## [0.0.9] - 2026-01-01
+
+- a different entry the parser started matching
+"
+export STUB_BODY
+before="$(cat "$changelog")"
+if ! err="$("$STAMP" v0.2.0 "$changelog" 2>&1)" &&
+	printf '%s' "$err" | grep -q 'lost a released entry: older' &&
+	[ "$(cat "$changelog")" = "$before" ]; then
+	pass "an entry swapped inside a released section is refused"
+else
+	fail "an entry swapped inside a released section is refused" \
+		"expected a non-zero exit naming the lost entry, and an unchanged file"
+fi
+
+# Identity is the commit SHA, not the rendered line, so a git-cliff change to
+# how an entry is formatted is not a loss. This is what keeps the guard from
+# refusing every upgrade that touches the body template.
+sha='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+cat >"$changelog" <<MD || fatal "could not write $changelog"
+# Changelog
+
+## [0.1.0] - 2026-08-05
+
+- something shipped - ([aaaaaaa](https://example.com/commit/$sha)) - [A](mailto:a@e.st)
+MD
+STUB_BODY="# Changelog
+
+## [0.2.0] - 2026-08-07
+
+- the new thing
+
+## [0.1.0] - 2026-08-05
+
+- **(scope)** something shipped — ([aaaaaaa](https://example.com/commit/$sha)) — [A B](mailto:a@e.st)
+"
+export STUB_BODY
+if "$STAMP" v0.2.0 "$changelog" >/dev/null 2>&1 &&
+	grep -q '^## \[0.2.0\]' "$changelog"; then
+	pass "a released entry rerendered under the same SHA is published"
+else
+	fail "a released entry rerendered under the same SHA is published" \
+		"expected a zero exit; identity should be the SHA, not the line text"
+fi
+
 # Gaining entries is not a loss. A commit parser that starts matching something
 # it used to skip adds to a released section, and that has to stay allowed or
 # the guard would block every such change.
@@ -289,7 +361,7 @@ fi
 # Unreleased is the one section stamping is supposed to empty: its entries move
 # into the new version's section. Counting it would refuse every release.
 changelog_unrel="$work/unreleased.md"
-cat >"$changelog_unrel" <<'MD'
+cat >"$changelog_unrel" <<'MD' || fatal "could not write $changelog_unrel"
 # Changelog
 
 ## [Unreleased]
