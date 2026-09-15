@@ -31,6 +31,14 @@
 # The cost is the same one prose-body-write.yml pays. `pull_request_target`
 # reads the workflow from the default branch, so a pull request cannot test a
 # change to this file; it takes effect once merged.
+# Pinned to v0.5.0 because that is the first release carrying these reusable
+# workflows. The original pin said v0.4.0, read from the default branch, where
+# the files exist and the README documents them with v0.4.0 examples -- but
+# they were not in that tag. Verify a `uses:` ref actually contains the file,
+# not just that the tag is the newest release: a reusable workflow that cannot
+# be resolved fails the run before any job starts, and a run with no jobs
+# contributes no check, so six consecutive failures left no mark on any pull
+# request and were only visible in the Actions tab.
 name: Prose body
 
 on:
@@ -43,4 +51,4 @@ jobs:
     # comment needs one, and the scope belongs on the calling job.
     permissions:
       pull-requests: write
-    uses: michen00/markdown-prose-hooks/.github/workflows/unwrap-pr-body-check.yml@v0.4.0
+    uses: michen00/markdown-prose-hooks/.github/workflows/unwrap-pr-body-check.yml@v0.5.0
