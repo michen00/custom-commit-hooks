@@ -4,41 +4,7 @@
 # at whatever width it was typed to. A file has the opposite problem -- the
 # break renders as a space and costs a reflowed diff -- and the pre-commit hook
 # covers that side.
-#
-# Deliberately narrower than the upstream example, which also carries `opened`
-# and `reopened`. Those belong to prose-body-write.yml: sharing an event fires
-# both at once, and this report would then describe a body the rewrite is about
-# to replace. `edited` is not in the default type set and is the one that
-# matters -- editing a body fires it alone, so without it a report would stand
-# on a body the author has already fixed.
-#
-# `pull_request_target`, not `pull_request`, and the difference is who the
-# report reaches. A fork's token is read-only whatever a caller's
-# `permissions:` block asks for, so under `pull_request` the comment is refused
-# for every outside contributor -- the people least likely to know this
-# repository's prose convention, and the ones the report exists for. The run
-# does not fail there and the report is not lost: the reusable workflow falls
-# back to the job summary. But a summary is something you have to open a check
-# to find, and a comment is not.
-#
-# What makes that safe here is that the reusable workflow checks out nothing --
-# it has no `actions/checkout` step at all. It reads the body from the event
-# payload and posts a comment, so the usual `pull_request_target` hazard, a
-# writable token handed to unreviewed code, has nothing to attach to. Keep it
-# that way: adding a checkout of the pull request head under this trigger is
-# what would turn it into the vulnerability the pattern is known for.
-#
-# The cost is the same one prose-body-write.yml pays. `pull_request_target`
-# reads the workflow from the default branch, so a pull request cannot test a
-# change to this file; it takes effect once merged.
-# Pinned to v0.5.0 because that is the first release carrying these reusable
-# workflows. The original pin said v0.4.0, read from the default branch, where
-# the files exist and the README documents them with v0.4.0 examples -- but
-# they were not in that tag. Verify a `uses:` ref actually contains the file,
-# not just that the tag is the newest release: a reusable workflow that cannot
-# be resolved fails the run before any job starts, and a run with no jobs
-# contributes no check, so six consecutive failures left no mark on any pull
-# request and were only visible in the Actions tab.
+
 name: Prose body
 
 on:
