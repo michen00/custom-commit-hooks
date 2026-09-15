@@ -9,11 +9,17 @@ breaking_always_bump_major = false
 # header, body, and footer keys are Tera templates
 # https://keats.github.io/tera/docs/#introduction
 #
-# Blank lines here are written as blank lines, never as trailing \n escapes: a
-# TOML multi-line string already ends each source line with a newline, so an
-# escape on top of that emits a second one. That doubling is invisible in the
-# source and lands in the generated changelog as consecutive blank lines, which
-# markdownlint rejects (MD012) in the changelog-autoupdate workflow.
+# The rule below is about the header template specifically, not about this
+# file as a whole. Blank lines in the header are written as literal blank
+# lines, never as trailing \n escapes: a TOML multi-line string already ends
+# each source line with a newline, so an escape on top of that emits a second
+# one. That doubling is invisible in the source and lands in the generated
+# changelog as consecutive blank lines, which markdownlint rejects (MD012) in
+# the changelog-autoupdate workflow.
+#
+# The body template is the opposite case. Its source lines are joined with
+# trailing backslash continuations instead of emitting one output line each,
+# so the \n escapes it uses to place newlines are deliberate.
 header = """
 <!-- markdownlint-configure-file { "no-duplicate-heading": false } -->
 
