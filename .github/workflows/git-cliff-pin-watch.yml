@@ -1,0 +1,107 @@
+---
+# Watches the one upstream event this repository is waiting on, because nothing
+# else will. git-cliff is pinned in release-pr.yml and changelog-autoupdate.yml
+# only until orhun/git-cliff#1643 is fixed, and that is an upstream event with
+# no local trigger: the pin's own comments explain themselves to whoever opens
+# those files, and #87 sits in the issue list, but neither says anything when
+# the thing they are waiting for actually happens.
+#
+# It reports and stops there. Removing the pin means confirming the fix reached
+# a published release and regenerating the changelog to check it is unchanged,
+# which is judgement rather than a patch, so this posts once and leaves it to a
+# human. #87 carries the steps.
+name: git-cliff pin watch
+
+on:
+  schedule:
+    - cron: '0 6 1 * *' # monthly, on the 1st at 06:00 UTC
+  workflow_dispatch:
+
+# Commenting on an issue is the whole job. No `contents:` at all -- nothing here
+# reads the repository, and there is deliberately no checkout step: `gh` is
+# preinstalled on the runner and `GH_REPO` tells it which repository it is for.
+# That also means this file carries no `uses:`, so no Dependabot pull request
+# can reach it and it needs no entry in bot-automerge.yml's hold list.
+permissions:
+  issues: write
+
+concurrency:
+  group: git-cliff-pin-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report when the upstream fix lands
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TRACKER: '87'
+          UPSTREAM_REPO: orhun/git-cliff
+          UPSTREAM_ISSUE: '1643'
+          # Invisible when rendered, and the only thing that stops this posting
+          # the same comment every month.
+          MARKER: '<!-- git-cliff-pin-watch -->'
+        run: |
+          set -euo pipefail
+
+          # The tracker being closed is this workflow's own end condition: the
+          # pin is gone, so there is nothing left to watch. Delete the file at
+          # that point; until someone does, this keeps the run cheap and quiet.
+          tracker_state="$(gh issue view "$TRACKER" --json state --jq .state)"
+          if [ "$tracker_state" != "OPEN" ]; then
+            echo "::notice::#${TRACKER} is ${tracker_state}; the pin is no longer tracked."
+            exit 0
+          fi
+
+          # Every query is assigned before it is tested, never piped into one.
+          # Piped, a failed call reaches the test as empty output and reads as
+          # "still open" or "not yet reported" -- both of which fail silently in
+          # the direction of doing nothing. Assigned, `set -e` kills the step.
+          # One fetch, reused. `state_reason` is read from the same call the
+          # state came from rather than a second round trip.
+          upstream_path="repos/${UPSTREAM_REPO}/issues/${UPSTREAM_ISSUE}"
+          upstream_state="$(gh api "$upstream_path" --jq .state)"
+          if [ "$upstream_state" != "closed" ]; then
+            echo "::notice::${UPSTREAM_REPO}#${UPSTREAM_ISSUE} is still open."
+            exit 0
+          fi
+
+          existing="$(gh issue view "$TRACKER" --json comments --jq '.comments[].body')"
+          if printf '%s' "$existing" | grep -qF "$MARKER"; then
+            echo "::notice::already reported on #${TRACKER}; nothing to add."
+            exit 0
+          fi
+
+          # Closed is not the same as fixed. `not_planned` means upstream
+          # declined it, which still needs a decision here -- just a different
+          # one -- so it is reported rather than filtered out, and named so the
+          # reader does not have to guess which kind of closed this was.
+          reason="$(gh api "$upstream_path" --jq '.state_reason // "completed"')"
+
+          # Each paragraph is emitted as one long line from short source
+          # fragments. GitHub renders a newline inside an issue comment as a
+          # line break, so wrapping the source to satisfy the linter would wrap
+          # the comment for every reader too.
+          body="$RUNNER_TEMP/pin-watch-body.md"
+          {
+            printf '%s\n\n' "$MARKER"
+            printf '[%s#%s](https://github.com/%s/issues/%s)' \
+              "$UPSTREAM_REPO" "$UPSTREAM_ISSUE" "$UPSTREAM_REPO" "$UPSTREAM_ISSUE"
+            printf ' is now closed (state_reason: %s).\n\n' "$reason"
+            if [ "$reason" = "not_planned" ]; then
+              printf '%s' 'Closed as not planned, so the behaviour may be intended '
+              printf '%s' 'rather than fixed. The pin still needs a decision, but '
+              printf '%s' 'dropping it is probably not that decision -- read the '
+              printf '%s\n' 'upstream discussion first.'
+            else
+              printf '%s' 'The removal steps are in the issue body above. Confirm '
+              printf '%s' 'the fix reached a published git-cliff release before '
+              printf '%s' 'dropping the pin, and regenerate the changelog to check '
+              printf '%s\n' 'it comes back unchanged.'
+            fi
+          } >"$body"
+
+          gh issue comment "$TRACKER" --body-file "$body"
+          echo "::notice::reported on #${TRACKER}."
