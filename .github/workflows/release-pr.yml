@@ -2,12 +2,14 @@
 name: Release PR
 
 # Two triggers that want opposite behaviour when there is nothing to release.
-# A push is speculative: most merges are chore, docs or build commits, and
-# git-cliff bumps only for feat, fix and breaking changes, so "nothing to
-# release" is the ordinary outcome and has to end quietly. A dispatch is a
-# human asking for a release, where a green run that did nothing would read as
-# success, so that path still fails loudly. The `stop` helper below is that one
-# decision, applied at both places that can reach it.
+# A push is speculative, and the version alone cannot decide whether it is
+# worth acting on: every conventional type bumps at least the patch, so a
+# `chore` or `docs` merge moves the version exactly as a `fix` does. What
+# separates them is the group cliff.toml parsed the commit into, which is what
+# the worthiness gate below reads. Ending quietly is the ordinary outcome. A
+# dispatch is a human asking for a release, so it skips that gate entirely and
+# fails loudly where a green run that did nothing would read as success. The
+# `stop` helper is that one decision, applied at each place that reaches it.
 on:
   push:
     branches: [main]
@@ -134,6 +136,38 @@ jobs:
           # With no releasable commits, --bumped-version echoes the current tag.
           if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
             stop "Tag $tag already exists. Nothing to release."
+          fi
+
+          # Reaching here means the version moved, which is a weaker signal
+          # than it looks: every conventional type bumps at least the patch, so
+          # the weekly hook autoupdate and every Dependabot bump would each
+          # propose their own release. A speculative run therefore needs an
+          # actual reason, and only a human asking gets to skip this.
+          #
+          # cliff.toml is the only parser in play. Its commit_parsers already
+          # decide what each commit is, and --context hands that verdict back
+          # per commit, so nothing here re-implements any of it -- including
+          # the skip rules, which drop chore(deps), chore: merge and release
+          # prep before they are ever seen. Groups are matched on the ordering
+          # index cliff.toml assigns rather than the label, which carries an
+          # emoji: 00 features, 01 fixes, 02 performance, 10 revert. Change
+          # that set to change the policy. Everything outside it still reaches
+          # the changelog and still bumps the version; it just does not, on its
+          # own, propose a release.
+          #
+          # --unreleased still hands back the previous release alongside the
+          # unreleased one, so the null-version entry has to be selected or
+          # every fix in the last release is counted again and the gate never
+          # closes.
+          if [ "$speculative" -eq 1 ]; then
+            worthy="$(git cliff --unreleased --context |
+              jq '[.[] | select(.version == null) | .commits[]
+                   | select(.breaking or ((.group // "") | test("^<!-- (00|01|02|10) -->")))]
+                  | length')"
+            if [ "$worthy" -eq 0 ]; then
+              stop "Nothing since the last release is worth one; not proposing $tag."
+            fi
+            echo "Release-worthy commits behind $tag: $worthy"
           fi
 
           {
