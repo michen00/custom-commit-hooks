@@ -8,12 +8,21 @@ breaking_always_bump_major = false
 
 # header, body, and footer keys are Tera templates
 # https://keats.github.io/tera/docs/#introduction
+#
+# Blank lines here are written as blank lines, never as trailing \n escapes: a
+# TOML multi-line string already ends each source line with a newline, so an
+# escape on top of that emits a second one. That doubling is invisible in the
+# source and lands in the generated changelog as consecutive blank lines, which
+# markdownlint rejects (MD012) in the changelog-autoupdate workflow.
 header = """
-<!-- markdownlint-configure-file { "no-duplicate-heading": false } -->\n
-\n
-# Changelog\n
-All notable changes will be documented in this file. See [conventional commits](https://www.conventionalcommits.org) for commit guidelines.\n
-The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).\n
+<!-- markdownlint-configure-file { "no-duplicate-heading": false } -->
+
+# Changelog
+
+All notable changes will be documented in this file. See [conventional commits](https://www.conventionalcommits.org) for commit guidelines.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
+
 """
 
 body = """
