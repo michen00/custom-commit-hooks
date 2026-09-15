@@ -1,7 +1,16 @@
 ---
 name: Release PR
 
+# Two triggers that want opposite behaviour when there is nothing to release.
+# A push is speculative: most merges are chore, docs or build commits, and
+# git-cliff bumps only for feat, fix and breaking changes, so "nothing to
+# release" is the ordinary outcome and has to end quietly. A dispatch is a
+# human asking for a release, where a green run that did nothing would read as
+# success, so that path still fails loudly. The `stop` helper below is that one
+# decision, applied at both places that can reach it.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       version:
@@ -19,8 +28,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release-pr:
+  # Split from the work below so that "nothing to release" shows up as a
+  # skipped job rather than a green one that quietly did nothing -- and so the
+  # skip is expressed once, in `needs`, instead of as an `if:` repeated onto
+  # every step where forgetting one would run it anyway.
+  resolve:
+    # Merging a release PR is itself a push to main, and at that moment the tag
+    # does not exist yet -- release-tag.yml is waiting on the `release`
+    # environment approval -- so an unguarded run would infer the same version
+    # again and prepare a second PR for the release just merged. The repository
+    # squash-merges, so the PR title becomes the squash subject and matching it
+    # here is reliable.
+    if: >-
+      github.event_name != 'push' ||
+      !startsWith(github.event.head_commit.message, 'chore(release): prepare')
     runs-on: ubuntu-latest
+    # Nothing in this job writes. The workflow-level block is what the job
+    # below needs; narrowing here keeps the read-only half read-only.
+    permissions:
+      contents: read
+    outputs:
+      release: ${{ steps.version.outputs.release }}
+      tag: ${{ steps.version.outputs.tag }}
+      branch: ${{ steps.version.outputs.branch }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -34,9 +64,60 @@ jobs:
       - name: Resolve release version
         id: version
         env:
+          EVENT_NAME: ${{ github.event_name }}
           RELEASE_VERSION_INPUT: ${{ inputs.version }}
         run: |
           set -euo pipefail
+
+          if [ "$EVENT_NAME" = "push" ]; then
+            speculative=1
+          else
+            speculative=0
+          fi
+
+          stop() {
+            if [ "$speculative" -eq 1 ]; then
+              echo "release=false" >>"$GITHUB_OUTPUT"
+              echo "::notice::$1"
+              exit 0
+            fi
+            echo "::error::$1"
+            exit 1
+          }
+
+          # A release PR that has merged but whose tag has not been minted yet
+          # leaves the repository mid-release: the tag is waiting on the
+          # `release` environment approval, and until it exists
+          # --bumped-version keeps reporting the pending version. A fix landing
+          # inside that approval window would otherwise prepare a second PR for
+          # a release already on its way out. Parentheses are literal in a
+          # basic regular expression, so both patterns below match the subject
+          # as written.
+          #
+          # This also latches if an approval is rejected, because the prepared
+          # version then never gets a tag. That is deliberate -- a stuck
+          # release should be finished or abandoned before another is prepared
+          # on top of it. The way out is the manual fallback already documented
+          # in CONTRIBUTING: tag main by hand, which both publishes that
+          # release and clears this check.
+          #
+          # No `|| true` on the lookup. Finding nothing already exits 0 and
+          # prints nothing, so suppression would only ever catch a real
+          # failure -- and a failed lookup reads as "no release in flight",
+          # skipping the guard below and preparing a second PR for the
+          # release already on its way out. Let `set -e` stop the step.
+          prep="$(git log -1 --format=%s --grep='^chore(release): prepare v')"
+          if [ -n "$prep" ]; then
+            pending_raw="$(printf '%s\n' "$prep" |
+              sed -n 's/^chore(release): prepare \([^ ]*\).*/\1/p')"
+            if pending="$(scripts/release/parse-version.sh \
+              "$pending_raw" --require-v 2>/dev/null)"; then
+              if ! git rev-parse -q --verify "refs/tags/$pending" >/dev/null; then
+                stop "$pending is prepared but not tagged yet; a release is in flight."
+              fi
+            fi
+          fi
+
           raw="$RELEASE_VERSION_INPUT"
 
           if [ -z "$raw" ]; then
@@ -52,12 +133,28 @@ jobs:
 
           # With no releasable commits, --bumped-version echoes the current tag.
           if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
-            echo "::error::Tag $tag already exists. Nothing to release."
-            exit 1
+            stop "Tag $tag already exists. Nothing to release."
           fi
 
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-          echo "branch=release/$tag" >> "$GITHUB_OUTPUT"
+          {
+            echo "release=true"
+            echo "tag=$tag"
+            echo "branch=release/$tag"
+          } >>"$GITHUB_OUTPUT"
+
+  release-pr:
+    needs: resolve
+    if: needs.resolve.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
+        with:
+          tool: git-cliff
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -82,7 +179,7 @@ jobs:
       # by the next run with nowhere to go.
       - name: Stamp the release into the changelog
         env:
-          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
         run: scripts/release/stamp-changelog.sh "$RELEASE_TAG"
 
       - name: Run prettier on CHANGELOG.md
@@ -99,7 +196,7 @@ jobs:
       # the tag lands.
       - name: Bump the README rev pin
         env:
-          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
         run: scripts/release/bump-pins.sh "$RELEASE_TAG" README.md
 
       - name: Validate the bumped README
@@ -109,24 +206,25 @@ jobs:
         run: make test
 
       - name: Create release PR
+        id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
-          branch: ${{ steps.version.outputs.branch }}
+          branch: ${{ needs.resolve.outputs.branch }}
           base: main
           delete-branch: true
           sign-commits: true
-          title: 'chore(release): prepare ${{ steps.version.outputs.tag }}'
-          commit-message: 'chore(release): prepare ${{ steps.version.outputs.tag }}'
+          title: 'chore(release): prepare ${{ needs.resolve.outputs.tag }}'
+          commit-message: 'chore(release): prepare ${{ needs.resolve.outputs.tag }}'
           add-paths: |
             CHANGELOG.md
             README.md
           body: |
-            This PR prepares release `${{ steps.version.outputs.tag }}`.
+            This PR prepares release `${{ needs.resolve.outputs.tag }}`.
 
             ## Included
             - Refreshes `CHANGELOG.md` unreleased section
             - Points the `README.md` install snippet at
-              `${{ steps.version.outputs.tag }}`
+              `${{ needs.resolve.outputs.tag }}`
             - Validates tests before proposing release prep
 
             The `.pre-commit-config.yaml` self-pin is not touched here — the tag
@@ -134,5 +232,50 @@ jobs:
             The weekly pre-commit autoupdate moves it forward after the tag lands.
 
             Merging this PR creates and pushes the signed tag
-            `${{ steps.version.outputs.tag }}` and publishes the release.
+            `${{ needs.resolve.outputs.tag }}` and publishes the release.
             No local tagging step is needed.
+
+      # A release PR carries its version in the branch name, and release-tag.yml
+      # derives the tag it mints from that name -- deliberately, because a
+      # same-repo `release/*` branch is not attacker-controlled the way a PR
+      # title or body is. So the branch cannot be made stable, and a version
+      # that moves between runs (a feat landing while a patch PR is open) opens
+      # a second PR rather than updating the first. The superseded one is not
+      # merely redundant: merging it would tag the older version from a commit
+      # that no longer describes the release. Close it here.
+      #
+      # The listing is read into a variable first rather than piped. Piped, a
+      # failed query would reach the loop as empty input and read as "nothing
+      # superseded", closing nothing and saying so; assigned, `set -e` kills the
+      # step instead.
+      #
+      # `isCrossRepository` narrows the listing to the same-repo branches this
+      # workflow actually owns, matching the trust check release-tag.yml makes
+      # before it will tag one. The branch name alone does not: a fork PR whose
+      # head happens to start with `release/` would otherwise be closed as
+      # superseded -- with a misleading comment, and `--delete-branch` aimed at
+      # a contributor's branch -- by the next release this workflow prepares.
+      - name: Close superseded release PRs
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          KEEP_BRANCH: ${{ needs.resolve.outputs.branch }}
+          KEEP_TAG: ${{ needs.resolve.outputs.tag }}
+          NEW_PR: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          set -euo pipefail
+          open_release_prs="$(gh pr list --state open --base main \
+            --json number,headRefName,isCrossRepository \
+            --jq '.[] | select(.isCrossRepository | not)
+                      | select(.headRefName | startswith("release/"))
+                      | "\(.number)\t\(.headRefName)"')"
+
+          while IFS="$(printf '\t')" read -r number branch; do
+            if [ -z "$number" ] || [ "$branch" = "$KEEP_BRANCH" ]; then
+              continue
+            fi
+            echo "::notice::Closing superseded release PR #${number} (${branch})."
+            gh pr close "$number" --delete-branch \
+              --comment "Superseded by #${NEW_PR}, preparing ${KEEP_TAG}."
+          done <<<"$open_release_prs"
