@@ -248,6 +248,13 @@ jobs:
       # failed query would reach the loop as empty input and read as "nothing
       # superseded", closing nothing and saying so; assigned, `set -e` kills the
       # step instead.
+      #
+      # `isCrossRepository` narrows the listing to the same-repo branches this
+      # workflow actually owns, matching the trust check release-tag.yml makes
+      # before it will tag one. The branch name alone does not: a fork PR whose
+      # head happens to start with `release/` would otherwise be closed as
+      # superseded -- with a misleading comment, and `--delete-branch` aimed at
+      # a contributor's branch -- by the next release this workflow prepares.
       - name: Close superseded release PRs
         if: steps.cpr.outputs.pull-request-number != ''
         env:
@@ -259,8 +266,9 @@ jobs:
         run: |
           set -euo pipefail
           open_release_prs="$(gh pr list --state open --base main \
-            --json number,headRefName \
-            --jq '.[] | select(.headRefName | startswith("release/"))
+            --json number,headRefName,isCrossRepository \
+            --jq '.[] | select(.isCrossRepository | not)
+                      | select(.headRefName | startswith("release/"))
                       | "\(.number)\t\(.headRefName)"')"
 
           while IFS="$(printf '\t')" read -r number branch; do
