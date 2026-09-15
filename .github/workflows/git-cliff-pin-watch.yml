@@ -68,8 +68,15 @@ jobs:
             exit 0
           fi
 
+          # A here-string, not a pipe. `grep -q` exits at the first matching
+          # line, so a producer still writing gets SIGPIPE and `pipefail` turns
+          # the successful search into a non-zero pipeline -- the marker is
+          # found and the test reads false. Measured: marker on line 1 with
+          # 20k lines after it returns 141 and reports not-found, which would
+          # post this alert again every month. Matches how bot-automerge.yml
+          # tests its kill-switch label, for the same reason.
           existing="$(gh issue view "$TRACKER" --json comments --jq '.comments[].body')"
-          if printf '%s' "$existing" | grep -qF "$MARKER"; then
+          if grep -qF -- "$MARKER" <<<"$existing"; then
             echo "::notice::already reported on #${TRACKER}; nothing to add."
             exit 0
           fi
@@ -105,3 +112,6 @@ jobs:
 
           gh issue comment "$TRACKER" --body-file "$body"
           echo "::notice::reported on #${TRACKER}."
+          # Explicit, like every other terminating path above, rather than
+          # inheriting whatever the last command happened to return.
+          exit 0
