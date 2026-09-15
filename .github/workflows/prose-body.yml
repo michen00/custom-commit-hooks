@@ -1,0 +1,26 @@
+---
+# Reports a hard-wrapped pull request body. GitHub renders every newline in a
+# body as a `<br>`, so a body wrapped in an editor or a heredoc reaches readers
+# at whatever width it was typed to. A file has the opposite problem -- the
+# break renders as a space and costs a reflowed diff -- and the pre-commit hook
+# covers that side.
+#
+# Deliberately narrower than the upstream example, which also carries `opened`
+# and `reopened`. Those belong to prose-body-write.yml: sharing an event fires
+# both at once, and this report would then describe a body the rewrite is about
+# to replace. `edited` is not in the default type set and is the one that
+# matters -- editing a body fires it alone, so without it a report would stand
+# on a body the author has already fixed.
+name: Prose body
+
+on:
+  pull_request:
+    types: [synchronize, edited]
+
+jobs:
+  report:
+    # The reusable workflow declares no permissions of its own; only the
+    # comment needs one, and the scope belongs on the calling job.
+    permissions:
+      pull-requests: write
+    uses: michen00/markdown-prose-hooks/.github/workflows/unwrap-pr-body-check.yml@v0.4.0
