@@ -68,12 +68,22 @@ waiting="$(gh run list --workflow="$WORKFLOW" --status waiting --limit 1 \
 run_id="$(printf '%s' "$waiting" | jq -r '.[0].databaseId // empty')"
 
 if [ "$mode" = "status" ]; then
-	latest="$(gh release view --json tagName --jq .tagName 2>/dev/null || echo "none")"
+	# `gh release view` exits non-zero both when no release exists and when the
+	# call fails, so a bare `|| echo none` reports an outage as an empty
+	# repository. `list` returns `[]` for the first and still fails for the
+	# second, which is the distinction a status command owes the reader.
+	releases="$(gh release list --limit 1 --json tagName)" ||
+		die "Could not read releases."
+	latest="$(printf '%s' "$releases" | jq -r '.[0].tagName // "none"')"
 	echo "Latest release:   $latest"
 
-	open_pr="$(gh pr list --state open --json number,title,headRefName \
+	# --limit because the default page is 30: a release PR sitting behind thirty
+	# other open PRs would otherwise be reported as absent.
+	open_pr="$(gh pr list --state open --limit 100 \
+		--json number,title,headRefName \
 		--jq '[.[] | select(.headRefName | startswith("release/"))]
-		      | map("#\(.number) \(.title)") | join(", ") // empty')"
+		      | map("#\(.number) \(.title)") | join(", ") // empty')" ||
+		die "Could not list open pull requests."
 	echo "Open release PR:  ${open_pr:-none}"
 
 	if [ -n "$run_id" ]; then
@@ -93,11 +103,26 @@ fi
 	die "No $WORKFLOW run is awaiting approval. Nothing to release."
 
 branch="$(printf '%s' "$waiting" | jq -r '.[0].headBranch')"
-head_sha="$(printf '%s' "$waiting" | jq -r '.[0].headSha')"
 run_url="$(printf '%s' "$waiting" | jq -r '.[0].url')"
 
 tag="$("$SCRIPT_DIR/parse-version.sh" "${branch#release/}" --require-v)" ||
 	die "Branch '$branch' does not encode a vX.Y.Z tag."
+
+# Deliberately not the run's headSha. That is the release branch tip, but
+# release-tag.yml checks out `pull_request.merge_commit_sha` and tags whatever
+# it finds there -- and this repository squash-merges, so the two always
+# differ. v0.1.2's run reported 3179e83 while the tag landed on 62c098a.
+# Naming a commit the tag will never point at is the one thing a confirmation
+# prompt must not do.
+pr_json="$(gh pr list --state merged --head "$branch" --limit 1 \
+	--json number,mergeCommit)" ||
+	die "Could not look up the merged pull request for '$branch'."
+
+pr_number="$(printf '%s' "$pr_json" | jq -r '.[0].number // empty')"
+merge_sha="$(printf '%s' "$pr_json" | jq -r '.[0].mergeCommit.oid // empty')"
+
+[ -n "$merge_sha" ] ||
+	die "No merged pull request with a merge commit found for '$branch'."
 
 pending="$(gh api "repos/$repo/actions/runs/$run_id/pending_deployments")" ||
 	die "Could not read pending deployments for run $run_id."
@@ -116,7 +141,8 @@ env_names="$(printf '%s' "$pending" | jq -r '[.[].environment.name] | join(", ")
 cat <<SUMMARY
 Release awaiting approval
   Tag to mint:  $tag
-  Commit:       $head_sha
+  Commit:       $merge_sha
+  From PR:      #$pr_number ($branch)
   Environment:  $env_names
   Run:          $run_url
 
@@ -147,3 +173,4 @@ jq -nc --argjson ids "$env_ids" \
 
 echo "Approved. $tag will be tagged and published."
 echo "Watch it: gh run watch $run_id"
+exit 0
