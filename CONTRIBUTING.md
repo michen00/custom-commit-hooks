@@ -6,7 +6,7 @@ Welcome! We're happy to have you here. All types of contributions are encouraged
 
 See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them. Please make sure to read the relevant section before making your contribution. It will make it a lot easier for us maintainers and smooth out the experience for all involved. We look forward to your contributions!
 
-The project has defined a [code of conduct](CODE_OF_CONDUCT.md) to ensure a welcoming and friendly environment. Please adhere to it in all interactions.
+The project has defined a [code of conduct](https://github.com/michen00/.github/blob/main/CODE_OF_CONDUCT.md) to ensure a welcoming and friendly environment. Please adhere to it in all interactions.
 
 <!-- omit in toc -->
 
