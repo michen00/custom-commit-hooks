@@ -6,6 +6,37 @@ All notable changes will be documented in this file. See [conventional commits](
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [0.1.2](https://github.com/michen00/custom-commit-hooks/compare/v0.1.1..v0.1.2) - 2026-09-16
+
+### 🐛 Fixes
+
+- **(release)** pin git-cliff and guard entry loss (#86) - ([c08c96c](https://github.com/michen00/custom-commit-hooks/commit/c08c96c7e25c0872da1965c3292194a5a83d24ea)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- **(release-pr)** only propose worthwhile releases (#84) - ([a7cff17](https://github.com/michen00/custom-commit-hooks/commit/a7cff17674736b83183bd846a9815458b46ee0ae)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- stop doubling the changelog header newlines (#79) - ([f67e530](https://github.com/michen00/custom-commit-hooks/commit/f67e5303485922c8aa0a5443f48b0e09bf36a5a7)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### 💚 Continuous Integration
+
+- **(prose-body)** repin to the release that has it (#89) - ([c37364e](https://github.com/michen00/custom-commit-hooks/commit/c37364e112249151fc766729d1bf787414fdbae0)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- **(release-pr)** move the PR body to a file (#90) - ([8b0303c](https://github.com/michen00/custom-commit-hooks/commit/8b0303cb2641375522577ca918e5d67f0e8ee464)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- **(release-pr)** open release PRs on push to main (#81) - ([cfd9bf4](https://github.com/michen00/custom-commit-hooks/commit/cfd9bf470625c259134b2d1e918c2fcb7771120b)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### 👷 Build
+
+- **(deps)** bump the actions group across 1 directory with 3 updates (#76) - ([d28fc95](https://github.com/michen00/custom-commit-hooks/commit/d28fc95a5584668a111e2f71eb4cc4b8be88d2ff)) - [dependabot[bot]](mailto:49699333+dependabot[bot]@users.noreply.github.com)
+
+### 📝 Documentation
+
+- **(README.md)** tweak sections - ([4b5f4b4](https://github.com/michen00/custom-commit-hooks/commit/4b5f4b40d908efbdba07bad810cd203c3b667510)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### ⚙️ Miscellaneous Tasks
+
+- unwrap Markdown prose (#85) - ([db4e21b](https://github.com/michen00/custom-commit-hooks/commit/db4e21b0014378f40a5b775a48e311f714dffb97)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- autoupdate pre-commit hooks (#78) - ([0548a62](https://github.com/michen00/custom-commit-hooks/commit/0548a62632932fcfe244d76fe598c75e705207c5)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+- autoupdate pre-commit hooks (#77) - ([41ffcbc](https://github.com/michen00/custom-commit-hooks/commit/41ffcbcc0f10c635ae35f44f25cec290c50c02e6)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+- autoupdate pre-commit hooks (#75) - ([bb545ec](https://github.com/michen00/custom-commit-hooks/commit/bb545ecf9e03c6c247ef18ac51781864e8e7f241)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+- autoupdate pre-commit hooks (#74) - ([802a377](https://github.com/michen00/custom-commit-hooks/commit/802a3777048c3a3323ca01bd743650637c604926)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+- autoupdate pre-commit hooks (#73) - ([45317c4](https://github.com/michen00/custom-commit-hooks/commit/45317c4beecd3685ae45779c7c78a44a9d609509)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+
 ## [0.1.1](https://github.com/michen00/custom-commit-hooks/compare/v0.1.0..v0.1.1) - 2026-08-08
 
 ### 🐛 Fixes
