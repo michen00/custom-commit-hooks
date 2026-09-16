@@ -62,11 +62,13 @@ And if the version moves while a release PR is open — a `feat` landing on top 
 - Sigstore keyless signatures are generated in CI for every release artifact.
 - GPG detached signatures are also generated for compatibility.
 - Release tags are annotated and GPG-signed. When **Release Tag** creates the tag, it is signed with the CI release key rather than a maintainer's personal key. The protected `release` environment is what keeps that key from being usable by anyone who merges a `release/*` PR: the tagging job waits for maintainer approval before it runs.
-- Required repository secrets for GPG signing in CI:
-  - `RELEASE_GPG_PRIVATE_KEY` (ASCII-armored private key)
-  - `RELEASE_GPG_PASSPHRASE` (passphrase for the private key)
+- Repository secrets for GPG signing in CI:
+  - `RELEASE_GPG_PRIVATE_KEY` (ASCII-armored private key) — required.
+  - `RELEASE_GPG_PASSPHRASE` (passphrase for that key) — only when the key has one.
 
-Without both secrets, **Release Tag** and **Release Publish** fail at the GPG import step, so no tag is created and no artifacts are published. A GitHub App token does not substitute for them: a token authenticates git and API calls but cannot produce a GPG signature, and GitHub signs only commits it creates via the API, never annotated tag objects.
+This repository's release key has no passphrase, so `RELEASE_GPG_PASSPHRASE` is deliberately absent and `gh secret list` shows only the private key. `scripts/release/sign-artifacts.sh` branches on whether the passphrase is set, and the import action accepts an empty one, so this is a supported path rather than a misconfiguration — v0.1.0 through v0.1.2 were all signed this way. Do not "fix" the missing secret by setting it to an empty string; omitting it is what the branch tests for.
+
+Without the private key, **Release Tag** and **Release Publish** fail at the GPG import step, so no tag is created and no artifacts are published. A GitHub App token does not substitute for it: a token authenticates git and API calls but cannot produce a GPG signature, and GitHub signs only commits it creates via the API, never annotated tag objects.
 
 ### One-time release key setup
 
@@ -84,7 +86,8 @@ gpg --list-secret-keys --keyid-format=long
 # 3. Export the private key, ASCII-armored.
 gpg --armor --export-secret-keys <FINGERPRINT> >release-key.asc
 
-# 4. Store both secrets on the repository.
+# 4. Store the key on the repository. Set the passphrase secret only if the
+#    key has a passphrase -- leave it unset otherwise, rather than empty.
 gh secret set RELEASE_GPG_PRIVATE_KEY <release-key.asc
 gh secret set RELEASE_GPG_PASSPHRASE --body "$PASSPHRASE"
 
@@ -101,7 +104,7 @@ fi
 gpg --armor --export <FINGERPRINT>
 ```
 
-Confirm both secrets landed with `gh secret list`. The key expires in two years; rotate by repeating these steps.
+Confirm the secrets landed with `gh secret list`. The key expires in two years; rotate by repeating these steps.
 
 Neither removal above guarantees the bytes are gone: copy-on-write filesystems and SSD wear levelling can leave the export recoverable. Treat the passphrase as the real protection for that file, and prefer a passphrase over an empty one for exactly this reason.
 
