@@ -87,8 +87,8 @@ git merge --no-ff feature-branch
 
 ## Release
 
-- Releases use **Release PR** then **Release Publish** workflows; artifacts are signed with Sigstore and GPG.
-- See [CONTRIBUTING](CONTRIBUTING.md#creating-a-release) for steps and verification. Do not change `scripts/release/` or release workflows without checking CONTRIBUTING.
+- Releases run **Release PR** -> **Release Tag** -> **Release Publish**; **Release Tag** waits on the protected `release` environment for maintainer approval. Artifacts are signed with Sigstore and GPG.
+- See [RELEASING](../RELEASING.md) for steps and verification. Do not change `scripts/release/` or release workflows without checking it.
 
 ## Boundaries
 

@@ -92,4 +92,4 @@ chore: merge branch 'feature/new-api' into main
 
 ## Documentation: [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/michen00/custom-commit-hooks)
 
-Releases are signed (Sigstore + GPG). For verification commands and release process, see [CONTRIBUTING](CONTRIBUTING.md#creating-a-release).
+Releases are signed (Sigstore + GPG). For verification commands and release process, see [RELEASING](RELEASING.md).
