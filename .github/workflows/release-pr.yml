@@ -267,6 +267,33 @@ jobs:
       - name: Run tests
         run: make test
 
+      # The body is a Markdown file rather than an inline block, and the reason
+      # is that the two rules were in direct conflict. Inline, yamllint's
+      # 100-column limit forces every paragraph to be wrapped -- and GitHub
+      # renders each of those newlines in a pull request body as a <br>, so the
+      # rule keeping this workflow readable was reaching every release PR as
+      # ragged prose. As a file it is a document the repository's own tooling
+      # already lints: prettier, markdownlint and the unwrap hook all run on it.
+      #
+      # Substituted rather than interpolated, because `body-path` reads the file
+      # literally. The tag has already been through parse-version.sh, so it is
+      # three dot-separated runs of digits and carries no sed metacharacter.
+      #
+      # The markdownlint directive is dropped here rather than shipped: MD041 is
+      # a whole-document rule and that file is a fragment, so the directive is
+      # lint scaffolding, not content. The blank line it leaves goes with it.
+      - name: Render the release PR body
+        id: body
+        env:
+          RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          rendered="$RUNNER_TEMP/release-pr-body.md"
+          sed "s/@RELEASE_TAG@/${RELEASE_TAG}/g" .github/release-pr-body.md |
+            sed '/^<!-- markdownlint-configure-file/d' |
+            awk 'NF || seen { seen = 1; print }' >"$rendered"
+          echo "path=$rendered" >>"$GITHUB_OUTPUT"
+
       - name: Create release PR
         id: cpr
         uses: peter-evans/create-pull-request@v8
@@ -280,22 +307,7 @@ jobs:
           add-paths: |
             CHANGELOG.md
             README.md
-          body: |
-            This PR prepares release `${{ needs.resolve.outputs.tag }}`.
-
-            ## Included
-            - Refreshes `CHANGELOG.md` unreleased section
-            - Points the `README.md` install snippet at
-              `${{ needs.resolve.outputs.tag }}`
-            - Validates tests before proposing release prep
-
-            The `.pre-commit-config.yaml` self-pin is not touched here — the tag
-            does not exist yet, so pinning it would fail this PR's own checks.
-            The weekly pre-commit autoupdate moves it forward after the tag lands.
-
-            Merging this PR creates and pushes the signed tag
-            `${{ needs.resolve.outputs.tag }}` and publishes the release.
-            No local tagging step is needed.
+          body-path: ${{ steps.body.outputs.path }}
 
       # A release PR carries its version in the branch name, and release-tag.yml
       # derives the tag it mints from that name -- deliberately, because a
