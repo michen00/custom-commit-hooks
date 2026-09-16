@@ -167,7 +167,10 @@ fi
 
 out="$(GH_STUB_WAITING="$WAITING_RUN" GH_STUB_RELEASES='[]' \
 	run_approve "$log" --status)"
-if [[ "$out" == *"v9.9.9"* && "$out" == *"https://example.invalid/run/42"* ]]; then
+status=$?
+if [ "$status" -ne 0 ]; then
+	fail "--status exits 0 with a run in flight" "Exited $status, expected 0"
+elif [[ "$out" == *"v9.9.9"* && "$out" == *"https://example.invalid/run/42"* ]]; then
 	pass "--status names the pending version and links the run"
 else
 	fail "--status names the pending version" "Got: $out"

@@ -66,7 +66,7 @@ And if the version moves while a release PR is open — a `feat` landing on top 
   - `RELEASE_GPG_PRIVATE_KEY` (ASCII-armored private key) — required.
   - `RELEASE_GPG_PASSPHRASE` (passphrase for that key) — only when the key has one.
 
-This repository's release key has no passphrase, so `RELEASE_GPG_PASSPHRASE` is deliberately absent and `gh secret list` shows only the private key. `scripts/release/sign-artifacts.sh` branches on whether the passphrase is set, and the import action accepts an empty one, so this is a supported path rather than a misconfiguration — v0.1.0 through v0.1.2 were all signed this way. Do not "fix" the missing secret by setting it to an empty string; omitting it is what the branch tests for.
+This repository's release key has no passphrase, so `RELEASE_GPG_PASSPHRASE` is deliberately absent and `gh secret list` shows only the private key. Both workflows pass the secret through unconditionally and an absent secret expands to an empty string, so `scripts/release/sign-artifacts.sh` — which branches on `[ -n "${GPG_PASSPHRASE-}" ]` — takes its no-passphrase path either way, and the import action accepts an empty passphrase. v0.1.0 through v0.1.2 were all signed that way. Setting the secret to an empty string would sign identically rather than fix anything; it is still not worth creating, because a secret that exists and means nothing invites someone to later fill it with a passphrase the key does not have.
 
 Without the private key, **Release Tag** and **Release Publish** fail at the GPG import step, so no tag is created and no artifacts are published. A GitHub App token does not substitute for it: a token authenticates git and API calls but cannot produce a GPG signature, and GitHub signs only commits it creates via the API, never annotated tag objects.
 
@@ -89,7 +89,9 @@ gpg --armor --export-secret-keys <FINGERPRINT> >release-key.asc
 # 4. Store the key on the repository. Set the passphrase secret only if the
 #    key has a passphrase -- leave it unset otherwise, rather than empty.
 gh secret set RELEASE_GPG_PRIVATE_KEY <release-key.asc
-gh secret set RELEASE_GPG_PASSPHRASE --body "$PASSPHRASE"
+if [ -n "$PASSPHRASE" ]; then
+  gh secret set RELEASE_GPG_PASSPHRASE --body "$PASSPHRASE"
+fi
 
 # 5. Remove the local export. shred is GNU coreutils and absent on macOS;
 #    BSD rm -P is rejected by GNU rm, so branch instead of assuming either.
