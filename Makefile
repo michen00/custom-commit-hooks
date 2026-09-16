@@ -122,6 +122,18 @@ release-pr: ## Trigger Release PR workflow (usage: make release-pr [VERSION=1.2.
 release-pr-watch: ## Watch the latest workflow run (run after make release-pr)
 	@gh run watch
 
+.PHONY: release-status
+release-status: ## Show latest release, any open release PR, and any run awaiting approval
+	@sh scripts/release/approve.sh --status
+
+.PHONY: release-approve
+release-approve: ## Approve the waiting release (usage: make release-approve [YES=1] to skip the prompt)
+	@if [ -n "$(YES)" ]; then \
+        sh scripts/release/approve.sh --yes; \
+    else \
+        sh scripts/release/approve.sh; \
+    fi
+
 .PHONY: enable-pre-commit
 enable-pre-commit: ## Enable pre-commit hooks (along with commit-msg and pre-push hooks)
 	@if command -v pre-commit >/dev/null 2>&1; then \
