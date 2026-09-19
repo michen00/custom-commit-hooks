@@ -74,7 +74,7 @@ repos:
   # source, so pre-commit would install a whole Rust toolchain before checking
   # the first commit, and nothing here needs cargo otherwise.
   - repo: https://github.com/michen00/markdown-prose-hooks-py
-    rev: v0.4.0
+    rev: v0.5.0
     hooks:
       - id: unwrap-markdown-prose-py
   - repo: https://github.com/rbubley/mirrors-prettier
