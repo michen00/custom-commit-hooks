@@ -6,6 +6,12 @@ All notable changes will be documented in this file. See [conventional commits](
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+### 📝 Documentation
+
+- extract RELEASING.md, add approval tooling (#91) - ([2b1365a](https://github.com/michen00/custom-commit-hooks/commit/2b1365a88af51994bc62b094f11fdededcfd7ff5)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
 ## [0.1.2](https://github.com/michen00/custom-commit-hooks/compare/v0.1.1..v0.1.2) - 2026-09-16
 
 ### 🐛 Fixes
