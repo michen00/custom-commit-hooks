@@ -141,22 +141,13 @@ release-approve: ## Approve the waiting release (usage: make release-approve [YE
         sh scripts/release/approve.sh; \
     fi
 
-# pre-commit refuses to install when core.hooksPath is set, even when the
-# value points at the default .git/hooks (the same path it would write to
-# anyway). A previous tool can stamp this no-op value into a fresh clone's
-# local config. Auto-unset only that default, and only after confirming the
-# unset won't hand control to a non-default hooksPath from a lower-priority
-# scope (global/system) -- if it would, restore the local override and stop
-# instead of leaving hooks uninstalled with a widened, unexpected effective
-# path. Skip touching config entirely when pre-commit itself isn't around to
-# use it.
-#
-# --path-format=absolute is load-bearing, not decoration: bare
-# --git-common-dir returns the relative ".git" in an ordinary clone (it only
-# happens to come back absolute inside a linked worktree), so a hooksPath
-# value some tool stamped as an absolute path to that same default location
-# would otherwise match neither case arm below and get rejected as though it
-# were a real override.
+# pre-commit refuses to install when core.hooksPath is set, even to the
+# default .git/hooks. Skips config entirely when pre-commit isn't installed.
+# Auto-unsets only the no-op default (matched by absolute path too, since
+# --git-common-dir is relative outside a worktree) -- and only once a
+# global/system value isn't waiting to take its place, restoring the local
+# override and stopping if one is. Anything else is a real hooks framework,
+# reported rather than overridden.
 .PHONY: enable-pre-commit
 enable-pre-commit: ## Enable pre-commit hooks (along with commit-msg and pre-push hooks)
 	@if ! command -v pre-commit >/dev/null 2>&1; then \
