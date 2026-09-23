@@ -30,7 +30,7 @@ Add the following to your `.pre-commit-config.yaml`:
 ```yaml
 repos:
   - repo: https://github.com/michen00/custom-commit-hooks
-    rev: v0.1.2 # Use the latest version
+    rev: v0.1.3 # Use the latest version
     hooks:
       - id: enhance-scope
       - id: conventional-merge-commit
