@@ -6,11 +6,20 @@ All notable changes will be documented in this file. See [conventional commits](
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## [0.1.3](https://github.com/michen00/custom-commit-hooks/compare/v0.1.2..v0.1.3) - 2026-09-23
+
+### 🐛 Fixes
+
+- drop the unused typos word exemption (#96) - ([126e928](https://github.com/michen00/custom-commit-hooks/commit/126e9286007c52d639515aba5ede2b5628319fc9)) - [Michael I Chen](mailto:michen00.github@gmail.com)
 
 ### 📝 Documentation
 
+- **(CHANGELOG.md)** autoupdate Unreleased section (#94) - ([3a66c7e](https://github.com/michen00/custom-commit-hooks/commit/3a66c7e39c5de985a8502101b3eacfe9e3c25848)) - [github-actions[bot]](mailto:41898282+github-actions[bot]@users.noreply.github.com)
 - extract RELEASING.md, add approval tooling (#91) - ([2b1365a](https://github.com/michen00/custom-commit-hooks/commit/2b1365a88af51994bc62b094f11fdededcfd7ff5)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### ⚙️ Miscellaneous Tasks
+
+- autoupdate pre-commit hooks (#95) - ([9f1db29](https://github.com/michen00/custom-commit-hooks/commit/9f1db292fa7de335da10768cc68391b2ea51cfc2)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
 
 ## [0.1.2](https://github.com/michen00/custom-commit-hooks/compare/v0.1.1..v0.1.2) - 2026-09-16
 
