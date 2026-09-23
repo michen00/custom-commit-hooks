@@ -46,12 +46,22 @@ help: ## Show this help message
 
 .PHONY: develop
 WITH_HOOKS ?= true
-develop: ## Set up the project for development (WITH_HOOKS={true|false}, default=true)
+WITH_SYNC_MAIN ?= false
+develop: ## Set up the project for development (WITH_HOOKS={true|false}, WITH_SYNC_MAIN={true|false}, default=true/false)
 	@git config --local blame.ignoreRevsFile .git-blame-ignore-revs
-	@set -e; \
-    if command -v git-lfs >/dev/null 2>&1; then \
+	@if command -v git-lfs >/dev/null 2>&1; then \
         git lfs install --local --skip-repo || true; \
-    fi; \
+    fi
+	@if [ "$(WITH_SYNC_MAIN)" = "true" ]; then \
+        $(MAKE) sync-main; \
+    fi
+	@if [ "$(WITH_HOOKS)" = "true" ]; then \
+        $(MAKE) enable-pre-commit; \
+    fi
+
+.PHONY: sync-main
+sync-main: ## Sync local branch with latest main
+	@set -e; \
     current_branch=$$(git branch --show-current); \
     stash_was_needed=0; \
     cleanup() { \
@@ -87,9 +97,6 @@ develop: ## Set up the project for development (WITH_HOOKS={true|false}, default
         fi; \
     fi; \
     trap - EXIT
-	@if [ "$(WITH_HOOKS)" = "true" ]; then \
-        $(MAKE) enable-pre-commit; \
-    fi
 
 .PHONY: test-hooks
 test-hooks: ## Run hook unit tests
@@ -134,14 +141,52 @@ release-approve: ## Approve the waiting release (usage: make release-approve [YE
         sh scripts/release/approve.sh; \
     fi
 
+# pre-commit refuses to install when core.hooksPath is set, even to the
+# default .git/hooks. Skips config entirely when pre-commit isn't installed.
+# Auto-unsets only the no-op default (matched by absolute path too, since
+# --git-common-dir is relative outside a worktree) -- and only once a
+# global/system value isn't waiting to take its place, restoring the local
+# override and stopping if one is. Anything else is a real hooks framework,
+# reported rather than overridden.
 .PHONY: enable-pre-commit
 enable-pre-commit: ## Enable pre-commit hooks (along with commit-msg and pre-push hooks)
-	@if command -v pre-commit >/dev/null 2>&1; then \
-        pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push --hook-type prepare-commit-msg ; \
-    else \
+	@if ! command -v pre-commit >/dev/null 2>&1; then \
         echo "$(YELLOW)Warning: pre-commit is not installed. Skipping hook installation.$(_COLOR)"; \
         echo "Install it with: pip install pre-commit (or brew install pre-commit on macOS)"; \
-    fi
+        exit 0; \
+    fi; \
+    hookspath="$$(git config --local --get core.hooksPath 2>/dev/null || true)"; \
+    common_hooks_dir="$$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)/hooks"; \
+    if [ -n "$$hookspath" ]; then \
+        case "$$hookspath" in \
+            .git/hooks|"$$common_hooks_dir") \
+                git config --local --unset-all core.hooksPath || true; \
+                effective="$$(git config --get core.hooksPath 2>/dev/null || true)"; \
+                case "$$effective" in \
+                    ""|.git/hooks|"$$common_hooks_dir") \
+                        echo "$(YELLOW)Note: unsetting local core.hooksPath='$$hookspath' (default value) so pre-commit can install.$(_COLOR)"; \
+                        ;; \
+                    *) \
+                        git config --local core.hooksPath "$$hookspath"; \
+                        echo "$(BOLD)$(RED)Error: unsetting the local core.hooksPath override would expose '$$effective' (non-default) from a lower-priority scope.$(_COLOR)" >&2; \
+                        echo "       Restored the local override so pre-commit can still find it." >&2; \
+                        echo "       Point that other hook framework elsewhere (check 'git config --global --get core.hooksPath')," >&2; \
+                        echo "       or unset it in its own scope, before retrying." >&2; \
+                        exit 1; \
+                        ;; \
+                esac; \
+                ;; \
+            *) \
+                echo "$(BOLD)$(RED)Error: core.hooksPath is set to '$$hookspath' (non-default).$(_COLOR)" >&2; \
+                echo "       pre-commit refuses to install over an explicit core.hooksPath." >&2; \
+                echo "       Either point your other hook framework elsewhere, or run" >&2; \
+                echo "       'git config --local --unset-all core.hooksPath' before retrying." >&2; \
+                echo "       Alternatively, run 'make develop WITH_HOOKS=false' to skip hook installation." >&2; \
+                exit 1; \
+                ;; \
+        esac; \
+    fi; \
+    pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push --hook-type prepare-commit-msg
 
 .PHONY: run-pre-commit
 run-pre-commit: ## Run the pre-commit checks
