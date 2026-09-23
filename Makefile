@@ -144,17 +144,39 @@ release-approve: ## Approve the waiting release (usage: make release-approve [YE
 # pre-commit refuses to install when core.hooksPath is set, even when the
 # value points at the default .git/hooks (the same path it would write to
 # anyway). A previous tool can stamp this no-op value into a fresh clone's
-# local config. Auto-unset only that default so we don't quietly disrupt a
-# real third-party hooks framework (husky, lefthook, ...).
+# local config. Auto-unset only that default, and only after confirming the
+# unset won't hand control to a non-default hooksPath from a lower-priority
+# scope (global/system) -- if it would, restore the local override and stop
+# instead of leaving hooks uninstalled with a widened, unexpected effective
+# path. Skip touching config entirely when pre-commit itself isn't around to
+# use it.
 .PHONY: enable-pre-commit
 enable-pre-commit: ## Enable pre-commit hooks (along with commit-msg and pre-push hooks)
-	@hookspath="$$(git config --local --get core.hooksPath 2>/dev/null || true)"; \
+	@if ! command -v pre-commit >/dev/null 2>&1; then \
+        echo "$(YELLOW)Warning: pre-commit is not installed. Skipping hook installation.$(_COLOR)"; \
+        echo "Install it with: pip install pre-commit (or brew install pre-commit on macOS)"; \
+        exit 0; \
+    fi; \
+    hookspath="$$(git config --local --get core.hooksPath 2>/dev/null || true)"; \
     common_hooks_dir="$$(git rev-parse --git-common-dir 2>/dev/null)/hooks"; \
     if [ -n "$$hookspath" ]; then \
         case "$$hookspath" in \
             .git/hooks|"$$common_hooks_dir") \
-                echo "$(YELLOW)Note: unsetting local core.hooksPath='$$hookspath' (default value) so pre-commit can install.$(_COLOR)"; \
                 git config --local --unset-all core.hooksPath || true; \
+                effective="$$(git config --get core.hooksPath 2>/dev/null || true)"; \
+                case "$$effective" in \
+                    ""|.git/hooks|"$$common_hooks_dir") \
+                        echo "$(YELLOW)Note: unsetting local core.hooksPath='$$hookspath' (default value) so pre-commit can install.$(_COLOR)"; \
+                        ;; \
+                    *) \
+                        git config --local core.hooksPath "$$hookspath"; \
+                        echo "$(BOLD)$(RED)Error: unsetting the local core.hooksPath override would expose '$$effective' (non-default) from a lower-priority scope.$(_COLOR)" >&2; \
+                        echo "       Restored the local override so pre-commit can still find it." >&2; \
+                        echo "       Point that other hook framework elsewhere (check 'git config --global --get core.hooksPath')," >&2; \
+                        echo "       or unset it in its own scope, before retrying." >&2; \
+                        exit 1; \
+                        ;; \
+                esac; \
                 ;; \
             *) \
                 echo "$(BOLD)$(RED)Error: core.hooksPath is set to '$$hookspath' (non-default).$(_COLOR)" >&2; \
@@ -166,12 +188,7 @@ enable-pre-commit: ## Enable pre-commit hooks (along with commit-msg and pre-pus
                 ;; \
         esac; \
     fi; \
-    if command -v pre-commit >/dev/null 2>&1; then \
-        pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push --hook-type prepare-commit-msg ; \
-    else \
-        echo "$(YELLOW)Warning: pre-commit is not installed. Skipping hook installation.$(_COLOR)"; \
-        echo "Install it with: pip install pre-commit (or brew install pre-commit on macOS)"; \
-    fi
+    pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push --hook-type prepare-commit-msg
 
 .PHONY: run-pre-commit
 run-pre-commit: ## Run the pre-commit checks
