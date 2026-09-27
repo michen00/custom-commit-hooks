@@ -109,8 +109,17 @@ test-integration: ## Run pre-commit integration tests
 .PHONY: test
 test: test-hooks test-integration ## Run all tests
 
+.PHONY: test-python
+test-python: ## Run the checks/ package test suite (pip install -r requirements-dev.txt)
+	@if command -v pytest >/dev/null 2>&1; then \
+        pytest checks/tests; \
+    else \
+        echo "$(YELLOW)Warning: pytest is not installed. Skipping Python tests.$(_COLOR)"; \
+        echo "Install it with: pip install -r requirements-dev.txt"; \
+    fi
+
 .PHONY: check
-check: run-pre-commit test ## Run all code quality checks and tests
+check: run-pre-commit test test-python ## Run all code quality checks and tests
 
 .PHONY: benchmark
 benchmark: ## Run all benchmark scripts (see scripts/benchmark/run.sh --list)
