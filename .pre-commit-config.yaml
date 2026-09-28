@@ -74,11 +74,11 @@ repos:
   # source, so pre-commit would install a whole Rust toolchain before checking
   # the first commit, and nothing here needs cargo otherwise.
   - repo: https://github.com/michen00/markdown-prose-hooks-py
-    rev: v0.5.0
+    rev: v0.5.1
     hooks:
       - id: unwrap-markdown-prose-py
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.9.8
+    rev: v3.9.9
     hooks:
       - id: prettier
         types_or: [yaml, markdown, html, css, scss, javascript, json]
@@ -104,7 +104,7 @@ repos:
       - id: yamllint
         args: [--strict]
   - repo: https://github.com/adhtruong/mirrors-typos
-    rev: v1.50.2
+    rev: v1.50.3
     hooks:
       - id: typos
   - repo: https://github.com/codespell-project/codespell
@@ -130,7 +130,7 @@ repos:
 
   # configuration validation
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.38.0
+    rev: 0.38.2
     hooks:
       - id: check-dependabot
       - id: check-github-workflows
