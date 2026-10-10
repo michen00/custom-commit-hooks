@@ -21,7 +21,7 @@ on:
 # reads the repository, and there is deliberately no checkout step: `gh` is
 # preinstalled on the runner and `GH_REPO` tells it which repository it is for.
 # That also means this file carries no `uses:`, so no Dependabot pull request
-# can reach it and it needs no entry in bot-automerge.yml's hold list.
+# can reach it.
 permissions:
   issues: write
 
