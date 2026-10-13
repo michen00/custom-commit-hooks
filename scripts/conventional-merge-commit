@@ -27,6 +27,13 @@ read_commit_msg "$commit_msg_file"
 # Strip leading whitespace (POSIX parameter expansion)
 stripped="${COMMIT_FIRST_LINE#"${COMMIT_FIRST_LINE%%[![:space:]]*}"}"
 
+# A subject that is already a conventional revert ("revert: ...", with an optional
+# scope and "!") is left as written. The rewrite below is for Git's default
+# "Revert ..." messages, and applying it here would produce "revert: revert: ...".
+case "$stripped" in
+revert:\ [![:space:]]* | revert!:\ [![:space:]]* | revert\(*\):\ [![:space:]]* | revert\(*\)!:\ [![:space:]]*) exit 0 ;;
+esac
+
 # Detect message type from content (single source of truth for trigger patterns)
 # Word boundary: keyword alone or followed by non-word character
 # Ordered by frequency: most common patterns first (Git defaults: "Merge", "Revert", "Squash")
