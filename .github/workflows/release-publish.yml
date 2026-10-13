@@ -1,5 +1,8 @@
 ---
 name: Release Publish
+# scripts/release/approve.sh reads the tag from the run name: a run waiting on
+# the `release` environment reports nothing else that says what it publishes.
+run-name: Release Publish ${{ inputs.tag || github.ref_name }}
 
 on:
   push:

@@ -4,7 +4,7 @@
 
 Releases are cut by maintainers. Contributors do not need anything here — see [CONTRIBUTING](CONTRIBUTING.md) instead.
 
-The flow is automated end to end except for a single approval, which is deliberate: that approval is the only thing standing between a merged pull request and a GPG-signed tag minted with the CI release key.
+The flow is automated end to end except for approval, which is deliberate: it is the only thing standing between a merged pull request and a GPG-signed tag minted with the CI release key. GitHub asks for it twice, once before the tag is minted and once before the artifacts are published, and `make release-approve` gives both after one confirmation.
 
 <!-- omit in toc -->
 
@@ -22,19 +22,19 @@ The flow is automated end to end except for a single approval, which is delibera
 
 1. **Release PR** (`.github/workflows/release-pr.yml`) opens the release PR by itself when a commit worth releasing lands on `main`. Every conventional type bumps at least the patch version, so the version cannot decide that on its own; the workflow gates on the group `cliff.toml` parsed each commit into — features, fixes, performance and reverts, plus anything marked breaking. A `chore`, `docs`, `build`, `ci`, `test`, `refactor` or `style` merge — the weekly hook autoupdate and Dependabot among them — rides along in the next release without proposing one. Run the workflow by hand, or `make release-pr`, to pin the version or to release a batch containing none of those types; a manual run skips the worthiness gate. Leave `version` empty to derive it via `git cliff --bumped-version`, or pass `X.Y.Z` / `vX.Y.Z`.
 1. Review and merge the generated PR (`chore(release): prepare vX.Y.Z`).
-1. **Approve the release.** This is the only manual step, and nothing ships until it happens. Run `make release-approve`, which finds the waiting run, shows the tag it will mint and the commit that tag will point at, and asks you to confirm. You can also approve from the run page on GitHub, or from the PR's checks tab. Rejecting the approval leaves no tag behind.
+1. **Approve the release.** This is the only manual step, and nothing ships until it happens. Run `make release-approve`, which finds the waiting **Release Tag** run, shows the tag it will mint and the commit that tag will point at, and asks you to confirm. It then waits for the **Release Publish** run that the new tag dispatches and approves that too. You can also approve each run from its page on GitHub, and the Release Tag run from the PR's checks tab. Rejecting the first approval leaves no tag behind.
 1. **Release Tag** (`.github/workflows/release-tag.yml`) runs on merge of a `release/*` branch, gated on the protected `release` environment. Once approved it creates a GPG-signed annotated tag, pushes it, and dispatches **Release Publish**.
-1. **Release Publish** (`.github/workflows/release-publish.yml`) builds and uploads signed artifacts to the GitHub release.
+1. **Release Publish** (`.github/workflows/release-publish.yml`) builds and uploads signed artifacts to the GitHub release. It waits on the same `release` environment, so it needs an approval of its own.
 
 A release that is never approved simply waits. There is no timeout and no reminder, so a merged release PR can sit indefinitely — `make release-status` is the fastest way to find out whether that is what has happened.
 
-That approval is the only one a normal release needs. **Release Publish** also declares the `release` environment, but when **Release Tag** dispatches it the deployment is created by `github-actions[bot]` and the reviewer rule is skipped, so it proceeds without a second prompt. The declaration still gates a Release Publish run dispatched by hand, which is the manual fallback path. Treat the Release Tag approval as the release decision — no tag means no publish.
+**Release Publish** waits for that second approval even when **Release Tag** dispatches it as `github-actions[bot]`; every Release Publish run on record has waited, v0.1.2's and v0.1.3's included. The publish job also uses the release key, and a run's name is set by its own workflow file, read from the ref the run started on. So `make release-approve` approves a Release Publish run only when it was dispatched on `main`, as Release Tag does, or started by a push of the tag it names. It waits up to five minutes for the dispatched run (`RELEASE_APPROVE_TIMEOUT` and `RELEASE_APPROVE_INTERVAL`, in seconds) and stops early if Release Tag fails. If it gives up, or you approved Release Tag on GitHub, run it again: a waiting Release Publish run is approved first, on its own confirmation. The Release Tag approval remains the release decision: no tag means no publish.
 
 ## Checking release status
 
 ```bash
 make release-status   # latest tag, any open release PR, any run awaiting approval
-make release-approve  # approve the waiting run after confirming what it will tag
+make release-approve  # approve the waiting runs after confirming what will be tagged
 ```
 
 Both read the repository through `gh`, so they need an authenticated GitHub CLI and no other local state. `make release-approve` refuses to do anything when no run is waiting, rather than guessing at which run you meant.
@@ -52,8 +52,8 @@ And if the version moves while a release PR is open — a `feat` landing on top 
 1. Tag and push by hand from `main`:
    - `git switch main && git pull`
    - `git tag -a vX.Y.Z -m vX.Y.Z -s`
-   - `git push origin vX.Y.Z` A tag pushed this way triggers **Release Publish** directly on tag push.
-1. If needed, run **Release Publish** via `workflow_dispatch` with an existing `tag`.
+   - `git push origin vX.Y.Z` A tag pushed this way triggers **Release Publish** directly on tag push, and that run also waits for approval, which `make release-approve` gives.
+1. If needed, run **Release Publish** via `workflow_dispatch` with an existing `tag`, then approve it with `make release-approve`.
 
 > **Note:** Release Tag dispatches Release Publish explicitly rather than relying on the tag push, because a tag pushed with `GITHUB_TOKEN` does not trigger `on: push: tags`.
 
@@ -61,7 +61,7 @@ And if the version moves while a release PR is open — a `feat` landing on top 
 
 - Sigstore keyless signatures are generated in CI for every release artifact.
 - GPG detached signatures are also generated for compatibility.
-- Release tags are annotated and GPG-signed. When **Release Tag** creates the tag, it is signed with the CI release key rather than a maintainer's personal key. The protected `release` environment is what keeps that key from being usable by anyone who merges a `release/*` PR: the tagging job waits for maintainer approval before it runs.
+- Release tags are annotated and GPG-signed. When **Release Tag** creates the tag, it is signed with the CI release key rather than a maintainer's personal key. The protected `release` environment is what keeps that key from being usable by anyone who merges a `release/*` PR: the tagging job and the publishing job each wait for maintainer approval before they run.
 - Repository secrets for GPG signing in CI:
   - `RELEASE_GPG_PRIVATE_KEY` (ASCII-armored private key) — required.
   - `RELEASE_GPG_PASSPHRASE` (passphrase for that key) — only when the key has one.
