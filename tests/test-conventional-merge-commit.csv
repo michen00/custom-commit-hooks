@@ -383,3 +383,9 @@ squashes!.,chore: squashes!.
   squashes:.,chore: squashes:.
   squashes!,chore: squashes!
   squashes!.,chore: squashes!.
+revert: drop the cache,revert: drop the cache
+revert(api): drop the cache,revert(api): drop the cache
+revert!: drop the cache,revert!: drop the cache
+revert(api)!: drop the cache,revert(api)!: drop the cache
+ revert: drop the cache, revert: drop the cache
+Revert "fix: drop the cache",revert: revert "fix: drop the cache"
