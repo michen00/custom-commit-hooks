@@ -6,11 +6,29 @@ All notable changes will be documented in this file. See [conventional commits](
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## [0.1.3](https://github.com/michen00/custom-commit-hooks/compare/v0.1.2..v0.1.3) - 2026-10-13
+
+### 🐛 Fixes
+
+- **(make)** opt-in sync-main, hooksPath guard (#98) - ([1d78c51](https://github.com/michen00/custom-commit-hooks/commit/1d78c51f8b787e64f450076ee0ddfa806b49ff8f)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- **(merge-commit)** pass conventional reverts as is (#106) - ([7a3b0ab](https://github.com/michen00/custom-commit-hooks/commit/7a3b0ab02e8349cd2b7b182a00101a5b61e6b797)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- drop the unused typos word exemption (#96) - ([126e928](https://github.com/michen00/custom-commit-hooks/commit/126e9286007c52d639515aba5ede2b5628319fc9)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### 💚 Continuous Integration
+
+- **(automerge)** merge all majors on green CI (#103) - ([e260fb8](https://github.com/michen00/custom-commit-hooks/commit/e260fb83ed45617b825ec12b48f7f925b27b51b5)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- gate PR titles, commits and bodies (#100) - ([209b9e9](https://github.com/michen00/custom-commit-hooks/commit/209b9e935eb5f466cbf6baa5df32f6722407591a)) - [Michael I Chen](mailto:michen00.github@gmail.com)
 
 ### 📝 Documentation
 
+- **(CHANGELOG.md)** autoupdate Unreleased section (#94) - ([3a66c7e](https://github.com/michen00/custom-commit-hooks/commit/3a66c7e39c5de985a8502101b3eacfe9e3c25848)) - [github-actions[bot]](mailto:41898282+github-actions[bot]@users.noreply.github.com)
 - extract RELEASING.md, add approval tooling (#91) - ([2b1365a](https://github.com/michen00/custom-commit-hooks/commit/2b1365a88af51994bc62b094f11fdededcfd7ff5)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### ⚙️ Miscellaneous Tasks
+
+- autoupdate pre-commit hooks (#105) - ([5559054](https://github.com/michen00/custom-commit-hooks/commit/55590547ca6211be3569effb30466dfcd3b3f0c9)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+- autoupdate pre-commit hooks (#102) - ([a9fc16a](https://github.com/michen00/custom-commit-hooks/commit/a9fc16a13a531002b52914a75617074db72b73a5)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+- autoupdate pre-commit hooks (#95) - ([9f1db29](https://github.com/michen00/custom-commit-hooks/commit/9f1db292fa7de335da10768cc68391b2ea51cfc2)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
 
 ## [0.1.2](https://github.com/michen00/custom-commit-hooks/compare/v0.1.1..v0.1.2) - 2026-09-16
 
