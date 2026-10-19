@@ -6,6 +6,13 @@ All notable changes will be documented in this file. See [conventional commits](
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+### 💚 Continuous Integration
+
+- **(release)** approve the publish run too (#107) - ([1b31690](https://github.com/michen00/custom-commit-hooks/commit/1b31690c886555f0cd9bcf15664095a4ae030837)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- let the subject length check be turned off (#108) - ([5e62036](https://github.com/michen00/custom-commit-hooks/commit/5e620365cecde242077e7c6e578dac533e330ab4)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
 ## [0.1.3](https://github.com/michen00/custom-commit-hooks/compare/v0.1.2..v0.1.3) - 2026-10-13
 
 ### 🐛 Fixes
