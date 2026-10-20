@@ -99,7 +99,7 @@ repo="$(gh repo view --json nameWithOwner --jq .nameWithOwner)" ||
 # past it.
 waiting_run() {
 	gh run list --workflow="$1" --status waiting --limit 1 \
-		--json databaseId,displayTitle,event,headBranch,url ||
+		--json databaseId,displayTitle,event,headBranch,headSha,url ||
 		die "Could not list $1 runs."
 }
 
@@ -112,9 +112,36 @@ publish_tag() {
 }
 
 # publish_origin <waiting-json> -- prints "<event> <branch>" for the run: what
-# started it, and the ref its workflow file was read from.
+# started it, and the name of the ref its workflow file was read from.
 publish_origin() {
 	printf '%s' "$1" | jq -r '.[0] | "\(.event) \(.headBranch)"'
+}
+
+# require_trusted_commit <origin> <tag> <tag-commit> <waiting-json> <run-url> --
+# refuses unless the run started on a commit its origin vouches for. The origin
+# checks compare bare ref names, so a tag named main, or a branch named like the
+# release tag, reads the same as the real ref, and its workflow file is whatever
+# that ref carries. A push of the tag has to start on the commit the tag points
+# at. A dispatch on main has to start on a commit in main's history; main can
+# move on between the dispatch and the approval.
+require_trusted_commit() {
+	run_commit="$(printf '%s' "$4" | jq -r '.[0].headSha // empty')"
+	[ -n "$run_commit" ] ||
+		die "Release Publish for $2 reports no head commit: $5. Reject it on GitHub, then run this again."
+	if [ "$1" = "workflow_dispatch main" ]; then
+		# refs/heads/ because a bare name also matches a tag.
+		relation="$(gh api "repos/$repo/compare/$run_commit...refs/heads/main" --jq .status)" ||
+			die "Could not compare commit $run_commit with main: $5. Reject it on GitHub, then run this again."
+		case "$relation" in
+		identical | ahead) ;;
+		*)
+			die "Release Publish for $2 started on commit $run_commit, which is not in main's history: $5. Reject it on GitHub, then run this again."
+			;;
+		esac
+	else
+		[ "$run_commit" = "$3" ] ||
+			die "Release Publish for $2 started on commit $run_commit, not on $3, which the tag points at: $5. Reject it on GitHub, then run this again."
+	fi
 }
 
 # check_pending <run-id> -- refuses unless the caller can approve every
@@ -185,6 +212,7 @@ wait_for_publish() {
 				die "Release Publish for $found_tag is waiting ahead of $1: $publish_url. Approve or reject it, then run this again."
 			[ "$(publish_origin "$found")" = "workflow_dispatch main" ] ||
 				die "Release Publish for $1 is waiting, but it was not dispatched on main as Release Tag does: $publish_url. Reject it on GitHub, then run this again."
+			require_trusted_commit "workflow_dispatch main" "$1" "" "$found" "$publish_url"
 			return 0
 		fi
 
@@ -268,6 +296,7 @@ if [ -n "$publish_id" ]; then
 	# what the run checks out.
 	commit="$(gh api "repos/$repo/commits/refs/tags/$tag" --jq .sha)" ||
 		die "Tag $tag does not resolve to a commit, so Release Publish would fail: $publish_url. Reject it on GitHub, then run this again."
+	require_trusted_commit "$origin" "$tag" "$commit" "$publish_waiting" "$publish_url"
 
 	check_pending "$publish_id"
 
