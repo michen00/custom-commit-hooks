@@ -105,6 +105,11 @@ api)
 		fi
 	done
 	case "$endpoint" in
+	*/compare/*)
+		# approve.sh asks for the compare status through --jq.
+		[ -n "${GH_STUB_COMPARE_FAIL:-}" ] && exit 1
+		printf '%s\n' "${GH_STUB_COMPARE:-identical}"
+		;;
 	*/commits/refs/tags/*)
 		[ -n "${GH_STUB_TAG_SHA:-}" ] || exit 1
 		printf '%s\n' "$GH_STUB_TAG_SHA"
@@ -132,15 +137,20 @@ MERGE_SHA="bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 
 WAITING_RUN="[{\"databaseId\":42,\"headBranch\":\"release/v9.9.9\",\"headSha\":\"$BRANCH_TIP\",\"url\":\"https://example.invalid/run/42\"}]"
 MERGED_PR="[{\"number\":83,\"mergeCommit\":{\"oid\":\"$MERGE_SHA\"}}]"
-PUBLISH_RUN='[{"databaseId":43,"displayTitle":"Release Publish v9.9.9","event":"workflow_dispatch","headBranch":"main","url":"https://example.invalid/run/43"}]'
-OTHER_PUBLISH_RUN='[{"databaseId":44,"displayTitle":"Release Publish v9.9.8","event":"workflow_dispatch","headBranch":"main","url":"https://example.invalid/run/44"}]'
+PUBLISH_RUN='[{"databaseId":43,"displayTitle":"Release Publish v9.9.9","event":"workflow_dispatch","headBranch":"main","headSha":"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","url":"https://example.invalid/run/43"}]'
+OTHER_PUBLISH_RUN='[{"databaseId":44,"displayTitle":"Release Publish v9.9.8","event":"workflow_dispatch","headBranch":"main","headSha":"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","url":"https://example.invalid/run/44"}]'
 UNNAMED_PUBLISH_RUN='[{"databaseId":45,"displayTitle":"Release Publish","event":"workflow_dispatch","headBranch":"main","url":"https://example.invalid/run/45"}]'
 # A run's name comes from its own workflow file, read from the ref it started
 # on, so these name v9.9.9 without being runs a maintainer has vouched for.
 BRANCH_PUBLISH_RUN='[{"databaseId":46,"displayTitle":"Release Publish v9.9.9","event":"workflow_dispatch","headBranch":"feature","url":"https://example.invalid/run/46"}]'
 FOREIGN_TAG_PUBLISH_RUN='[{"databaseId":47,"displayTitle":"Release Publish v9.9.9","event":"push","headBranch":"v9.9.10","url":"https://example.invalid/run/47"}]'
-TAG_PUSH_PUBLISH_RUN='[{"databaseId":48,"displayTitle":"Release Publish v9.9.9","event":"push","headBranch":"v9.9.9","url":"https://example.invalid/run/48"}]'
+TAG_PUSH_PUBLISH_RUN='[{"databaseId":48,"displayTitle":"Release Publish v9.9.9","event":"push","headBranch":"v9.9.9","headSha":"cccccccccccccccccccccccccccccccccccccccc","url":"https://example.invalid/run/48"}]'
 TAG_SHA="cccccccccccccccccccccccccccccccccccccccc"
+# headBranch is a bare ref name, so a branch named like the tag and a tag named
+# main read the same as the real refs; only the commit tells them apart, and
+# their workflow file is that ref's own.
+LOOKALIKE_PUSH_RUN='[{"databaseId":50,"displayTitle":"Release Publish v9.9.9","event":"push","headBranch":"v9.9.9","headSha":"dddddddddddddddddddddddddddddddddddddddd","url":"https://example.invalid/run/50"}]'
+OFF_MAIN_PUBLISH_RUN='[{"databaseId":51,"displayTitle":"Release Publish v9.9.9","event":"workflow_dispatch","headBranch":"main","headSha":"dddddddddddddddddddddddddddddddddddddddd","url":"https://example.invalid/run/51"}]'
 PENDING_OK='[{"environment":{"id":7,"name":"release"},"current_user_can_approve":true}]'
 PENDING_DENIED='[{"environment":{"id":7,"name":"release"},"current_user_can_approve":false}]'
 PENDING_EXTRA='[{"environment":{"id":7,"name":"release"},"current_user_can_approve":true},{"environment":{"id":8,"name":"other"},"current_user_can_approve":true}]'
@@ -408,6 +418,21 @@ else
 		"Exited $status. Approved: '$runs'. Output: $out"
 fi
 
+# A tag named main reads as a dispatch on main; only the commit gives it away.
+: >"$log"
+out="$(GH_STUB_WAITING="$WAITING_RUN" GH_STUB_MERGEDPR="$MERGED_PR" \
+	GH_STUB_PENDING="$PENDING_OK" GH_STUB_PUBLISH_WAITING="$OFF_MAIN_PUBLISH_RUN" \
+	GH_STUB_COUNTER="$STUB_DIR/counter.5" GH_STUB_PUBLISH_AFTER=1 \
+	GH_STUB_COMPARE=diverged run_approve "$log" --yes)"
+status=$?
+runs="$(approved_runs "$log")"
+if [ "$status" -eq 1 ] && [ "$runs" = "42" ] && [[ "$out" == *"not in main's history"* ]]; then
+	pass "never approves a dispatch whose commit is not in main's history"
+else
+	fail "refuses a dispatch on a ref named main that is not main" \
+		"Exited $status. Approved: '$runs'. Output: $out"
+fi
+
 # The one confirmation covered the dispatch Release Tag makes, on main. A run
 # that merely names the same tag is not that run.
 : >"$log"
@@ -530,6 +555,47 @@ else
 	fail "approves the run a hand-pushed tag starts" \
 		"Exited $status. Approved: '$runs'. Output: $out"
 fi
+
+: >"$log"
+out="$(GH_STUB_PUBLISH_WAITING="$LOOKALIKE_PUSH_RUN" GH_STUB_TAG_SHA="$TAG_SHA" \
+	GH_STUB_PENDING="$PENDING_OK" run_approve "$log" --yes)"
+status=$?
+if [ "$status" -eq 1 ] && [ ! -s "$log" ] && [[ "$out" == *"not on $TAG_SHA"* ]]; then
+	pass "a push on a branch named like the tag is rejected"
+else
+	fail "refuses a push on a branch named like the tag" "Exited $status. Got: $out"
+fi
+
+# main moves on after a dispatch, so a commit main has since passed still counts.
+: >"$log"
+out="$(GH_STUB_PUBLISH_WAITING="$PUBLISH_RUN" GH_STUB_TAG_SHA="$TAG_SHA" \
+	GH_STUB_COMPARE=ahead GH_STUB_PENDING="$PENDING_OK" run_approve "$log" --yes)"
+status=$?
+runs="$(approved_runs "$log")"
+if [ "$status" -eq 0 ] && [ "$runs" = "43" ]; then
+	pass "a dispatch on a commit main has since moved past is approved"
+else
+	fail "approves a dispatch main has moved past" \
+		"Exited $status. Approved: '$runs'. Output: $out"
+fi
+
+for relation_case in diverged behind fail; do
+	: >"$log"
+	if [ "$relation_case" = fail ]; then
+		out="$(GH_STUB_PUBLISH_WAITING="$OFF_MAIN_PUBLISH_RUN" GH_STUB_TAG_SHA="$TAG_SHA" \
+			GH_STUB_COMPARE_FAIL=1 GH_STUB_PENDING="$PENDING_OK" run_approve "$log" --yes)"
+	else
+		out="$(GH_STUB_PUBLISH_WAITING="$OFF_MAIN_PUBLISH_RUN" GH_STUB_TAG_SHA="$TAG_SHA" \
+			GH_STUB_COMPARE="$relation_case" GH_STUB_PENDING="$PENDING_OK" run_approve "$log" --yes)"
+	fi
+	status=$?
+	if [ "$status" -eq 1 ] && [ ! -s "$log" ]; then
+		pass "a waiting dispatch on main is rejected when the comparison says '$relation_case'"
+	else
+		fail "a dispatch off main's history is rejected ('$relation_case')" \
+			"Exited $status. Got: $out"
+	fi
+done
 
 for bad in 08 abc; do
 	: >"$log"
