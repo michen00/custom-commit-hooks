@@ -39,6 +39,17 @@ test:
 
 - `workflow_dispatch` only (not required for merge; enforcement is via pre-commit in CI)
 
+### Freeze PR links (.github/workflows/freeze-pr-links.yml)
+
+**Purpose**: Pin a merged pull request's links to its own head branch to the head commit, so they keep working once the branch is deleted
+
+**Triggers:**
+
+- `pull_request_target` on `closed`, gated on the pull request having merged into `main`
+- Manual `workflow_dispatch` with `pr_number`, to freeze a pull request that merged earlier
+
+It runs `michen00/freeze-pr-links` at a release tag and checks out nothing from the pull request.
+
 ### Release Workflows
 
 **Triggers:**
