@@ -1,12 +1,12 @@
 ---
 version: 2
 updates:
-  # The cooldown is what replaces the blanket major hold bot-automerge.yml used to apply,
-  # and the two are a matched pair rather than two independent settings. Actions here are
-  # pinned to floating major tags, so Dependabot raises a pull request only when a major
-  # moves; holding every major therefore held every actions pull request there would ever
-  # be, while arming them with no soak period would take a release the day it was
-  # published. A delay is the part of that trade worth keeping.
+  # The cooldown and bot-automerge.yml's arming of majors are a matched pair rather than
+  # two independent settings. Actions here are pinned to floating major tags, so
+  # Dependabot raises a pull request only when a major moves; holding every major would
+  # hold every actions pull request there could be, while arming them with no soak period
+  # would take a release the day it was published. A delay is the part of that trade
+  # worth keeping.
   #
   # `default-days` covers every update rather than only majors, and this is the one
   # ecosystem that earns the wider net: its packages execute with this repository's own
@@ -29,8 +29,8 @@ updates:
       # check-dependabot schema hook does not catch it, because the rejection is
       # server-side rather than schematic.
       #
-      # So one number covers every actions update, and 30 days is chosen over a
-      # shorter delay because bot-automerge.yml now arms actions majors: this is
+      # So one number covers every actions update, and it is long rather than
+      # short because bot-automerge.yml arms actions majors: this is
       # the only soak period between a release being published and it merging
       # here unattended. A patch is not safer than a major when the risk is a
       # compromised publisher rather than a changed interface, and these packages
