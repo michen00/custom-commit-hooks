@@ -33,12 +33,12 @@ FILENAME="${FILES_TOUCHED%%"${NL}"*}"
 # Check if commit matches conventional format without scope
 ORIGINAL_TYPE=""
 case "$COMMIT_SUMMARY" in
-feat:\ ?* | fix:\ ?* | chore:\ ?* | docs:\ ?* | refactor:\ ?* | \
-	test:\ ?* | build:\ ?* | ci:\ ?* | style:\ ?* | perf:\ ?* | revert:\ ?* | \
-	feat!:\ ?* | fix!:\ ?* | chore!:\ ?* | docs!:\ ?* | refactor!:\ ?* | \
-	test!:\ ?* | build!:\ ?* | ci!:\ ?* | style!:\ ?* | perf!:\ ?* | revert!:\ ?*)
-	ORIGINAL_TYPE="${COMMIT_SUMMARY%%:*}"
-	;;
+	feat:\ ?* | fix:\ ?* | chore:\ ?* | docs:\ ?* | refactor:\ ?* | \
+		test:\ ?* | build:\ ?* | ci:\ ?* | style:\ ?* | perf:\ ?* | revert:\ ?* | \
+		feat!:\ ?* | fix!:\ ?* | chore!:\ ?* | docs!:\ ?* | refactor!:\ ?* | \
+		test!:\ ?* | build!:\ ?* | ci!:\ ?* | style!:\ ?* | perf!:\ ?* | revert!:\ ?*)
+		ORIGINAL_TYPE="${COMMIT_SUMMARY%%:*}"
+		;;
 esac
 
 # Exit if not a conventional commit
@@ -48,7 +48,7 @@ fi
 
 # Exit if filename already in summary
 case "$COMMIT_SUMMARY" in
-*"$FILENAME"*) exit 0 ;;
+	*"$FILENAME"*) exit 0 ;;
 esac
 
 PREFIX="$ORIGINAL_TYPE: "

@@ -15,52 +15,52 @@ PASSED=0
 FAILED=0
 
 pass() {
-	echo -e "${GREEN}✓${NC} $1"
-	((PASSED++))
+  echo -e "${GREEN}✓${NC} $1"
+  ((PASSED++))
 }
 
 fail() {
-	echo -e "${RED}✗${NC} $1"
-	shift
-	for msg in "$@"; do
-		echo -e "  ${YELLOW}$msg${NC}"
-	done
-	((FAILED++))
+  echo -e "${RED}✗${NC} $1"
+  shift
+  for msg in "$@"; do
+    echo -e "  ${YELLOW}$msg${NC}"
+  done
+  ((FAILED++))
 }
 
 # assert_accepts <expected_tag> <input> [flag]
 assert_accepts() {
-	local expected="$1"
-	local input="$2"
-	shift 2
-	local output status
-	output="$(sh "$PARSE_VERSION" "$input" "$@" 2>/dev/null)"
-	status=$?
+  local expected="$1"
+  local input="$2"
+  shift 2
+  local output status
+  output="$(sh "$PARSE_VERSION" "$input" "$@" 2> /dev/null)"
+  status=$?
 
-	if [ "$status" -ne 0 ]; then
-		fail "accepts '$input' ${*:+($*) }" "Exited $status, expected 0"
-	elif [ "$output" != "$expected" ]; then
-		fail "accepts '$input' ${*:+($*) }" "Got '$output', expected '$expected'"
-	else
-		pass "'$input' ${*:+($*) }-> $expected"
-	fi
+  if [ "$status" -ne 0 ]; then
+    fail "accepts '$input' ${*:+($*) }" "Exited $status, expected 0"
+  elif [ "$output" != "$expected" ]; then
+    fail "accepts '$input' ${*:+($*) }" "Got '$output', expected '$expected'"
+  else
+    pass "'$input' ${*:+($*) }-> $expected"
+  fi
 }
 
 # assert_rejects <input> [flag]
 assert_rejects() {
-	local input="$1"
-	shift
-	local output status
-	output="$(sh "$PARSE_VERSION" "$input" "$@" 2>/dev/null)"
-	status=$?
+  local input="$1"
+  shift
+  local output status
+  output="$(sh "$PARSE_VERSION" "$input" "$@" 2> /dev/null)"
+  status=$?
 
-	if [ "$status" -eq 0 ]; then
-		fail "rejects '$input' ${*:+($*) }" "Exited 0 and printed '$output'"
-	elif [ -n "$output" ]; then
-		fail "rejects '$input' ${*:+($*) }" "Printed '$output' on stdout; expected nothing"
-	else
-		pass "rejects '$input' ${*:+($*) }"
-	fi
+  if [ "$status" -eq 0 ]; then
+    fail "rejects '$input' ${*:+($*) }" "Exited 0 and printed '$output'"
+  elif [ -n "$output" ]; then
+    fail "rejects '$input' ${*:+($*) }" "Printed '$output' on stdout; expected nothing"
+  else
+    pass "rejects '$input' ${*:+($*) }"
+  fi
 }
 
 printf "Testing scripts/release/parse-version.sh...\n\n"
@@ -117,30 +117,30 @@ assert_rejects '0.0.4' --require-v
 
 # Argument errors exit 2 rather than 1
 for args in '' 'a b c'; do
-	# shellcheck disable=SC2086 # Intentional word splitting to vary arg count
-	sh "$PARSE_VERSION" $args >/dev/null 2>&1
-	status=$?
-	if [ "$status" -eq 2 ]; then
-		pass "usage error for [$args] exits 2"
-	else
-		fail "usage error for [$args]" "Exited $status, expected 2"
-	fi
+  # shellcheck disable=SC2086 # Intentional word splitting to vary arg count
+  sh "$PARSE_VERSION" $args > /dev/null 2>&1
+  status=$?
+  if [ "$status" -eq 2 ]; then
+    pass "usage error for [$args] exits 2"
+  else
+    fail "usage error for [$args]" "Exited $status, expected 2"
+  fi
 done
 
-sh "$PARSE_VERSION" 'v1.2.3' --bogus >/dev/null 2>&1
+sh "$PARSE_VERSION" 'v1.2.3' --bogus > /dev/null 2>&1
 status=$?
 if [ "$status" -eq 2 ]; then
-	pass "unknown flag exits 2"
+  pass "unknown flag exits 2"
 else
-	fail "unknown flag" "Exited $status, expected 2"
+  fail "unknown flag" "Exited $status, expected 2"
 fi
 
 # Errors go to stderr, never stdout
-stderr="$(sh "$PARSE_VERSION" 'nope' 2>&1 >/dev/null)"
+stderr="$(sh "$PARSE_VERSION" 'nope' 2>&1 > /dev/null)"
 if [ -n "$stderr" ]; then
-	pass "invalid input writes a message to stderr"
+  pass "invalid input writes a message to stderr"
 else
-	fail "invalid input writes a message to stderr" "stderr was empty"
+  fail "invalid input writes a message to stderr" "stderr was empty"
 fi
 
 printf "\nResults: ${GREEN}%d passed${NC}, ${RED}%d failed${NC}\n" "$PASSED" "$FAILED"

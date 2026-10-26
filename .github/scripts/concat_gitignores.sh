@@ -5,7 +5,7 @@ set -e # Exit on errors
 SCRIPT_NAME=$(basename "$0")
 
 usage() {
-	cat <<EOF
+  cat << EOF
 Usage: $SCRIPT_NAME [--output <output_file>] [<input_file>]
 
 Concatenate multiple .gitignore templates into a single file by fetching
@@ -26,32 +26,32 @@ Examples:
   $SCRIPT_NAME urls.txt
   $SCRIPT_NAME urls.txt --output custom.output.gitignore
 EOF
-	exit "${1:-0}"
+  exit "${1:-0}"
 }
 
 # Hardcoded URLs (used if no input is provided)
 DEFAULT_URLS=(
-	# IDEs / editors
-	"https://github.com/github/gitignore/blob/main/Global/Cursor.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/Eclipse.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/Emacs.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/SublimeText.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/Vim.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore"
-	"https://github.com/github/gitignore/blob/main/VisualStudio.gitignore"
+  # IDEs / editors
+  "https://github.com/github/gitignore/blob/main/Global/Cursor.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/Eclipse.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/Emacs.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/SublimeText.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/Vim.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore"
+  "https://github.com/github/gitignore/blob/main/VisualStudio.gitignore"
 
-	# OS / platform
-	"https://github.com/github/gitignore/blob/main/Global/Linux.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/macOS.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/Windows.gitignore"
+  # OS / platform
+  "https://github.com/github/gitignore/blob/main/Global/Linux.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/macOS.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/Windows.gitignore"
 
-	# Tools / documents / misc artifacts
-	"https://github.com/github/gitignore/blob/main/Global/Archives.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/Backup.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/Diff.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/MicrosoftOffice.gitignore"
-	"https://github.com/github/gitignore/blob/main/Global/Patch.gitignore"
+  # Tools / documents / misc artifacts
+  "https://github.com/github/gitignore/blob/main/Global/Archives.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/Backup.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/Diff.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/MicrosoftOffice.gitignore"
+  "https://github.com/github/gitignore/blob/main/Global/Patch.gitignore"
 )
 
 # Default output file
@@ -63,52 +63,52 @@ URLS=()
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
-	case "$1" in
-	--output)
-		if [[ -z ${2:-} ]]; then
-			echo "Error: --output requires a file name." >&2
-			usage 1
-		fi
-		OUTPUT_FILE="$2"
-		shift 2
-		;;
-	-h | --help)
-		usage 0
-		;;
-	--*)
-		echo "Unknown option: $1" >&2
-		usage 1
-		;;
-	*)
-		if [[ -z $INPUT_FILE ]]; then
-			INPUT_FILE="$1"
-			shift
-		else
-			echo "Error: Multiple input files specified: '$INPUT_FILE' and '$1'" >&2
-			usage 1
-		fi
-		;;
-	esac
+  case "$1" in
+    --output)
+      if [[ -z ${2:-} ]]; then
+        echo "Error: --output requires a file name." >&2
+        usage 1
+      fi
+      OUTPUT_FILE="$2"
+      shift 2
+      ;;
+    -h | --help)
+      usage 0
+      ;;
+    --*)
+      echo "Unknown option: $1" >&2
+      usage 1
+      ;;
+    *)
+      if [[ -z $INPUT_FILE ]]; then
+        INPUT_FILE="$1"
+        shift
+      else
+        echo "Error: Multiple input files specified: '$INPUT_FILE' and '$1'" >&2
+        usage 1
+      fi
+      ;;
+  esac
 done
 
 # Determine the source of URLs
 if [[ -n $INPUT_FILE && -f $INPUT_FILE ]]; then
-	# Read URLs from the provided file
-	mapfile -t URLS <"$INPUT_FILE"
+  # Read URLs from the provided file
+  mapfile -t URLS < "$INPUT_FILE"
 elif ! [ -t 0 ]; then
-	# Read URLs from stdin if piped
-	mapfile -t URLS
+  # Read URLs from stdin if piped
+  mapfile -t URLS
 else
-	# Use hardcoded URLs as default
-	URLS=("${DEFAULT_URLS[@]}")
+  # Use hardcoded URLs as default
+  URLS=("${DEFAULT_URLS[@]}")
 fi
 
 # Calculate the length of the longest URL
 MAX_URL_LENGTH=0
 for url in "${URLS[@]}"; do
-	if [[ ${#url} -gt $MAX_URL_LENGTH ]]; then
-		MAX_URL_LENGTH=${#url}
-	fi
+  if [[ ${#url} -gt $MAX_URL_LENGTH ]]; then
+    MAX_URL_LENGTH=${#url}
+  fi
 done
 
 # Create the comment header
@@ -116,82 +116,82 @@ HEADER_LENGTH=$((MAX_URL_LENGTH + 4))
 HEADER=$(printf '#%.0s' $(seq 1 $HEADER_LENGTH))
 
 {
-	echo "$HEADER"
-	echo "# This .gitignore is composed of the following templates (retrieved $(date +%Y-%m-%d)):"
-	for url in "${URLS[@]}"; do
-		echo "# - $url"
-	done
-	echo "$HEADER"
-	echo ""
-} >"$OUTPUT_FILE"
+  echo "$HEADER"
+  echo "# This .gitignore is composed of the following templates (retrieved $(date +%Y-%m-%d)):"
+  for url in "${URLS[@]}"; do
+    echo "# - $url"
+  done
+  echo "$HEADER"
+  echo ""
+} > "$OUTPUT_FILE"
 
 echo "Initialized output file with header: $OUTPUT_FILE"
 
 # Loop through URLs
 for url in "${URLS[@]}"; do
-	echo "Processing URL: $url"
+  echo "Processing URL: $url"
 
-	# Extract the filename (e.g., Python.gitignore)
-	FILENAME=$(basename "$url")
+  # Extract the filename (e.g., Python.gitignore)
+  FILENAME=$(basename "$url")
 
-	# Calculate dynamic block length
-	PREFACE_LENGTH=$((${#FILENAME} + 4)) # Length of " # FILENAME # "
-	PREFACE=$(printf '#%.0s' $(seq 1 $PREFACE_LENGTH))
+  # Calculate dynamic block length
+  PREFACE_LENGTH=$((${#FILENAME} + 4)) # Length of " # FILENAME # "
+  PREFACE=$(printf '#%.0s' $(seq 1 $PREFACE_LENGTH))
 
-	# Preface block for this template
-	{
-		echo "$PREFACE"
-		echo "# $FILENAME #"
-		echo "$PREFACE"
-		echo ""
-	} >>"$OUTPUT_FILE"
+  # Preface block for this template
+  {
+    echo "$PREFACE"
+    echo "# $FILENAME #"
+    echo "$PREFACE"
+    echo ""
+  } >> "$OUTPUT_FILE"
 
-	# Convert GitHub URL to raw content URL
-	RAW_URL=$(echo "$url" | sed 's|github.com|raw.githubusercontent.com|; s|/blob||')
-	echo "Converted to raw URL: $RAW_URL"
+  # Convert GitHub URL to raw content URL
+  RAW_URL=$(echo "$url" | sed 's|github.com|raw.githubusercontent.com|; s|/blob||')
+  echo "Converted to raw URL: $RAW_URL"
 
-	# Fetch content
-	CONTENT=$(curl -s "$RAW_URL" | awk '{ gsub(/\r$/, ""); gsub(/[ \t]+$/, ""); print }')
-	if [[ -z $CONTENT ]]; then
-		echo "Failed to fetch content from: $RAW_URL"
-	else
-		echo "Appending content from: $RAW_URL"
-		echo "$CONTENT" >>"$OUTPUT_FILE"
-		echo -e "\n# End of $url\n" >>"$OUTPUT_FILE"
-	fi
+  # Fetch content
+  CONTENT=$(curl -s "$RAW_URL" | awk '{ gsub(/\r$/, ""); gsub(/[ \t]+$/, ""); print }')
+  if [[ -z $CONTENT ]]; then
+    echo "Failed to fetch content from: $RAW_URL"
+  else
+    echo "Appending content from: $RAW_URL"
+    echo "$CONTENT" >> "$OUTPUT_FILE"
+    echo -e "\n# End of $url\n" >> "$OUTPUT_FILE"
+  fi
 done
 
 # Normalize line endings in the final output file
-tr -d '\r' <"$OUTPUT_FILE" >.temp_file && mv .temp_file "$OUTPUT_FILE"
+tr -d '\r' < "$OUTPUT_FILE" > .temp_file && mv .temp_file "$OUTPUT_FILE"
 
 # Ensure single trailing newline
 if [[ $OSTYPE == "linux-gnu"* ]]; then
-	sed -i ':a;/^$/{$d;N;ba;}' "$OUTPUT_FILE" # spellchecker:disable-line
+  sed -i ':a;/^$/{$d;N;ba;}' "$OUTPUT_FILE" # spellchecker:disable-line
 elif [[ $OSTYPE == "darwin"* ]]; then
-	sed -i '' -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$OUTPUT_FILE" # spellchecker:disable-line
+  sed -i '' -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$OUTPUT_FILE" # spellchecker:disable-line
 else
-	echo "Unknown OS: unable to ensure single trailing newline"
+  echo "Unknown OS: unable to ensure single trailing newline"
 fi
 
 {
-	echo -e "\ncoverage/**"
-	echo -e "!.gitkeep"
+  echo -e "\ncoverage/**"
+  echo -e "!.gitkeep"
 
-	# The VisualStudio template ignores a build-output directory named release/
-	# in either capitalization, which matches this repository's own
-	# scripts/release/ directory and would take the release
-	# automation out of version control on the next regeneration. Both lines are
-	# required and in this order: git will not re-include a file whose parent
-	# directory is excluded, so the directory has to be un-excluded before the
-	# scripts inside it can be.
-	echo -e "\n# Keep release automation scripts tracked."
-	echo -e "!scripts/release/"
-	echo -e "!scripts/release/*.sh"
+  # The VisualStudio template ignores a build-output directory named release/
+  # in either capitalization, which matches this repository's own
+  # scripts/release/ directory and would take the release
+  # automation out of version control on the next regeneration. Both lines are
+  # required and in this order: git will not re-include a file whose parent
+  # directory is excluded, so the directory has to be un-excluded before the
+  # scripts inside it can be.
+  echo -e "\n# Keep release automation scripts tracked."
+  echo -e "!scripts/release/"
+  echo -e "!scripts/release/*.sh"
 
-	# Claude Code writes machine-specific permission grants to settings.local.json.
-	# Only that file is ignored: a shared .claude/settings.json, or agent skills and
-	# commands kept under .claude/, are ordinary tracked project files.
-	echo -e "\n.claude/settings.local.json"
-} >>"$OUTPUT_FILE"
+  # Claude Code writes machine-specific permission grants to settings.local.json.
+  # Only that file is ignored: a shared .claude/settings.json, or agent skills and
+  # commands kept under .claude/, are ordinary tracked project files.
+  echo -e "\n.claude/settings.local.json"
+} >> "$OUTPUT_FILE"
 
 echo "Combined .gitignore created as $OUTPUT_FILE"

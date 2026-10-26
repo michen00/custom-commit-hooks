@@ -27,12 +27,12 @@ set -eu
 REPO_SLUG='michen00/custom-commit-hooks'
 
 usage() {
-	echo "Usage: $0 <vX.Y.Z> [file...]" >&2
-	exit 2
+  echo "Usage: $0 <vX.Y.Z> [file...]" >&2
+  exit 2
 }
 
 if [ "$#" -lt 1 ]; then
-	usage
+  usage
 fi
 
 tag="$1"
@@ -41,37 +41,37 @@ shift
 # Reuse the release parser so an invalid tag cannot reach the files.
 parse_version="$(dirname "$0")/parse-version.sh"
 if [ ! -x "$parse_version" ]; then
-	echo "Error: $parse_version is missing or not executable" >&2
-	exit 2
+  echo "Error: $parse_version is missing or not executable" >&2
+  exit 2
 fi
 
 if ! tag="$("$parse_version" "$tag" --require-v)"; then
-	usage
+  usage
 fi
 
 if [ "$#" -eq 0 ]; then
-	set -- README.md
+  set -- README.md
 fi
 
 status=0
 
 for file in "$@"; do
-	if [ ! -f "$file" ]; then
-		echo "Error: file not found: $file" >&2
-		exit 2
-	fi
+  if [ ! -f "$file" ]; then
+    echo "Error: file not found: $file" >&2
+    exit 2
+  fi
 
-	tmp="$(mktemp)"
+  tmp="$(mktemp)"
 
-	# Rewriting only the `rev:` token leaves indentation and any trailing comment
-	# (README carries "# Use the latest version") exactly as they were.
-	#
-	# Every `repo:` line re-arms or disarms, so a block for this repository that
-	# carries no `rev:` cannot leak the armed state into the next block and bump a
-	# third-party pin instead. Exit 3 means no pin was found, which the caller
-	# distinguishes from a genuine awk failure.
-	awk_status=0
-	awk -v tag="$tag" -v slug="$REPO_SLUG" '
+  # Rewriting only the `rev:` token leaves indentation and any trailing comment
+  # (README carries "# Use the latest version") exactly as they were.
+  #
+  # Every `repo:` line re-arms or disarms, so a block for this repository that
+  # carries no `rev:` cannot leak the armed state into the next block and bump a
+  # third-party pin instead. Exit 3 means no pin was found, which the caller
+  # distinguishes from a genuine awk failure.
+  awk_status=0
+  awk -v tag="$tag" -v slug="$REPO_SLUG" '
 	BEGIN { armed = 0; changed = 0 }
 	index($0, "repo:") {
 		armed = (index($0, slug) > 0)
@@ -87,29 +87,29 @@ for file in "$@"; do
 	}
 	{ print }
 	END { exit (changed > 0 ? 0 : 3) }
-	' "$file" >"$tmp" || awk_status=$?
+	' "$file" > "$tmp" || awk_status=$?
 
-	case "$awk_status" in
-	0)
-		if cmp -s "$tmp" "$file"; then
-			echo "Already at $tag: $file"
-		else
-			cat "$tmp" >"$file"
-			echo "Bumped to $tag: $file"
-		fi
-		;;
-	3)
-		echo "Error: no $REPO_SLUG pin found in $file" >&2
-		status=3
-		;;
-	*)
-		echo "Error: awk failed with status $awk_status on $file" >&2
-		rm -f "$tmp"
-		exit 2
-		;;
-	esac
+  case "$awk_status" in
+    0)
+      if cmp -s "$tmp" "$file"; then
+        echo "Already at $tag: $file"
+      else
+        cat "$tmp" > "$file"
+        echo "Bumped to $tag: $file"
+      fi
+      ;;
+    3)
+      echo "Error: no $REPO_SLUG pin found in $file" >&2
+      status=3
+      ;;
+    *)
+      echo "Error: awk failed with status $awk_status on $file" >&2
+      rm -f "$tmp"
+      exit 2
+      ;;
+  esac
 
-	rm -f "$tmp"
+  rm -f "$tmp"
 done
 
 exit "$status"

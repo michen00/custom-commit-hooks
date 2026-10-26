@@ -23,8 +23,8 @@
 set -eu
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
-	echo "Usage: $0 <vX.Y.Z> [changelog_file]" >&2
-	exit 1
+  echo "Usage: $0 <vX.Y.Z> [changelog_file]" >&2
+  exit 1
 fi
 
 # The release workflows validate the tag before they get here, but this script
@@ -34,19 +34,19 @@ fi
 # smuggle anything but three dot-separated runs of digits past this point.
 script_dir="$(dirname "$0")"
 if ! tag="$("$script_dir/parse-version.sh" "$1")"; then
-	exit 1
+  exit 1
 fi
 
 changelog_file="${2:-CHANGELOG.md}"
 
 if [ ! -f "$changelog_file" ]; then
-	echo "Error: changelog file not found: $changelog_file" >&2
-	exit 1
+  echo "Error: changelog file not found: $changelog_file" >&2
+  exit 1
 fi
 
-if ! command -v git-cliff >/dev/null 2>&1; then
-	echo "Error: git-cliff is required to update $changelog_file" >&2
-	exit 1
+if ! command -v git-cliff > /dev/null 2>&1; then
+  echo "Error: git-cliff is required to update $changelog_file" >&2
+  exit 1
 fi
 
 tmp_changelog="$(mktemp)"
@@ -59,8 +59,8 @@ trap 'rm -f "$tmp_changelog"' EXIT INT TERM HUP
 git cliff --tag "$tag" --output "$tmp_changelog"
 
 if [ ! -s "$tmp_changelog" ]; then
-	echo "Error: git-cliff produced an empty changelog for $tag" >&2
-	exit 1
+  echo "Error: git-cliff produced an empty changelog for $tag" >&2
+  exit 1
 fi
 
 # A regeneration that lost the section for the version being released, or one
@@ -74,15 +74,15 @@ version="${tag#v}"
 # that can still reach this pattern.
 version_pattern="$(printf '%s' "$version" | sed 's/\./\\./g')"
 if ! grep -q "^## \[${version_pattern}\]" "$tmp_changelog"; then
-	echo "Error: no '## [${version}]' section in the regenerated changelog." >&2
-	exit 1
+  echo "Error: no '## [${version}]' section in the regenerated changelog." >&2
+  exit 1
 fi
 
 old_sections="$(grep -c '^## \[' "$changelog_file" || true)"
 new_sections="$(grep -c '^## \[' "$tmp_changelog" || true)"
 if [ "$new_sections" -lt "$old_sections" ]; then
-	echo "Error: regeneration dropped sections ($old_sections -> $new_sections)." >&2
-	exit 1
+  echo "Error: regeneration dropped sections ($old_sections -> $new_sections)." >&2
+  exit 1
 fi
 
 # The section count above is a total, and a total cannot see inside a
@@ -184,17 +184,17 @@ if ! entry_guard="$(awk '
 		exit bad ? 1 : 0
 	}
 ' "$changelog_file" "$tmp_changelog")"; then
-	# Every line gets the prefix, not just the first. The guard can report
-	# several sections at once, and a bare `printf "Error: %s"` would leave the
-	# rest unlabelled in a CI log someone is reading to find out what broke.
-	printf '%s\n' "$entry_guard" | sed 's/^/Error: /' >&2
-	echo "Refusing to publish a regeneration that loses released history." >&2
-	exit 1
+  # Every line gets the prefix, not just the first. The guard can report
+  # several sections at once, and a bare `printf "Error: %s"` would leave the
+  # rest unlabelled in a CI log someone is reading to find out what broke.
+  printf '%s\n' "$entry_guard" | sed 's/^/Error: /' >&2
+  echo "Refusing to publish a regeneration that loses released history." >&2
+  exit 1
 fi
 
 # git-cliff succeeded and the result passed inspection, so publish it. Writing
 # through the existing file rather than renaming over it keeps the changelog's
 # permissions and inode.
-cat "$tmp_changelog" >"$changelog_file"
+cat "$tmp_changelog" > "$changelog_file"
 
 echo "Stamped $tag into $changelog_file"

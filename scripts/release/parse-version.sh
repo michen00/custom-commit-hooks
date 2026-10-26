@@ -14,40 +14,40 @@
 set -eu
 
 usage() {
-	echo "Usage: $0 <version> [--require-v]" >&2
-	exit 2
+  echo "Usage: $0 <version> [--require-v]" >&2
+  exit 2
 }
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
-	usage
+  usage
 fi
 
 version="$1"
 require_v=0
 
 if [ "$#" -eq 2 ]; then
-	case "$2" in
-	--require-v) require_v=1 ;;
-	*) usage ;;
-	esac
+  case "$2" in
+    --require-v) require_v=1 ;;
+    *) usage ;;
+  esac
 fi
 
 if [ "$require_v" -eq 1 ]; then
-	expected='vX.Y.Z'
+  expected='vX.Y.Z'
 else
-	expected='X.Y.Z or vX.Y.Z'
+  expected='X.Y.Z or vX.Y.Z'
 fi
 
 invalid() {
-	echo "Error: invalid version '$version'. Expected $expected." >&2
-	exit 1
+  echo "Error: invalid version '$version'. Expected $expected." >&2
+  exit 1
 }
 
 rest="${version#v}"
 
 # "${version#v}" is a no-op when there is no leading v, so comparing detects it.
 if [ "$require_v" -eq 1 ] && [ "$rest" = "$version" ]; then
-	invalid
+  invalid
 fi
 
 # Confirm both separators are present. "${x#*.}" is also a no-op when x has no
@@ -63,9 +63,9 @@ patch="${after_major#*.}"
 # A glob such as v[0-9]*.[0-9]*.[0-9]* would also accept "v1.0.0; rm -rf /",
 # because * matches separators and metacharacters too. Check each component.
 for part in "$major" "$minor" "$patch"; do
-	case "$part" in
-	'' | *[!0-9]*) invalid ;;
-	esac
+  case "$part" in
+    '' | *[!0-9]*) invalid ;;
+  esac
 done
 
 echo "v$major.$minor.$patch"

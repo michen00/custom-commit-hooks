@@ -14,33 +14,33 @@ echo "Iterations: $ITERATIONS per test case"
 echo ""
 
 benchmark_previous() {
-	i=1
-	while [ $i -le $ITERATIONS ]; do
-		for stripped in $test_cases; do
-			case "$stripped" in
-			[Rr]evert*)
-				rest="${stripped#??????}"
-				result="revert: revert$rest"
-				;;
-			[Rr]eapply*)
-				rest="${stripped#???????}"
-				result="revert: reapply$rest"
-				;;
-			esac
-		done
-		i=$((i + 1))
-	done
+  i=1
+  while [ $i -le $ITERATIONS ]; do
+    for stripped in $test_cases; do
+      case "$stripped" in
+        [Rr]evert*)
+          rest="${stripped#??????}"
+          result="revert: revert$rest"
+          ;;
+        [Rr]eapply*)
+          rest="${stripped#???????}"
+          result="revert: reapply$rest"
+          ;;
+      esac
+    done
+    i=$((i + 1))
+  done
 }
 
 benchmark_new() {
-	i=1
-	while [ $i -le $ITERATIONS ]; do
-		for stripped in $test_cases; do
-			rest="${stripped#?}"
-			result="revert: r$rest"
-		done
-		i=$((i + 1))
-	done
+  i=1
+  while [ $i -le $ITERATIONS ]; do
+    for stripped in $test_cases; do
+      rest="${stripped#?}"
+      result="revert: r$rest"
+    done
+    i=$((i + 1))
+  done
 }
 
 # PREVIOUS: Case statement with pattern matching
