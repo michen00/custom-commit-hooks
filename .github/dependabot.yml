@@ -1,9 +1,6 @@
 ---
 version: 2
 updates:
-  # bot-automerge.yml arms majors rather than holding them: for an action pinned to
-  # a floating major tag, Dependabot raises a pull request only when a major moves,
-  # so holding majors would hold every update to it.
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -14,8 +11,6 @@ updates:
         patterns: ['*']
     cooldown:
       # default-days only: GitHub rejects the semver-* keys for this ecosystem,
-      # and an invalid key drops this whole entry without any local check
-      # failing. The delay is long because bot-automerge.yml merges actions
-      # majors with no other soak, and a compromised publisher ships a patch as
-      # readily as a major.
+      # and an invalid key silently drops this whole entry. The delay is long
+      # because majors merge with no other soak.
       default-days: 30
