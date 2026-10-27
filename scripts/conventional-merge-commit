@@ -17,8 +17,8 @@ fi
 # Short-circuit: if git explicitly tells us it's not a merge/squash/revert, exit early
 # This avoids reading/parsing the message for regular commits
 case "$commit_source" in
-merge | squash | revert | message | "") ;;
-*) exit 0 ;;
+	merge | squash | revert | message | "") ;;
+	*) exit 0 ;;
 esac
 
 # Read and parse commit message
@@ -31,7 +31,7 @@ stripped="${COMMIT_FIRST_LINE#"${COMMIT_FIRST_LINE%%[![:space:]]*}"}"
 # scope and "!") is left as written. The rewrite below is for Git's default
 # "Revert ..." messages, and applying it here would produce "revert: revert: ...".
 case "$stripped" in
-revert:\ [![:space:]]* | revert!:\ [![:space:]]* | revert\(*\):\ [![:space:]]* | revert\(*\)!:\ [![:space:]]*) exit 0 ;;
+	revert:\ [![:space:]]* | revert!:\ [![:space:]]* | revert\(*\):\ [![:space:]]* | revert\(*\)!:\ [![:space:]]*) exit 0 ;;
 esac
 
 # Detect message type from content (single source of truth for trigger patterns)
@@ -40,9 +40,9 @@ esac
 #   ^\s*([Mm]erge[ds]?|[Ss]quash(e[ds])?|[Rr]evert|[Rr]eapply)\b.*$
 msg_type=""
 case "$stripped" in
-[Mm]erge | [Mm]erge[ds] | [Mm]erge[![:alnum:]_]* | [Mm]erge[ds][![:alnum:]_]*) msg_type="merge" ;;
-[Rr]evert | [Rr]evert[![:alnum:]_]* | [Rr]eapply | [Rr]eapply[![:alnum:]_]*) msg_type="revert" ;;
-[Ss]quash | [Ss]quashe[ds] | [Ss]quash[![:alnum:]_]* | [Ss]quashe[ds][![:alnum:]_]*) msg_type="squash" ;;
+	[Mm]erge | [Mm]erge[ds] | [Mm]erge[![:alnum:]_]* | [Mm]erge[ds][![:alnum:]_]*) msg_type="merge" ;;
+	[Rr]evert | [Rr]evert[![:alnum:]_]* | [Rr]eapply | [Rr]eapply[![:alnum:]_]*) msg_type="revert" ;;
+	[Ss]quash | [Ss]quashe[ds] | [Ss]quash[![:alnum:]_]* | [Ss]quashe[ds][![:alnum:]_]*) msg_type="squash" ;;
 esac
 
 # Only process if we detected a merge/squash/revert pattern
@@ -63,8 +63,8 @@ else
 	first_char="${stripped%"${stripped#?}"}"
 	rest="${stripped#?}"
 	case "$first_char" in
-	[Mm]) new_first_line="chore: m$rest" ;;
-	*) new_first_line="chore: s$rest" ;; # Default: S/s (squash)
+		[Mm]) new_first_line="chore: m$rest" ;;
+		*) new_first_line="chore: s$rest" ;; # Default: S/s (squash)
 	esac
 fi
 

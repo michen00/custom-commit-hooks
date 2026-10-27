@@ -14,17 +14,17 @@ PASSED=0
 FAILED=0
 
 pass() {
-	echo -e "${GREEN}✓${NC} $1"
-	((PASSED++))
+  echo -e "${GREEN}✓${NC} $1"
+  ((PASSED++))
 }
 
 fail() {
-	echo -e "${RED}✗${NC} $1"
-	shift
-	for msg in "$@"; do
-		echo -e "  ${YELLOW}$msg${NC}"
-	done
-	((FAILED++))
+  echo -e "${RED}✗${NC} $1"
+  shift
+  for msg in "$@"; do
+    echo -e "  ${YELLOW}$msg${NC}"
+  done
+  ((FAILED++))
 }
 
 # The suite runs under `set -uo pipefail` with no `errexit`, so a fixture write
@@ -32,8 +32,8 @@ fail() {
 # than a crash here: an unwritten changelog makes the script refuse for the
 # wrong reason, and the negative cases below would pass while testing nothing.
 fatal() {
-	echo -e "${RED}✗${NC} fixture setup failed: $1" >&2
-	exit 1
+  echo -e "${RED}✗${NC} fixture setup failed: $1" >&2
+  exit 1
 }
 
 work="$(mktemp -d)"
@@ -42,7 +42,7 @@ trap 'rm -rf "$work"' EXIT
 # A changelog with one released section, standing in for the real file. The
 # guards care only about `## [` section headers, so nothing else has to be real.
 write_changelog() {
-	cat >"$1" <<'MD' || fatal "could not write $1"
+  cat > "$1" << 'MD' || fatal "could not write $1"
 # Changelog
 
 ## [0.1.0](https://example.com/compare/v0.0.9..v0.1.0) - 2026-08-05
@@ -56,9 +56,9 @@ MD
 # are about what the script does with git-cliff's *output*, so a stub on PATH
 # gives exact control over that output and keeps the test hermetic.
 make_stub() {
-	stub_dir="$work/bin"
-	mkdir -p "$stub_dir"
-	cat >"$stub_dir/git-cliff" <<STUB
+  stub_dir="$work/bin"
+  mkdir -p "$stub_dir"
+  cat > "$stub_dir/git-cliff" << STUB
 #!/bin/sh
 # Emits \$STUB_BODY to the path following --output, ignoring everything else.
 while [ "\$#" -gt 0 ]; do
@@ -70,29 +70,29 @@ while [ "\$#" -gt 0 ]; do
 done
 exit 1
 STUB
-	chmod +x "$stub_dir/git-cliff"
-	PATH="$stub_dir:$PATH"
-	export PATH
+  chmod +x "$stub_dir/git-cliff"
+  PATH="$stub_dir:$PATH"
+  export PATH
 }
 
 # -- argument handling, before any dependency is consulted --
 
-if ! "$STAMP" >/dev/null 2>&1; then
-	pass "no arguments is rejected"
+if ! "$STAMP" > /dev/null 2>&1; then
+  pass "no arguments is rejected"
 else
-	fail "no arguments is rejected" "expected a non-zero exit"
+  fail "no arguments is rejected" "expected a non-zero exit"
 fi
 
-if ! "$STAMP" v1.0.0 a b >/dev/null 2>&1; then
-	pass "too many arguments is rejected"
+if ! "$STAMP" v1.0.0 a b > /dev/null 2>&1; then
+  pass "too many arguments is rejected"
 else
-	fail "too many arguments is rejected" "expected a non-zero exit"
+  fail "too many arguments is rejected" "expected a non-zero exit"
 fi
 
-if ! "$STAMP" v1.0.0 "$work/missing.md" >/dev/null 2>&1; then
-	pass "a missing changelog is rejected"
+if ! "$STAMP" v1.0.0 "$work/missing.md" > /dev/null 2>&1; then
+  pass "a missing changelog is rejected"
 else
-	fail "a missing changelog is rejected" "expected a non-zero exit"
+  fail "a missing changelog is rejected" "expected a non-zero exit"
 fi
 
 # The version reaches git-cliff as a tag and the section guard as a grep
@@ -102,10 +102,10 @@ fi
 malformed="$work/malformed.md"
 write_changelog "$malformed"
 if ! err="$("$STAMP" 1.2 "$malformed" 2>&1)" &&
-	printf '%s' "$err" | grep -q 'invalid version'; then
-	pass "a malformed version is rejected"
+  printf '%s' "$err" | grep -q 'invalid version'; then
+  pass "a malformed version is rejected"
 else
-	fail "a malformed version is rejected" "expected a non-zero exit and an invalid-version message"
+  fail "a malformed version is rejected" "expected a non-zero exit and an invalid-version message"
 fi
 
 make_stub
@@ -126,12 +126,12 @@ STUB_BODY="# Changelog
 - something shipped
 "
 export STUB_BODY
-if "$STAMP" v0.2.0 "$changelog" >/dev/null 2>&1 &&
-	grep -q '^## \[0.2.0\]' "$changelog" &&
-	grep -q '^## \[0.1.0\]' "$changelog"; then
-	pass "a well-formed regeneration is published"
+if "$STAMP" v0.2.0 "$changelog" > /dev/null 2>&1 &&
+  grep -q '^## \[0.2.0\]' "$changelog" &&
+  grep -q '^## \[0.1.0\]' "$changelog"; then
+  pass "a well-formed regeneration is published"
 else
-	fail "a well-formed regeneration is published" "expected both sections present"
+  fail "a well-formed regeneration is published" "expected both sections present"
 fi
 
 # The v0.1.0 failure in this repository: the pending version got no section of
@@ -145,17 +145,17 @@ STUB_BODY="# Changelog
 "
 export STUB_BODY
 before="$(cat "$changelog")"
-if ! "$STAMP" v0.2.0 "$changelog" >/dev/null 2>&1 && [ "$(cat "$changelog")" = "$before" ]; then
-	pass "a regeneration missing the pending version is refused"
+if ! "$STAMP" v0.2.0 "$changelog" > /dev/null 2>&1 && [ "$(cat "$changelog")" = "$before" ]; then
+  pass "a regeneration missing the pending version is refused"
 else
-	fail "a regeneration missing the pending version is refused" \
-		"expected a non-zero exit and an unchanged file"
+  fail "a regeneration missing the pending version is refused" \
+    "expected a non-zero exit and an unchanged file"
 fi
 
 # The shape of the clobber itself: fewer sections out than in.
 write_changelog "$changelog"
-printf '\n## [0.0.9] - 2026-01-01\n\n- older\n' >>"$changelog" ||
-	fatal "could not extend $changelog"
+printf '\n## [0.0.9] - 2026-01-01\n\n- older\n' >> "$changelog" ||
+  fatal "could not extend $changelog"
 STUB_BODY="# Changelog
 
 ## [0.2.0] - 2026-08-07
@@ -164,21 +164,21 @@ STUB_BODY="# Changelog
 "
 export STUB_BODY
 before="$(cat "$changelog")"
-if ! "$STAMP" v0.2.0 "$changelog" >/dev/null 2>&1 && [ "$(cat "$changelog")" = "$before" ]; then
-	pass "a regeneration that drops sections is refused"
+if ! "$STAMP" v0.2.0 "$changelog" > /dev/null 2>&1 && [ "$(cat "$changelog")" = "$before" ]; then
+  pass "a regeneration that drops sections is refused"
 else
-	fail "a regeneration that drops sections is refused" \
-		"expected a non-zero exit and an unchanged file"
+  fail "a regeneration that drops sections is refused" \
+    "expected a non-zero exit and an unchanged file"
 fi
 
 write_changelog "$changelog"
 STUB_BODY=""
 export STUB_BODY
 before="$(cat "$changelog")"
-if ! "$STAMP" v0.2.0 "$changelog" >/dev/null 2>&1 && [ "$(cat "$changelog")" = "$before" ]; then
-	pass "an empty regeneration is refused"
+if ! "$STAMP" v0.2.0 "$changelog" > /dev/null 2>&1 && [ "$(cat "$changelog")" = "$before" ]; then
+  pass "an empty regeneration is refused"
 else
-	fail "an empty regeneration is refused" "expected a non-zero exit and an unchanged file"
+  fail "an empty regeneration is refused" "expected a non-zero exit and an unchanged file"
 fi
 
 # Locating parse-version.sh became load-bearing when the tag started being
@@ -202,19 +202,19 @@ STUB_BODY="# Changelog
 export STUB_BODY
 decoy_dir="$work/decoy"
 mkdir -p "$decoy_dir"
-cat >"$decoy_dir/parse-version.sh" <<'DECOY'
+cat > "$decoy_dir/parse-version.sh" << 'DECOY'
 #!/bin/sh
 echo v9.9.9
 DECOY
 chmod +x "$decoy_dir/parse-version.sh"
 if (
-	cd "$decoy_dir" &&
-		PATH="$decoy_dir:$PATH" "$STAMP" v0.2.0 "$changelog" >/dev/null 2>&1
+  cd "$decoy_dir" &&
+    PATH="$decoy_dir:$PATH" "$STAMP" v0.2.0 "$changelog" > /dev/null 2>&1
 ) && grep -q '^## \[0.2.0\]' "$changelog"; then
-	pass "the helper is resolved next to the script, not via CWD or PATH"
+  pass "the helper is resolved next to the script, not via CWD or PATH"
 else
-	fail "the helper is resolved next to the script, not via CWD or PATH" \
-		"expected the real parse-version.sh to win over a decoy in the CWD and on PATH"
+  fail "the helper is resolved next to the script, not via CWD or PATH" \
+    "expected the real parse-version.sh to win over a decoy in the CWD and on PATH"
 fi
 
 # -- per-section entry guard --
@@ -223,8 +223,8 @@ fi
 # above is satisfied, but one released section comes back an entry short.
 # git-cliff 2.14.0 did exactly this to [0.0.1] in this repository.
 write_changelog "$changelog"
-printf '\n## [0.0.9] - 2026-01-01\n\n- older\n- older still\n' >>"$changelog" ||
-	fatal "could not extend $changelog"
+printf '\n## [0.0.9] - 2026-01-01\n\n- older\n- older still\n' >> "$changelog" ||
+  fatal "could not extend $changelog"
 STUB_BODY="# Changelog
 
 ## [0.2.0] - 2026-08-07
@@ -242,12 +242,12 @@ STUB_BODY="# Changelog
 export STUB_BODY
 before="$(cat "$changelog")"
 if ! err="$("$STAMP" v0.2.0 "$changelog" 2>&1)" &&
-	printf '%s' "$err" | grep -q 'lost a released entry: older still' &&
-	[ "$(cat "$changelog")" = "$before" ]; then
-	pass "a released section losing an entry is refused"
+  printf '%s' "$err" | grep -q 'lost a released entry: older still' &&
+  [ "$(cat "$changelog")" = "$before" ]; then
+  pass "a released section losing an entry is refused"
 else
-	fail "a released section losing an entry is refused" \
-		"expected a non-zero exit naming the section, and an unchanged file"
+  fail "a released section losing an entry is refused" \
+    "expected a non-zero exit naming the section, and an unchanged file"
 fi
 
 # A section swapped for another keeps the total identical, so only a per-section
@@ -266,20 +266,20 @@ STUB_BODY="# Changelog
 export STUB_BODY
 before="$(cat "$changelog")"
 if ! err="$("$STAMP" v0.2.0 "$changelog" 2>&1)" &&
-	printf '%s' "$err" | grep -q 'section \[0.1.0\] is missing' &&
-	[ "$(cat "$changelog")" = "$before" ]; then
-	pass "a released section swapped for another is refused"
+  printf '%s' "$err" | grep -q 'section \[0.1.0\] is missing' &&
+  [ "$(cat "$changelog")" = "$before" ]; then
+  pass "a released section swapped for another is refused"
 else
-	fail "a released section swapped for another is refused" \
-		"expected a non-zero exit naming the missing section, and an unchanged file"
+  fail "a released section swapped for another is refused" \
+    "expected a non-zero exit naming the missing section, and an unchanged file"
 fi
 
 # The gap a count-only guard cannot see, and the reason identity is compared
 # rather than arithmetic: one released entry leaves the section while a
 # different one arrives, so the count is unchanged.
 write_changelog "$changelog"
-printf '\n## [0.0.9] - 2026-01-01\n\n- older\n' >>"$changelog" ||
-	fatal "could not extend $changelog"
+printf '\n## [0.0.9] - 2026-01-01\n\n- older\n' >> "$changelog" ||
+  fatal "could not extend $changelog"
 STUB_BODY="# Changelog
 
 ## [0.2.0] - 2026-08-07
@@ -297,19 +297,19 @@ STUB_BODY="# Changelog
 export STUB_BODY
 before="$(cat "$changelog")"
 if ! err="$("$STAMP" v0.2.0 "$changelog" 2>&1)" &&
-	printf '%s' "$err" | grep -q 'lost a released entry: older' &&
-	[ "$(cat "$changelog")" = "$before" ]; then
-	pass "an entry swapped inside a released section is refused"
+  printf '%s' "$err" | grep -q 'lost a released entry: older' &&
+  [ "$(cat "$changelog")" = "$before" ]; then
+  pass "an entry swapped inside a released section is refused"
 else
-	fail "an entry swapped inside a released section is refused" \
-		"expected a non-zero exit naming the lost entry, and an unchanged file"
+  fail "an entry swapped inside a released section is refused" \
+    "expected a non-zero exit naming the lost entry, and an unchanged file"
 fi
 
 # Identity is the commit SHA, not the rendered line, so a git-cliff change to
 # how an entry is formatted is not a loss. This is what keeps the guard from
 # refusing every upgrade that touches the body template.
 sha='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-cat >"$changelog" <<MD || fatal "could not write $changelog"
+cat > "$changelog" << MD || fatal "could not write $changelog"
 # Changelog
 
 ## [0.1.0] - 2026-08-05
@@ -327,12 +327,12 @@ STUB_BODY="# Changelog
 - **(scope)** something shipped — ([aaaaaaa](https://example.com/commit/$sha)) — [A B](mailto:a@e.st)
 "
 export STUB_BODY
-if "$STAMP" v0.2.0 "$changelog" >/dev/null 2>&1 &&
-	grep -q '^## \[0.2.0\]' "$changelog"; then
-	pass "a released entry rerendered under the same SHA is published"
+if "$STAMP" v0.2.0 "$changelog" > /dev/null 2>&1 &&
+  grep -q '^## \[0.2.0\]' "$changelog"; then
+  pass "a released entry rerendered under the same SHA is published"
 else
-	fail "a released entry rerendered under the same SHA is published" \
-		"expected a zero exit; identity should be the SHA, not the line text"
+  fail "a released entry rerendered under the same SHA is published" \
+    "expected a zero exit; identity should be the SHA, not the line text"
 fi
 
 # Gaining entries is not a loss. A commit parser that starts matching something
@@ -351,17 +351,17 @@ STUB_BODY="# Changelog
 - something that used to be skipped
 "
 export STUB_BODY
-if "$STAMP" v0.2.0 "$changelog" >/dev/null 2>&1 &&
-	grep -q 'used to be skipped' "$changelog"; then
-	pass "a released section gaining an entry is published"
+if "$STAMP" v0.2.0 "$changelog" > /dev/null 2>&1 &&
+  grep -q 'used to be skipped' "$changelog"; then
+  pass "a released section gaining an entry is published"
 else
-	fail "a released section gaining an entry is published" "expected a zero exit"
+  fail "a released section gaining an entry is published" "expected a zero exit"
 fi
 
 # Unreleased is the one section stamping is supposed to empty: its entries move
 # into the new version's section. Counting it would refuse every release.
 changelog_unrel="$work/unreleased.md"
-cat >"$changelog_unrel" <<'MD' || fatal "could not write $changelog_unrel"
+cat > "$changelog_unrel" << 'MD' || fatal "could not write $changelog_unrel"
 # Changelog
 
 ## [Unreleased]
@@ -385,11 +385,11 @@ STUB_BODY="# Changelog
 - something shipped
 "
 export STUB_BODY
-if "$STAMP" v0.2.0 "$changelog_unrel" >/dev/null 2>&1 &&
-	grep -q '^## \[0.2.0\]' "$changelog_unrel"; then
-	pass "emptying Unreleased into the new section is published"
+if "$STAMP" v0.2.0 "$changelog_unrel" > /dev/null 2>&1 &&
+  grep -q '^## \[0.2.0\]' "$changelog_unrel"; then
+  pass "emptying Unreleased into the new section is published"
 else
-	fail "emptying Unreleased into the new section is published" "expected a zero exit"
+  fail "emptying Unreleased into the new section is published" "expected a zero exit"
 fi
 
 echo

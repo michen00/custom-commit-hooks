@@ -16,67 +16,67 @@ echo "Iterations: $ITERATIONS"
 echo ""
 
 benchmark_old() {
-	i=1
-	while [ $i -le $ITERATIONS ]; do
-		for stripped in $test_cases; do
-			case "$stripped" in
-			Revert*)
-				rest="${stripped#Revert}"
-				;;
-			revert*)
-				rest="${stripped#revert}"
-				;;
-			Reapply*)
-				rest="${stripped#Reapply}"
-				;;
-			reapply*)
-				rest="${stripped#reapply}"
-				;;
-			esac
-		done
-		i=$((i + 1))
-	done
+  i=1
+  while [ $i -le $ITERATIONS ]; do
+    for stripped in $test_cases; do
+      case "$stripped" in
+        Revert*)
+          rest="${stripped#Revert}"
+          ;;
+        revert*)
+          rest="${stripped#revert}"
+          ;;
+        Reapply*)
+          rest="${stripped#Reapply}"
+          ;;
+        reapply*)
+          rest="${stripped#reapply}"
+          ;;
+      esac
+    done
+    i=$((i + 1))
+  done
 }
 
 benchmark_new() {
-	i=1
-	while [ $i -le $ITERATIONS ]; do
-		for stripped in $test_cases; do
-			case "$stripped" in
-			[Rr]evert*)
-				rest="${stripped#??????}"
-				;;
-			[Rr]eapply*)
-				rest="${stripped#???????}"
-				;;
-			esac
-		done
-		i=$((i + 1))
-	done
+  i=1
+  while [ $i -le $ITERATIONS ]; do
+    for stripped in $test_cases; do
+      case "$stripped" in
+        [Rr]evert*)
+          rest="${stripped#??????}"
+          ;;
+        [Rr]eapply*)
+          rest="${stripped#???????}"
+          ;;
+      esac
+    done
+    i=$((i + 1))
+  done
 }
 
 benchmark_hybrid() {
-	i=1
-	while [ $i -le $ITERATIONS ]; do
-		for stripped in $test_cases; do
-			case "$stripped" in
-			[Rr]evert*)
-				# Use exact removal based on first char
-				case "$stripped" in
-				Revert*) rest="${stripped#Revert}" ;;
-				revert*) rest="${stripped#revert}" ;;
-				esac
-				;;
-			[Rr]eapply*)
-				case "$stripped" in
-				Reapply*) rest="${stripped#Reapply}" ;;
-				reapply*) rest="${stripped#reapply}" ;;
-				esac
-				;;
-			esac
-		done
-		i=$((i + 1))
-	done
+  i=1
+  while [ $i -le $ITERATIONS ]; do
+    for stripped in $test_cases; do
+      case "$stripped" in
+        [Rr]evert*)
+          # Use exact removal based on first char
+          case "$stripped" in
+            Revert*) rest="${stripped#Revert}" ;;
+            revert*) rest="${stripped#revert}" ;;
+          esac
+          ;;
+        [Rr]eapply*)
+          case "$stripped" in
+            Reapply*) rest="${stripped#Reapply}" ;;
+            reapply*) rest="${stripped#reapply}" ;;
+          esac
+          ;;
+      esac
+    done
+    i=$((i + 1))
+  done
 }
 
 # Test 1: Old approach - exact string removal (4 case branches)

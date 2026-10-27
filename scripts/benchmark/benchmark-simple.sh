@@ -10,41 +10,41 @@ echo "Benchmarking $ITERATIONS iterations with: '$test_string'"
 echo ""
 
 old_benchmark() {
-	i=1
-	while [ $i -le $ITERATIONS ]; do
-		stripped="$test_string"
-		case "$stripped" in
-		Revert*)
-			rest="${stripped#Revert}"
-			;;
-		revert*)
-			rest="${stripped#revert}"
-			;;
-		Reapply*)
-			rest="${stripped#Reapply}"
-			;;
-		reapply*)
-			rest="${stripped#reapply}"
-			;;
-		esac
-		i=$((i + 1))
-	done
+  i=1
+  while [ $i -le $ITERATIONS ]; do
+    stripped="$test_string"
+    case "$stripped" in
+      Revert*)
+        rest="${stripped#Revert}"
+        ;;
+      revert*)
+        rest="${stripped#revert}"
+        ;;
+      Reapply*)
+        rest="${stripped#Reapply}"
+        ;;
+      reapply*)
+        rest="${stripped#reapply}"
+        ;;
+    esac
+    i=$((i + 1))
+  done
 }
 
 new_benchmark() {
-	i=1
-	while [ $i -le $ITERATIONS ]; do
-		stripped="$test_string"
-		case "$stripped" in
-		[Rr]evert*)
-			rest="${stripped#??????}"
-			;;
-		[Rr]eapply*)
-			rest="${stripped#???????}"
-			;;
-		esac
-		i=$((i + 1))
-	done
+  i=1
+  while [ $i -le $ITERATIONS ]; do
+    stripped="$test_string"
+    case "$stripped" in
+      [Rr]evert*)
+        rest="${stripped#??????}"
+        ;;
+      [Rr]eapply*)
+        rest="${stripped#???????}"
+        ;;
+    esac
+    i=$((i + 1))
+  done
 }
 
 # OLD: 4 case branches
