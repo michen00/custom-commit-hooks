@@ -8,6 +8,8 @@ ci:
     chore: autoupdate pre-commit hooks
 
     for more information, see https://pre-commit.ci
+  # tombi needs the network for its schema catalog; CI's pre-commit job runs it.
+  skip: [tombi-format, tombi-lint]
 
 default_stages: [pre-commit]
 repos:
@@ -86,6 +88,10 @@ repos:
     rev: v3.14.1-1
     hooks:
       - id: shfmt
+  - repo: https://github.com/tombi-toml/tombi-pre-commit
+    rev: v1.9.6
+    hooks:
+      - id: tombi-format
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.50.0
     hooks:
@@ -98,6 +104,10 @@ repos:
     hooks:
       - id: check-json
       - id: check-yaml
+  - repo: https://github.com/tombi-toml/tombi-pre-commit
+    rev: v1.9.6
+    hooks:
+      - id: tombi-lint
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.38.0
     hooks:
