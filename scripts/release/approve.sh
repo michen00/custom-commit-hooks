@@ -26,12 +26,12 @@
 # confirmation. That is the run left behind when the wait above timed out or
 # Release Tag was approved on GitHub, and the run a manual dispatch creates.
 #
-# The publish job also holds the release key, and a run's name is set by the
-# run's own workflow file, read from whichever ref the run started on. So a
-# publish run is approved only when it started from a file already on main or
-# in the tag: the dispatch on main that Release Tag makes or a maintainer
-# repeats by hand, or a push of the tag itself. The run that follows a Release
-# Tag approval must be that dispatch.
+# Release Publish's signing job also holds the release key, and a run's name
+# is set by the run's own workflow file, read from whichever ref the run
+# started on. So a publish run is approved only when it started from a file
+# already on main or in the tag: the dispatch on main that Release Tag makes
+# or a maintainer repeats by hand, or a push of the tag itself. The run that
+# follows a Release Tag approval must be that dispatch.
 #
 # The branch name is parsed through parse-version.sh for the same reason the
 # workflows do it: it decides what gets tagged, so a `case` glob that also
