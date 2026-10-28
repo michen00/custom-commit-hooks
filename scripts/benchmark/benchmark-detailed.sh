@@ -11,37 +11,37 @@ echo "Iterations: $ITERATIONS"
 echo ""
 
 benchmark_case_pattern() {
-	i=1
-	while [ $i -le $ITERATIONS ]; do
-		stripped="$test_string"
-		case "$stripped" in
-		[Rr]evert*)
-			rest="${stripped#??????}"
-			result="revert: revert$rest"
-			;;
-		esac
-		i=$((i + 1))
-	done
+  i=1
+  while [ $i -le $ITERATIONS ]; do
+    stripped="$test_string"
+    case "$stripped" in
+      [Rr]evert*)
+        rest="${stripped#??????}"
+        result="revert: revert$rest"
+        ;;
+    esac
+    i=$((i + 1))
+  done
 }
 
 benchmark_direct_expansion() {
-	i=1
-	while [ $i -le $ITERATIONS ]; do
-		stripped="$test_string"
-		rest="${stripped#?}"
-		result="revert: r$rest"
-		i=$((i + 1))
-	done
+  i=1
+  while [ $i -le $ITERATIONS ]; do
+    stripped="$test_string"
+    rest="${stripped#?}"
+    result="revert: r$rest"
+    i=$((i + 1))
+  done
 }
 
 benchmark_fixed_length() {
-	i=1
-	while [ $i -le $ITERATIONS ]; do
-		stripped="$test_string"
-		rest="${stripped#??????}"
-		result="revert: revert$rest"
-		i=$((i + 1))
-	done
+  i=1
+  while [ $i -le $ITERATIONS ]; do
+    stripped="$test_string"
+    rest="${stripped#??????}"
+    result="revert: revert$rest"
+    i=$((i + 1))
+  done
 }
 
 # Test 1: Case statement with pattern matching

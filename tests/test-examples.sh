@@ -26,31 +26,31 @@ printf "Testing basic usage of enhance-scope and conventional-merge-commit hooks
 # === Tests ===
 
 test_conventional_merge_commit \
-	"Merge commit body preserved" \
-	"chore: merge branch 'feature' into main" \
-	"merge" \
-	"Merge branch 'feature' into main
+  "Merge commit body preserved" \
+  "chore: merge branch 'feature' into main" \
+  "merge" \
+  "Merge branch 'feature' into main
 
 Detailed merge description here
 " \
-	"Detailed merge description here"
+  "Detailed merge description here"
 
 test_enhance_scope \
-	"Commit body preserved after scope addition" \
-	"feat(test.txt): add feature" \
-	"echo 'content' > test.txt" \
-	"feat: add feature
+  "Commit body preserved after scope addition" \
+  "feat(test.txt): add feature" \
+  "echo 'content' > test.txt" \
+  "feat: add feature
 
 This is the body
 with multiple lines" \
-	"This is the body
+  "This is the body
 with multiple lines"
 
 echo ""
 echo -e "Results: ${GREEN}$PASSED passed${NC}, ${RED}$FAILED failed${NC}"
 
 if [ $FAILED -eq 0 ]; then
-	exit 0
+  exit 0
 else
-	exit 1
+  exit 1
 fi

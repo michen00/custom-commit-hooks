@@ -13,21 +13,21 @@ TOTAL_FAILED=0
 
 # Run a test script
 run_test() {
-	local test_script="$1"
-	local test_name="$2"
+  local test_script="$1"
+  local test_name="$2"
 
-	echo -e "${CYAN}Running $test_name...${NC}"
-	echo ""
+  echo -e "${CYAN}Running $test_name...${NC}"
+  echo ""
 
-	if bash "$test_script"; then
-		((TOTAL_PASSED++))
-		echo ""
-		return 0
-	else
-		((TOTAL_FAILED++))
-		echo ""
-		return 1
-	fi
+  if bash "$test_script"; then
+    ((TOTAL_PASSED++))
+    echo ""
+    return 0
+  else
+    ((TOTAL_FAILED++))
+    echo ""
+    return 1
+  fi
 }
 
 echo "=========================================="
@@ -54,9 +54,9 @@ echo -e "Total test suites: ${GREEN}$TOTAL_PASSED passed${NC}, ${RED}$TOTAL_FAIL
 echo ""
 
 if [ $TOTAL_FAILED -eq 0 ]; then
-	echo -e "${GREEN}All tests passed!${NC}"
-	exit 0
+  echo -e "${GREEN}All tests passed!${NC}"
+  exit 0
 else
-	echo -e "${RED}Some tests failed!${NC}"
-	exit 1
+  echo -e "${RED}Some tests failed!${NC}"
+  exit 1
 fi
