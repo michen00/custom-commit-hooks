@@ -6,6 +6,32 @@ All notable changes will be documented in this file. See [conventional commits](
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+### 🐛 Fixes
+
+- **(release)** approve publish runs by commit (#112) - ([0333d91](https://github.com/michen00/custom-commit-hooks/commit/0333d91d9eb47d496aa8aadd65859e2b7d924e10)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### 💚 Continuous Integration
+
+- **(automerge)** fix approver and stale comments (#114) - ([0b682b9](https://github.com/michen00/custom-commit-hooks/commit/0b682b94c49d48ea12590022483f70c48b6688ab)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- **(release)** approve the publish run too (#107) - ([1b31690](https://github.com/michen00/custom-commit-hooks/commit/1b31690c886555f0cd9bcf15664095a4ae030837)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- catch open pull requests up with main (#119) - ([049dea1](https://github.com/michen00/custom-commit-hooks/commit/049dea1d07e1e0b6d615e965081a1d4a3473741f)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- freeze PR links on merge (#111) - ([394dc49](https://github.com/michen00/custom-commit-hooks/commit/394dc49b60202a9d631a2c0908f11e0f98bad35a)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- block subjects that start uppercase (#109) - ([c3c75c4](https://github.com/michen00/custom-commit-hooks/commit/c3c75c47a477870b0c42aeb1191119e3738ea4dd)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- let the subject length check be turned off (#108) - ([5e62036](https://github.com/michen00/custom-commit-hooks/commit/5e620365cecde242077e7c6e578dac533e330ab4)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### 👷 Build
+
+- **(deps)** bump the actions group with 2 updates (#117) - ([b42185a](https://github.com/michen00/custom-commit-hooks/commit/b42185af01fe320af59f54b269c8d871361341c3)) - [dependabot[bot]](mailto:49699333+dependabot[bot]@users.noreply.github.com)
+
+### ⚙️ Miscellaneous Tasks
+
+- format TOML with tombi at two-space indent (#118) - ([a6cb6e4](https://github.com/michen00/custom-commit-hooks/commit/a6cb6e4de5751220e6deba963348a9e7e6b7d8a9)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- sync .editorconfig (#115) - ([41e8bba](https://github.com/michen00/custom-commit-hooks/commit/41e8bbaffe780944abcf5b9a5245ec8c5b950e55)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- autoupdate pre-commit hooks (#116) - ([b0f23af](https://github.com/michen00/custom-commit-hooks/commit/b0f23af589e73613389ded02bda5c7e079ef4fd3)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+- autoupdate pre-commit hooks (#110) - ([3ab286b](https://github.com/michen00/custom-commit-hooks/commit/3ab286bbab5e2862ab2925855915332a181c6402)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+
 ## [0.1.3](https://github.com/michen00/custom-commit-hooks/compare/v0.1.2..v0.1.3) - 2026-10-13
 
 ### 🐛 Fixes
