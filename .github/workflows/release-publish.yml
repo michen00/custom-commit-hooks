@@ -16,21 +16,22 @@ on:
         type: string
 
 permissions:
-  contents: write
-  id-token: write
+  contents: read
 
 concurrency:
   group: release-publish
   cancel-in-progress: false
 
+env:
+  DIST_DIR: dist
+
 jobs:
-  release-publish:
+  # Builds under the read-only token. Only `sign` sees the release key, and only
+  # `release-publish` can write, running nothing but gh.
+  build:
     runs-on: ubuntu-latest
-    # Gated on the protected `release` environment: minting a signed tag
-    # and publishing artifacts both pause for maintainer approval.
-    environment: release
-    env:
-      DIST_DIR: dist
+    outputs:
+      tag: ${{ steps.release-tag.outputs.tag }}
     steps:
       # Checked out before the tag is parsed so that the shared, unit-tested
       # parser can be used. A tag push already lands on the tag; a manual
@@ -39,6 +40,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Resolve release tag
         id: release-tag
@@ -66,31 +68,76 @@ jobs:
           RELEASE_TAG: ${{ steps.release-tag.outputs.tag }}
         run: git checkout --detach "refs/tags/$RELEASE_TAG"
 
-      - name: Install cosign
-        uses: sigstore/cosign-installer@v3
-
-      - name: Import release GPG key
-        # Pinned to a commit because it runs with a write token; Dependabot bumps it.
-        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
-        with:
-          gpg_private_key: ${{ secrets.RELEASE_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.RELEASE_GPG_PASSPHRASE }}
-
       - name: Build release artifacts
         env:
           RELEASE_TAG: ${{ steps.release-tag.outputs.tag }}
         run: scripts/release/build-artifacts.sh "$RELEASE_TAG" "$DIST_DIR"
 
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: ${{ env.DIST_DIR }}/
+          if-no-files-found: error
+
+  sign:
+    needs: build
+    runs-on: ubuntu-latest
+    # Gated on the protected `release` environment, which holds the release key.
+    # Publishing waits on this approval too, since it needs the signed artifacts.
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      # sign-artifacts.sh comes from the tag, like every file this run builds from.
+      - uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ needs.build.outputs.tag }}
+          persist-credentials: false
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: ${{ env.DIST_DIR }}
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Import release GPG key
+        # Pinned to a commit because it handles the release key; Dependabot bumps it.
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.RELEASE_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.RELEASE_GPG_PASSPHRASE }}
+
       - name: Sign artifacts
         env:
-          RELEASE_TAG: ${{ steps.release-tag.outputs.tag }}
+          RELEASE_TAG: ${{ needs.build.outputs.tag }}
           GPG_PASSPHRASE: ${{ secrets.RELEASE_GPG_PASSPHRASE }}
         run: scripts/release/sign-artifacts.sh "$DIST_DIR" "$RELEASE_TAG"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: signed
+          path: ${{ env.DIST_DIR }}/
+          if-no-files-found: error
+
+  release-publish:
+    needs: [build, sign]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: signed
+          path: ${{ env.DIST_DIR }}
 
       - name: Publish GitHub release assets
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ steps.release-tag.outputs.tag }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.build.outputs.tag }}
         run: |
           set -euo pipefail
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
