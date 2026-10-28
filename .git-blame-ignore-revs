@@ -4,3 +4,4 @@ cb607016a33a3b72cbcce6fcf949836fc855d681  # style(_typos.toml): prefer single qu
 de2a4dc3cda7909ad49092c65c7689d6aaba923c  # style(.github/dependabot.yml): use fewer quotes
 809abbe8a8a19a7cd467577a72345244698f3650  # style: normalize quote use in YAML files
 41e8bbaffe780944abcf5b9a5245ec8c5b950e55  # chore: sync .editorconfig (#115)
+a6cb6e4de5751220e6deba963348a9e7e6b7d8a9  # chore: format TOML with tombi at two-space indent (#118)
