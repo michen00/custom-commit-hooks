@@ -1,14 +1,17 @@
 ---
-# Watches the one upstream event this repository is waiting on, because nothing
+# Watches the upstream events this repository is waiting on, because nothing
 # else will. git-cliff is pinned in release-pr.yml and changelog-autoupdate.yml
 # only until orhun/git-cliff#1643 is fixed, and that is an upstream event with
 # no local trigger: the pin's own comments explain themselves to whoever opens
 # those files, and #87 sits in the issue list, but neither says anything when
 # the thing they are waiting for actually happens.
 #
-# It reports and stops there. Removing the pin means confirming the fix reached
-# a published release and regenerating the changelog to check it is unchanged,
-# which is judgement rather than a patch, so this posts once and leaves it to a
+# It reports and stops there, at most twice: once when upstream closes the
+# issue, and once when the latest git-cliff release contains the commit that
+# closed it. The closure alone is not actionable -- unpinning installs the
+# latest release, and until that release has the fix, it still has the bug.
+# Removing the pin also means regenerating the changelog to check it is
+# unchanged, which is judgement rather than a patch, so this leaves it to a
 # human. #87 carries the steps.
 name: git-cliff pin watch
 
@@ -33,16 +36,19 @@ jobs:
   watch:
     runs-on: ubuntu-latest
     steps:
-      - name: Report when the upstream fix lands
+      - name: Report when the upstream fix closes and ships
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           TRACKER: '87'
           UPSTREAM_REPO: orhun/git-cliff
           UPSTREAM_ISSUE: '1643'
-          # Invisible when rendered, and the only thing that stops this posting
-          # the same comment every month.
-          MARKER: '<!-- git-cliff-pin-watch -->'
+          # Invisible when rendered, and the only thing that stops each report
+          # repeating every month, so there is one per report. Neither may be
+          # a substring of the other. CLOSED_MARKER must keep this exact value:
+          # the closure report already on #87 carries it.
+          CLOSED_MARKER: '<!-- git-cliff-pin-watch -->'
+          RELEASED_MARKER: '<!-- git-cliff-pin-watch: released -->'
         run: |
           set -euo pipefail
 
@@ -59,25 +65,10 @@ jobs:
           # Piped, a failed call reaches the test as empty output and reads as
           # "still open" or "not yet reported" -- both of which fail silently in
           # the direction of doing nothing. Assigned, `set -e` kills the step.
-          # One fetch, reused. `state_reason` is read from the same call the
-          # state came from rather than a second round trip.
           upstream_path="repos/${UPSTREAM_REPO}/issues/${UPSTREAM_ISSUE}"
           upstream_state="$(gh api "$upstream_path" --jq .state)"
           if [ "$upstream_state" != "closed" ]; then
             echo "::notice::${UPSTREAM_REPO}#${UPSTREAM_ISSUE} is still open."
-            exit 0
-          fi
-
-          # A here-string, not a pipe. `grep -q` exits at the first matching
-          # line, so a producer still writing gets SIGPIPE and `pipefail` turns
-          # the successful search into a non-zero pipeline -- the marker is
-          # found and the test reads false. Measured: marker on line 1 with
-          # 20k lines after it returns 141 and reports not-found, which would
-          # post this alert again every month. Matches how bot-automerge.yml
-          # tests its kill-switch label, for the same reason.
-          existing="$(gh issue view "$TRACKER" --json comments --jq '.comments[].body')"
-          if grep -qF -- "$MARKER" <<<"$existing"; then
-            echo "::notice::already reported on #${TRACKER}; nothing to add."
             exit 0
           fi
 
@@ -87,31 +78,128 @@ jobs:
           # reader does not have to guess which kind of closed this was.
           reason="$(gh api "$upstream_path" --jq '.state_reason // "completed"')"
 
+          # A here-string, not a pipe. `grep -q` exits at the first matching
+          # line, so a producer still writing gets SIGPIPE and `pipefail` turns
+          # the successful search into a non-zero pipeline -- the marker is
+          # found and the test reads false. Measured: marker on line 1 with
+          # 20k lines after it returns 141 and reports not-found, which would
+          # post this alert again every month. Matches how bot-automerge.yml
+          # tests its kill-switch label, for the same reason.
+          existing="$(gh issue view "$TRACKER" --json comments --jq '.comments[].body')"
+
           # Each paragraph is emitted as one long line from short source
           # fragments. GitHub renders a newline inside an issue comment as a
           # line break, so wrapping the source to satisfy the linter would wrap
           # the comment for every reader too.
-          body="$RUNNER_TEMP/pin-watch-body.md"
-          {
-            printf '%s\n\n' "$MARKER"
-            printf '[%s#%s](https://github.com/%s/issues/%s)' \
-              "$UPSTREAM_REPO" "$UPSTREAM_ISSUE" "$UPSTREAM_REPO" "$UPSTREAM_ISSUE"
-            printf ' is now closed (state_reason: %s).\n\n' "$reason"
-            if [ "$reason" = "not_planned" ]; then
-              printf '%s' 'Closed as not planned, so the behaviour may be intended '
-              printf '%s' 'rather than fixed. The pin still needs a decision, but '
-              printf '%s' 'dropping it is probably not that decision -- read the '
-              printf '%s\n' 'upstream discussion first.'
-            else
-              printf '%s' 'The removal steps are in the issue body above. Confirm '
-              printf '%s' 'the fix reached a published git-cliff release before '
-              printf '%s' 'dropping the pin, and regenerate the changelog to check '
-              printf '%s\n' 'it comes back unchanged.'
-            fi
-          } >"$body"
+          if grep -qF -- "$CLOSED_MARKER" <<<"$existing"; then
+            echo "::notice::closure already reported on #${TRACKER}."
+          else
+            body="$RUNNER_TEMP/pin-watch-closed.md"
+            {
+              printf '%s\n\n' "$CLOSED_MARKER"
+              printf '[%s#%s](https://github.com/%s/issues/%s)' \
+                "$UPSTREAM_REPO" "$UPSTREAM_ISSUE" "$UPSTREAM_REPO" "$UPSTREAM_ISSUE"
+              printf ' is now closed (state_reason: %s).\n\n' "$reason"
+              if [ "$reason" = "not_planned" ]; then
+                printf '%s' 'Closed as not planned, so the behaviour may be intended '
+                printf '%s' 'rather than fixed. The pin still needs a decision, but '
+                printf '%s' 'dropping it is probably not that decision -- read the '
+                printf '%s\n' 'upstream discussion first.'
+              else
+                printf '%s' 'The removal steps are in the issue body above. Wait '
+                printf '%s' 'for the fix to reach a published git-cliff release '
+                printf '%s' 'before dropping the pin; this watch reports again when '
+                printf '%s\n' 'the latest release contains it.'
+              fi
+            } >"$body"
+            gh issue comment "$TRACKER" --body-file "$body"
+            echo "::notice::reported the closure on #${TRACKER}."
+          fi
 
+          # Declined upstream, there is no fix to wait for, and the closure
+          # report above already said so.
+          if [ "$reason" = "not_planned" ]; then
+            echo "::notice::closed as not planned; no release to wait for."
+            exit 0
+          fi
+          if grep -qF -- "$RELEASED_MARKER" <<<"$existing"; then
+            echo "::notice::release already reported on #${TRACKER}; nothing to add."
+            exit 0
+          fi
+
+          # The fix is the commit that closed the issue: a merged pull
+          # request's merge commit, or a commit whose message named it. REST
+          # does not say which -- its closed event carries no commit for a pull
+          # request merge -- so this is the one GraphQL query. No closer means
+          # someone closed it by hand, and there is no commit to look for in a
+          # release, so fail rather than wait every month on nothing.
+          # shellcheck disable=SC2016 # $owner etc. are GraphQL variables
+          closer_query='
+            query($owner: String!, $name: String!, $number: Int!) {
+              repository(owner: $owner, name: $name) {
+                issue(number: $number) {
+                  timelineItems(itemTypes: [CLOSED_EVENT], last: 1) {
+                    nodes {
+                      ... on ClosedEvent {
+                        closer {
+                          ... on PullRequest { mergeCommit { oid } }
+                          ... on Commit { oid }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }'
+          fix="$(gh api graphql -f query="$closer_query" \
+            -f owner="${UPSTREAM_REPO%/*}" -f name="${UPSTREAM_REPO#*/}" \
+            -F number="$UPSTREAM_ISSUE" \
+            --jq '.data.repository.issue.timelineItems.nodes[0].closer
+              | .mergeCommit.oid // .oid // empty')"
+          if [ -z "$fix" ]; then
+            # A workflow command must be one line; built up to fit the linter.
+            msg="${UPSTREAM_REPO}#${UPSTREAM_ISSUE} was closed without a commit,"
+            msg="$msg so there is no fix to find in a release. Check by hand,"
+            echo "::error::$msg and close #${TRACKER} once the pin is gone."
+            exit 1
+          fi
+
+          # Unpinning installs the latest release, so that is the one that has
+          # to contain the fix. Comparing the release (base) to the fix (head):
+          # `behind` or `identical` means the release's history includes the
+          # fix, and `ahead` means the fix landed after it. `diverged` means
+          # neither, such as a release cut from a branch the fix never reached
+          # (it may hold a cherry-pick, which a history check cannot see), so
+          # that one goes to a human.
+          release="$(gh api "repos/${UPSTREAM_REPO}/releases/latest" --jq .tag_name)"
+          status="$(gh api "repos/${UPSTREAM_REPO}/compare/${release}...${fix}" --jq .status)"
+          case "$status" in
+            behind | identical) ;;
+            ahead)
+              echo "::notice::${release} predates the fix (${fix:0:10}); waiting for a release."
+              exit 0
+              ;;
+            *)
+              echo "::error::${release} vs the fix ${fix:0:10}: ${status}. Check by hand."
+              exit 1
+              ;;
+          esac
+
+          body="$RUNNER_TEMP/pin-watch-released.md"
+          {
+            printf '%s\n\n' "$RELEASED_MARKER"
+            printf '[git-cliff %s](https://github.com/%s/releases/tag/%s)' \
+              "$release" "$UPSTREAM_REPO" "$release"
+            printf ' contains the fix for [%s#%s](https://github.com/%s/issues/%s)' \
+              "$UPSTREAM_REPO" "$UPSTREAM_ISSUE" "$UPSTREAM_REPO" "$UPSTREAM_ISSUE"
+            printf ' ([%s](https://github.com/%s/commit/%s)).\n\n' \
+              "${fix:0:10}" "$UPSTREAM_REPO" "$fix"
+            printf '%s' 'The pin can come off. The removal steps are in the issue '
+            printf '%s' 'body above; regenerate the changelog with this release to '
+            printf '%s\n' 'check it comes back unchanged.'
+          } >"$body"
           gh issue comment "$TRACKER" --body-file "$body"
-          echo "::notice::reported on #${TRACKER}."
+          echo "::notice::reported ${release} on #${TRACKER}."
           # Explicit, like every other terminating path above, rather than
           # inheriting whatever the last command happened to return.
           exit 0
