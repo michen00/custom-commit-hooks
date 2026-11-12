@@ -114,12 +114,18 @@ jobs:
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y \
-            libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev
+            libexpat1-dev gettext libz-dev libssl-dev
           curl -sL "https://github.com/git/git/archive/v${{ matrix.git-version }}.tar.gz" \
             | tar xz
           cd "git-${{ matrix.git-version }}"
-          make prefix=/usr/local all -j"$(nproc)"
-          sudo make prefix=/usr/local install
+          # NO_CURL: the tests never fetch over HTTP, and building without
+          # curl keeps the runner's libcurl headers out of an old Git's build.
+          # -std=gnu17: GCC 15 defaults to C23, where thread_local is a
+          # keyword that old Git sources use as a struct name.
+          # install gets the same flags, or it rebuilds with the defaults.
+          set -- prefix=/usr/local NO_CURL=1 'CFLAGS=-g -O2 -std=gnu17'
+          make "$@" all -j"$(nproc)"
+          sudo make "$@" install
       - name: Verify Git
         run: git --version
       - uses: ruby/setup-ruby@v1
