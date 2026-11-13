@@ -37,7 +37,7 @@ jobs:
       # parser can be used. A tag push already lands on the tag; a manual
       # dispatch lands on the default branch. The explicit checkout below moves
       # to the requested tag in both cases.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -73,7 +73,7 @@ jobs:
           RELEASE_TAG: ${{ steps.release-tag.outputs.tag }}
         run: scripts/release/build-artifacts.sh "$RELEASE_TAG" "$DIST_DIR"
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: dist
           path: ${{ env.DIST_DIR }}/
@@ -90,18 +90,18 @@ jobs:
       id-token: write
     steps:
       # sign-artifacts.sh comes from the tag, like every file this run builds from.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/tags/${{ needs.build.outputs.tag }}
           persist-credentials: false
 
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: dist
           path: ${{ env.DIST_DIR }}
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@v3
+        uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3.9.1
 
       - name: Import release GPG key
         uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
@@ -115,7 +115,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.RELEASE_GPG_PASSPHRASE }}
         run: scripts/release/sign-artifacts.sh "$DIST_DIR" "$RELEASE_TAG"
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: signed
           path: ${{ env.DIST_DIR }}/
@@ -127,7 +127,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: signed
           path: ${{ env.DIST_DIR }}
