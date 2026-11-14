@@ -97,7 +97,7 @@ release-publish:
 
 ### Security
 
-- Pin action versions: `actions/checkout@v6`, not `@main`
+- Pin each action to a full commit SHA with its version in a trailing comment, such as `actions/checkout@<sha> # v7.0.1`: the repository requires SHA pins and refuses a tag or branch
 - Use GitHub secrets for any tokens (if needed)
 - Limit repository token permissions with `permissions:`
 
