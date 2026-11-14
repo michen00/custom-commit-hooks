@@ -6,6 +6,51 @@ All notable changes will be documented in this file. See [conventional commits](
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [0.1.4](https://github.com/michen00/custom-commit-hooks/compare/v0.1.3..v0.1.4) - 2026-11-14
+
+### 🐛 Fixes
+
+- **(release)** approve publish runs by commit (#112) - ([0333d91](https://github.com/michen00/custom-commit-hooks/commit/0333d91d9eb47d496aa8aadd65859e2b7d924e10)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### 💚 Continuous Integration
+
+- **(automerge)** fix approver and stale comments (#114) - ([0b682b9](https://github.com/michen00/custom-commit-hooks/commit/0b682b94c49d48ea12590022483f70c48b6688ab)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- **(release)** approve the publish run too (#107) - ([1b31690](https://github.com/michen00/custom-commit-hooks/commit/1b31690c886555f0cd9bcf15664095a4ae030837)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- bump markdown-prose-hooks to v0.5.3 (#135) - ([def95f0](https://github.com/michen00/custom-commit-hooks/commit/def95f025a7d99f2b929a25867679790d981e303)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- bump freeze-pr-links to v0.1.1 (#134) - ([76818bf](https://github.com/michen00/custom-commit-hooks/commit/76818bf7d65ee208e4bb30bb11ba7f124c3f0276)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- pin actions to full commit SHAs (#131) - ([7f8235c](https://github.com/michen00/custom-commit-hooks/commit/7f8235cc7025e78a36540d19ca940b55c1ededca)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- report when a git-cliff release ships the fix (#130) - ([6bd6b16](https://github.com/michen00/custom-commit-hooks/commit/6bd6b169c1d1c751b98420e697484f0a069ccc18)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- build the git floor without curl or C23 (#129) - ([851c606](https://github.com/michen00/custom-commit-hooks/commit/851c606fef3adc6b437d4c194cfe8ad7fb7f53bf)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- stop calling refused catch-ups conflicts (#126) - ([80a4107](https://github.com/michen00/custom-commit-hooks/commit/80a410785152a02f0348f3a6c8f6a5e0ace01d29)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- trust only clean or admin merge commits (#122) - ([8da144a](https://github.com/michen00/custom-commit-hooks/commit/8da144a8acc520b7b59ef7a84870f4c1d6f531f1)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- keep release tools away from the write token (#124) - ([564cb8f](https://github.com/michen00/custom-commit-hooks/commit/564cb8f941d8fa285541a9cfd3b8e80b34ebec69)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- keep write tokens away from third-party code (#123) - ([364f20e](https://github.com/michen00/custom-commit-hooks/commit/364f20e2c40aa6e895327027004f4abe9c9bfeea)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- catch open pull requests up with main (#119) - ([049dea1](https://github.com/michen00/custom-commit-hooks/commit/049dea1d07e1e0b6d615e965081a1d4a3473741f)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- freeze PR links on merge (#111) - ([394dc49](https://github.com/michen00/custom-commit-hooks/commit/394dc49b60202a9d631a2c0908f11e0f98bad35a)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- block subjects that start uppercase (#109) - ([c3c75c4](https://github.com/michen00/custom-commit-hooks/commit/c3c75c47a477870b0c42aeb1191119e3738ea4dd)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- let the subject length check be turned off (#108) - ([5e62036](https://github.com/michen00/custom-commit-hooks/commit/5e620365cecde242077e7c6e578dac533e330ab4)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### 👷 Build
+
+- **(deps)** bump the actions group across 2 directories with 2 updates (#132) - ([2ae2ecc](https://github.com/michen00/custom-commit-hooks/commit/2ae2ecc630af7a8198d3cc7a277d67fec01133ca)) - [dependabot[bot]](mailto:49699333+dependabot[bot]@users.noreply.github.com)
+- **(deps)** bump the actions group with 2 updates (#117) - ([b42185a](https://github.com/michen00/custom-commit-hooks/commit/b42185af01fe320af59f54b269c8d871361341c3)) - [dependabot[bot]](mailto:49699333+dependabot[bot]@users.noreply.github.com)
+
+### 📝 Documentation
+
+- pin actions by commit SHA (#138) - ([da714e3](https://github.com/michen00/custom-commit-hooks/commit/da714e3839950cf30047180bea7de07abeb044c0)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- describe the freeze-pr-links SHA pin (#137) - ([8d776cb](https://github.com/michen00/custom-commit-hooks/commit/8d776cbcb47049e95b1ef4b10f987e51791a5745)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+
+### ⚙️ Miscellaneous Tasks
+
+- **(.editorconfig)** merge identical sections (#121) - ([29d1641](https://github.com/michen00/custom-commit-hooks/commit/29d1641ac9466b20cc5700e98c3aeaecccc0c27a)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- autoupdate pre-commit hooks (#128) - ([61e01e3](https://github.com/michen00/custom-commit-hooks/commit/61e01e380da1e977e608ebf8e75ff7a95cfb7e9f)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+- autoupdate pre-commit hooks (#127) - ([b07c0f4](https://github.com/michen00/custom-commit-hooks/commit/b07c0f4cea8af44c93fc1a6ea06015b8fa1a297e)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+- trim config comments (#120) - ([9b7f297](https://github.com/michen00/custom-commit-hooks/commit/9b7f297ed127aa5bb393650840d2a1a5fd2354fe)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- format TOML with tombi at two-space indent (#118) - ([a6cb6e4](https://github.com/michen00/custom-commit-hooks/commit/a6cb6e4de5751220e6deba963348a9e7e6b7d8a9)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- sync .editorconfig (#115) - ([41e8bba](https://github.com/michen00/custom-commit-hooks/commit/41e8bbaffe780944abcf5b9a5245ec8c5b950e55)) - [Michael I Chen](mailto:michen00.github@gmail.com)
+- autoupdate pre-commit hooks (#116) - ([b0f23af](https://github.com/michen00/custom-commit-hooks/commit/b0f23af589e73613389ded02bda5c7e079ef4fd3)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+- autoupdate pre-commit hooks (#110) - ([3ab286b](https://github.com/michen00/custom-commit-hooks/commit/3ab286bbab5e2862ab2925855915332a181c6402)) - [pre-commit-ci[bot]](mailto:66853113+pre-commit-ci[bot]@users.noreply.github.com)
+
 ## [0.1.3](https://github.com/michen00/custom-commit-hooks/compare/v0.1.2..v0.1.3) - 2026-10-13
 
 ### 🐛 Fixes
