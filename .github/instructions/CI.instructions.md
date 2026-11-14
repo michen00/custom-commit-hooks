@@ -48,7 +48,7 @@ test:
 - `pull_request_target` on `closed`, gated on the pull request having merged into `main`
 - Manual `workflow_dispatch` with `pr_number`, to freeze a pull request that merged earlier
 
-It runs `michen00/freeze-pr-links` at a release tag and checks out nothing from the pull request.
+It runs `michen00/freeze-pr-links` pinned to the full commit SHA of a release tag, with the tag named in a trailing comment, and checks out nothing from the pull request.
 
 ### Release Workflows
 
