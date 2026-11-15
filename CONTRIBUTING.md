@@ -55,7 +55,7 @@ Before opening a Pull Request (PR), please consider the following guidelines:
 - The PR must meet the code standards and conventions of the project.
 - Explanatory comments related to code functions are strongly recommended.
 - Every non-merge, non-bot commit subject is checked automatically: it must match `type(scope): subject` (scope optional), stay at or under 50 characters, and not end with a period. Run `python3 -m checks.check_commit_messages` to check locally before pushing.
-- The PR title follows the same conventional-commit rules as a commit subject (check locally with `python3 -m checks.check_pr_title "<title>"`). The body has no required sections, but leftover placeholders, TBD or TODO markers, markdownlint directives, and code fences without a language tag draw warnings that do not fail the check (check with `printf '%s' "$BODY" | python3 -m checks.check_pr_body --require`). Bot-authored PRs are exempt from both.
+- [michen00/pr-checks](https://github.com/michen00/pr-checks) checks the PR title and body. The title follows the same conventional-commit rules as a commit subject. The body has no required sections; a code fence without a language tag fails the check, and leftover placeholders, TBD or TODO markers and markdownlint directives draw warnings that do not. Bot-authored PRs are exempt from both.
 
 And finally, when you are satisfied with your changes, open a new PR.
 
