@@ -42,6 +42,7 @@ jobs:
         continue-on-error: true
         uses: michen00/pr-checks@db89b15bfdb59cf850f498b56d9e3aaba0b2c005 # v0.1.0
         with:
+          max-length: ${{ env.SUBJECT_MAX_LENGTH }}
           upload-findings: 'false'
 
       - name: Check commit subjects
