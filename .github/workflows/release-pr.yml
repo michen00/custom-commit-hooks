@@ -251,8 +251,8 @@ jobs:
       # being released. The self-pin in .pre-commit-config.yaml is left alone on
       # purpose: pre-commit checks a rev out to resolve it, and the tag does not
       # exist until this PR merges, so pinning it here would fail these very
-      # checks. The weekly pre-commit-autoupdate workflow moves it forward after
-      # the tag lands.
+      # checks. pre-commit.ci's weekly autoupdate moves it forward after the tag
+      # lands.
       - name: Bump the README rev pin
         env:
           RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
