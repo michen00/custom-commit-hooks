@@ -15,8 +15,8 @@
 #
 #     error: pathspec 'v0.1.0' did not match any file(s) known to git
 #
-# The weekly pre-commit-autoupdate workflow moves that self-pin forward on its own
-# once the tag exists. Pass the file explicitly if you need to bump it by hand
+# pre-commit.ci's weekly autoupdate moves that self-pin forward on its own once
+# the tag exists. Pass the file explicitly if you need to bump it by hand
 # after a release.
 #
 # Exits 2 on bad arguments and 3 when a named file contains no pin for this
